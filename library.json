@@ -1,0 +1,34 @@
+{
+  "name": "DS323x_Generic",
+  "version": "1.0.0",
+  "description": "Library for DS3231/DS3232 Extremely Accurate I2C-Integrated RTC/TCXO/Crystal. For nRF52, SAMD21/SAMD51, STM32F/L/H/G/WB/MP1, Teensy, etc. besides ESP8266/ESP32, using ESP WiFi, WiFiNINA, Ethernet W5x00, ENC28J60, LAN8742A, ESP8266/ESP32 AT-command WiFi",
+  "keywords": "i2c,wire,rtc,ds3231,ds3232,ds323x",
+  "authors": [
+    {
+      "name":  "Hideaki Tai",
+      "url":   "https://github.com/hideakitai"
+    },
+    {
+      "name":  "Khoi Hoang",
+      "url":   "https://github.com/khoih-prog/DS323x_Generic",
+      "email": "khoih.prog@gmail.com",
+      "maintainer": true
+    }
+  ],
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/khoih-prog/DS323x_Generic"
+  },
+  "homepage": "https://github.com/khoih-prog/DS323x_Generic",
+  "export": {
+    "exclude": [
+      "linux",
+      "extras",
+      "tests"
+    ]
+  },  
+  "frameworks": "*",
+  "platforms": "*",
+  "examples": "examples/*/*/*.ino"
+}

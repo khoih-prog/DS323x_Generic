@@ -1,0 +1,118 @@
+#######################################
+# Syntax Coloring Map For UPnP_Generic
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+TimeSpan	KEYWORD1
+DateTime  KEYWORD1
+timestampOpt  KEYWORD1
+
+DS323x_ KEYWORD1
+Reg KEYWORD1
+Format KEYWORD1
+AMPM KEYWORD1
+DYDT KEYWORD1
+A1Rate KEYWORD1
+A2Rate KEYWORD1
+SquareWaveFreq KEYWORD1
+InterruptCtrl KEYWORD1
+AlarmSel KEYWORD1
+DS323x_ KEYWORD1
+DS323x_ KEYWORD1
+DS323x_ KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+###################
+# TimeSpan Class
+###################
+
+days KEYWORD2
+hours  KEYWORD2
+minutes  KEYWORD2
+seconds  KEYWORD2
+totalseconds  KEYWORD2
+
+###################
+# DateTime Class
+###################
+
+get_tmElements_t KEYWORD2
+setFrom_tmElements_t  KEYWORD2
+get_time_t  KEYWORD2
+setFrom_time_t  KEYWORD2
+year  KEYWORD2
+month KEYWORD2
+day  KEYWORD2
+get_time_t  KEYWORD2
+hour  KEYWORD2
+minute  KEYWORD2
+second KEYWORD2
+yearOffset  KEYWORD2
+dayOfTheWeek  KEYWORD2
+secondstime  KEYWORD2
+unixtime  KEYWORD2
+timestamp KEYWORD2
+
+###################
+# DS323x_ Class
+###################
+
+attach  KEYWORD2
+now  KEYWORD2
+hour  KEYWORD2
+minute  KEYWORD2
+second KEYWORD2
+weekday  KEYWORD2
+year  KEYWORD2
+month KEYWORD2
+day  KEYWORD2
+ampm  KEYWORD2
+format  KEYWORD2
+alarm  KEYWORD2
+dydt KEYWORD2
+a1m1  KEYWORD2
+a1m2  KEYWORD2
+a1m3  KEYWORD2
+a1m4  KEYWORD2
+rateA1  KEYWORD2
+a2m1  KEYWORD2
+a2m2  KEYWORD2
+a2m3  KEYWORD2
+a2m4  KEYWORD2
+rateA2  KEYWORD2
+rate  KEYWORD2
+enableOscillator KEYWORD2
+enableBatteryBackedSquareWave  KEYWORD2
+convertTemperature  KEYWORD2
+squareWaveFrequency KEYWORD2
+interruptControl  KEYWORD2
+enableAlarm1  KEYWORD2
+enableAlarm2  KEYWORD2
+trigger  KEYWORD2
+oscillatorStopFlag KEYWORD2
+enable32kHz  KEYWORD2
+busy  KEYWORD2
+hasAlarmed  KEYWORD2
+clearAlarm  KEYWORD2
+agingOffset  KEYWORD2
+temperature  KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+SECONDS_FROM_1970_TO_2000 LITERAL1
+YEARS_FROM_1970_TO_2000 LITERAL1
+I2C_ADDR  LITERAL1
+MASK_HOUR_24H LITERAL1
+MASK_HOUR_12H LITERAL1
+MASK_MONTH LITERAL1
+MASK_ALARM_BIT LITERAL1
+MASK_ALARM_DAY  LITERAL1
+MASK_ALARM_DATE LITERAL1
