@@ -32,43 +32,67 @@
     {
       "owner": "paulstoffregen",
       "name": "Time",
-      "version": "^1.6",
+      "version": ">=1.6",
       "platforms": ["*"]
     },
     {
       "owner": "khoih.prog",
       "name": "WiFiNINA_Generic",
-      "version": "^1.8.0",
+      "version": ">=1.8.0",
+      "platforms": ["*"]
+    },
+    {
+      "owner": "khoih.prog",
+      "name": "WiFiWebServer",
+      "version": ">=1.1.0",
+      "platforms": ["*"]
+    },
+    {
+      "owner": "khoih.prog",
+      "name": "EthernetWebServer",
+      "version": ">=1.2.0",
+      "platforms": ["*"]
+    },
+    {
+      "owner": "khoih.prog",
+      "name": "EthernetWebServer_STM32",
+      "version": ">=1.1.0",
+      "platforms": ["*"]
+    },
+    {
+      "owner": "khoih.prog",
+      "name": "ESP8266_AT_WebServer",
+      "version": ">=1.1.1",
       "platforms": ["*"]
     },
     {
       "owner": "arduino-libraries",
       "name": "Ethernet",
-      "version": "^2.0.0",
+      "version": ">=2.0.0",
       "platforms": ["*"]
     },
     {
       "owner": "jandrassy",
       "name": "EthernetENC",
-      "version": "^2.0.0",
+      "version": ">=2.0.0",
       "platforms": ["*"]
     },
     {
       "owner": "uipethernet",
       "name": "UIPEthernet",
-      "version": "^2.0.8",
+      "version": ">=2.0.8",
       "platforms": ["*"]
     },
     {
       "owner": "stm32duino",
       "name": "STM32duino LwIP",
-      "version": "^2.1.2",
+      "version": ">=2.1.2",
       "platforms": "ststm32"
     },
     {
       "owner": "stm32duino",
       "name": "STM32Ethernet",
-      "version": "^1.2.0",
+      "version": ">=1.2.0",
       "platforms": "ststm32"
     }
   ],
