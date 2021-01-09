@@ -9,7 +9,87 @@
 ---
 ---
 
+## Table of Contents
+
+* [Why do we need this DS323x_Generic library](#why-do-we-need-this-ds323x_generic-library)
+  * [Features](#features)
+  * [Currently Supported Boards](#currently-supported-boards)
+  * [Currently Supported WiFi Modules and Shields](#currently-supported-wifi-modules-and-shields)
+  * [Currently Supported Ethernet Modules and Shields](#currently-supported-ethernet-modules-and-shields)
+* [Changelog](#changelog)
+  * [Releases v1.1.0](#releases-v110)
+  * [Releases v1.0.0](#releases-v100)
+* [Prerequisites](#prerequisites)
+* [Installation](#installation)
+  * [Use Arduino Library Manager](#use-arduino-library-manager)
+  * [Manual Install](#manual-install)
+  * [VS Code & PlatformIO](#vs-code--platformio)
+* [Packages' Patches](#packages-patches)
+  * [1. For Adafruit nRF52840 and nRF52832 boards](#1-for-adafruit-nRF52840-and-nRF52832-boards)
+  * [2. For Teensy boards](#2-for-teensy-boards)
+  * [3. For Arduino SAM DUE boards](#3-for-arduino-sam-due-boards)
+  * [4. For Arduino SAMD boards](#4-for-arduino-samd-boards)
+      * [For core version v1.8.10+](#for-core-version-v1810)
+      * [For core version v1.8.9-](#for-core-version-v189-)
+  * [5. For Adafruit SAMD boards](#5-for-adafruit-samd-boards)
+  * [6. For Seeeduino SAMD boards](#6-for-seeeduino-samd-boards)
+  * [7. For STM32 boards](#7-for-stm32-boards)
+* [Libraries' Patches](#libraries-patches)
+  * [1. For application requiring 2K+ HTML page](#1-for-application-requiring-2k-html-page)
+  * [2. For Ethernet library](#2-for-ethernet-library)
+  * [3. For EthernetLarge library](#3-for-ethernetlarge-library)
+  * [4. For Etherne2 library](#4-for-ethernet2-library)
+  * [5. For Ethernet3 library](#5-for-ethernet3-library)
+  * [6. For UIPEthernet library](#6-for-uipethernet-library)
+  * [7. For fixing ESP32 compile error](#7-for-fixing-esp32-compile-error)
+  * [8. For STM32 core F3 and F4 using UIPEthernet library](#8-for-stm32-core-f3-and-f4-using-uipethernet-library)
+* [HOWTO Use analogRead() with ESP32 running WiFi and/or BlueTooth (BT/BLE)](#howto-use-analogread-with-esp32-running-wifi-andor-bluetooth-btble)
+  * [1. ESP32 has 2 ADCs, named ADC1 and ADC2](#1--esp32-has-2-adcs-named-adc1-and-adc2)
+  * [2. ESP32 ADCs functions](#2-esp32-adcs-functions)
+  * [3. ESP32 WiFi uses ADC2 for WiFi functions](#3-esp32-wifi-uses-adc2-for-wifi-functions)
+* [Usage](#usage)
+  * [1. Time](#1-time)
+  * [2. Square Wave](#2-square-wave)
+  * [3. Alarm](#3-alarm)
+* [Configurations](#configurations)
+* [APIs](#apis)
+* [Examples](#examples)
+  * [1. Alarm](#1-Alarm) 
+    * [1. **Alarm_Ethernet**](examples/Alarm/Ethernet/Alarm_Ethernet)
+    * [2. **Alarm_STM32_Ethernet**](examples/Alarm/Ethernet/Alarm_STM32_Ethernet)
+    * [3. **Alarm_WiFiNINA**](examples/Alarm/WiFiNINA/Alarm_WiFiNINA)
+    * [4. **Alarm_ESP**](examples/Alarm/ESP/Alarm_ESP)
+  * [2. Time](#2-time)
+    * [5. **RTC_Ethernet**](examples/Time/Ethernet/RTC_Ethernet)
+    * [6. **RTC_STM32_Ethernet**](examples/Time/Ethernet/RTC_STM32_Ethernet)
+    * [7. **RTC_WiFiNINA**](examples/Time/WiFiNINA/RTC_WiFiNINA)
+    * [8. **RTC_ESP**](examples/Time/ESP/RTC_ESP)
+* [Example RTC_Ethernet](#example-rtc_ethernet)
+  * [1. File RTC_Ethernet.ino](#1-file-rtc_ethernetino)
+  * [2. File defines.h](#2-file-definesh) 
+* [Debug Terminal Output Samples](#debug-terminal-output-samples)
+  * [1. Alarm_Ethernet on NRF52840_FEATHER with ENC28J60](#1-alarm_ethernet-on-nrf52840_feather-with-enc28j60)
+  * [2. Alarm_STM32_Ethernet on STM32F7 Nucleo-144 NUCLEO_F767ZI with LAN8742A](#2-alarm_stm32_ethernet-on-stm32f7-nucleo-144-nucleo_f767zi-with-lan8742a)
+  * [3. RTC_WiFiNINA on SAMD_NANO_33_IOT with WiFiNINA ](#3-rtc_wifinina-on-samd_nano_33_iot-with-wifinina)
+  * [4. RTC_Ethernet on NRF52840_FEATHER with W5500](#4-rtc_ethernet-on-nrf52840_feather-with-w5500)
+  * [5. RTC_STM32_Ethernet on STM32F7 Nucleo-144 NUCLEO_F767ZI with LAN8742A](#5-rtc_stm32_ethernet-on-stm32f7-nucleo-144-nucleo_f767zi-with-lan8742a)
+  * [6. RTC_STM32_Ethernet on STM32F7 Nucleo-144 NUCLEO_F767ZI with W5500](#6-rtc_stm32_ethernet-on-stm32f7-nucleo-144-nucleo_f767zi-with-w5500)
+  * [7. RTC_Ethernet on SAM-DUE with W5500 ](#7-rtc_ethernet-on-sam-due-with-w5500 )
+* [Releases](#releases)
+* [Issues](#issues)
+* [TO DO](#to-do)
+* [DONE](#done)
+* [Contributions and Thanks](#contributions-and-thanks)
+* [Contributing](#contributing)
+* [License](#license)
+* [Copyright](#copyright)
+
+---
+---
+
 ### Why do we need this [DS323x_Generic library](https://github.com/khoih-prog/DS323x_Generic)
+
+### Features
 
 This is an Arduino library for **DS3231/DS3232 Extremely Accurate I2C-Integrated RTC/TCXO/Crystal**
 
@@ -19,16 +99,7 @@ The examples will demonstrate how to get the UTC time from NTP server, then upda
 
 This [**DS323x_Generic library**](https://github.com/khoih-prog/DS323x_Generic) is based on and modified from [**Hideaki Tai's DS323x Library**](https://github.com/hideakitai/DS323x) to add functions and support to many boards and shields.
 
----
-
-### Releases v1.0.0
-
-1. Initial porting to many Generic boards using WiFi/Ethernet modules/shields.
-2. Add support to **ESP8266, ESP32, SAMD21/SAMD51, nRF52, STM32F/L/H/G/WB/MP1** with **WiFiNINA, ESP8266/ESP32 WiFi, ESP8266-AT, W5x00, ENC28J60, LAN8742A Ethernet** modules/shields.
-3. Fix bug. Add functions.
-4. Completely new examples.
-
-#### Supported Boards
+#### Currently Supported Boards
 
   - **ESP8266**
   - **ESP32**
@@ -39,19 +110,41 @@ This [**DS323x_Generic library**](https://github.com/khoih-prog/DS323x_Generic) 
   - **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
   - **STM32 (Nucleo-144, Nucleo-64, Nucleo-32, Discovery, STM32F1, STM32F3, STM32F4, STM32H7, STM32L0, etc.)**.
   - **STM32F/L/H/G/WB/MP1 (Nucleo-64 L053R8,Nucleo-144, Nucleo-64, Nucleo-32, Discovery, STM32Fx, STM32H7, STM32Lx, STM32Gx, STM32WB, STM32MP1, etc.) having 64K+ Flash program memory.**
+  - **Arduino AVR boards (UNO, Nano, Mega, etc.)**
+  - **Arduino MegaAVR boards (UNO WiFi Rev 2, Nano Every, etc.)**
   
-#### Currently Supported WiFi Modules/Shields
+#### Currently Supported WiFi Modules and Shields
 
   - **ESP8266 built-in WiFi**
   - **ESP32 built-in WiFi**
   - **WiFiNINA using WiFiNINA or WiFiNINA_Generic library**.
   - **ESP8266-AT, ESP32-AT WiFi shields using WiFiEspAT or [ESP8266_AT_WebServer](https://github.com/khoih-prog/ESP8266_AT_WebServer) library**.
   
-#### Currently Supported Ethernet Modules/Shields
+#### Currently Supported Ethernet Modules and Shields
 
   - **W5x00's using Ethernet, EthernetLarge, Ethernet2 or Ethernet3 Library.**
   - **ENC28J60 using EthernetENC or UIPEthernet library.**
   - **LAN8742A using STM32Ethernet / STM32 LwIP libraries.**
+  
+---
+---
+
+## Changelog
+
+### Releases v1.1.0
+
+1. Add examples for ESP32/ESP8266 using LittleFS/SPIFFS
+2. Add support to AVR, UNO WiFi Rev2 boards.
+3. Clean-up all compiler warnings possible.
+4. Optimize library and examples to reduce memory usage by using Flash String whenever possible.
+5. Add Table of Contents
+
+### Releases v1.0.0
+
+1. Initial porting to many Generic boards using WiFi/Ethernet modules/shields.
+2. Add support to **ESP8266, ESP32, SAMD21/SAMD51, nRF52, STM32F/L/H/G/WB/MP1** with **WiFiNINA, ESP8266/ESP32 WiFi, ESP8266-AT, W5x00, ENC28J60, LAN8742A Ethernet** modules/shields.
+3. Fix bug. Add functions.
+4. Completely new examples.
 
 ---
 ---
@@ -60,27 +153,28 @@ This [**DS323x_Generic library**](https://github.com/khoih-prog/DS323x_Generic) 
 
  1. [`Arduino IDE v1.8.13+` for Arduino](https://www.arduino.cc/en/Main/Software)
  2. [`Arduino AVR core v1.8.3+`](https://github.com/arduino/ArduinoCore-avr) for Arduino AVR boards. Use Arduino Board Manager to install.
- 3. [`ESP32 core v1.0.4+`](https://github.com/espressif/arduino-esp32/releases) for ESP32 boards
- 4. [`ESP8266 core v2.7.4+` for Arduino](https://github.com/esp8266/Arduino#installing-with-boards-manager) for ESP8266 boards. To use ESP8266 core 2.7.1+ for LittleFS.
- 5. [`Teensy core v1.53+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0) boards. **Not ready in v1.0.0.**
- 6. [`Arduino SAM DUE core v1.6.12+`](https://www.arduino.cc/en/Guide/ArduinoDue) for SAM DUE ARM Cortex-M3 boards
- 7. [`Arduino SAMD core v1.8.10+`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards (Nano 33 IoT, etc.).
- 8. [`Adafruit SAMD core v1.6.4+`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Itsy-Bitsy M4, etc.)
- 9. [`Seeeduino SAMD core v1.8.1+`](https://www.seeedstudio.com/) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.)
-10. [`Adafruit nRF52 v0.21.0+`](https://www.adafruit.com/) for nRF52 boards such as AdaFruit Feather nRF52840 Express, NINA_B302_ublox, etc.
-11. [`Arduino Core for STM32 v1.9.0+`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards. To install go to Arduino IDE, select Boards Manager, search for **`STM32`**
-12. [`Time v1.6+`](https://github.com/PaulStoffregen/Time)
-13. Depending on which Ethernet card you're using:
+ 3. [`Arduino MegaAVR core v1.8.7+`](https://github.com/arduino/ArduinoCore-megaavr) for Arduino MegaAVR boards such as Arduino Uno WiFi Rev2. Use Arduino Board Manager to install.
+ 4. [`ESP32 core v1.0.4+`](https://github.com/espressif/arduino-esp32/releases) for ESP32 boards
+ 5. [`ESP8266 core v2.7.4+` for Arduino](https://github.com/esp8266/Arduino#installing-with-boards-manager) for ESP8266 boards. To use ESP8266 core 2.7.1+ for LittleFS.
+ 6. [`Teensy core v1.53+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0) boards. **Not ready in v1.0.0.**
+ 7. [`Arduino SAM DUE core v1.6.12+`](https://www.arduino.cc/en/Guide/ArduinoDue) for SAM DUE ARM Cortex-M3 boards
+ 8. [`Arduino SAMD core v1.8.11+`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards (Nano 33 IoT, etc.).
+ 9. [`Adafruit SAMD core v1.6.4+`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Itsy-Bitsy M4, etc.)
+10. [`Seeeduino SAMD core v1.8.1+`](https://www.seeedstudio.com/) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.)
+11. [`Adafruit nRF52 v0.21.0+`](https://www.adafruit.com/) for nRF52 boards such as AdaFruit Feather nRF52840 Express, NINA_B302_ublox, etc.
+12. [`Arduino Core for STM32 v1.9.0+`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards. To install go to Arduino IDE, select Boards Manager, search for **`STM32`**
+13. [`Time v1.6+`](https://github.com/PaulStoffregen/Time)
+14. Depending on which Ethernet card you're using:
    - [`Ethernet library v2.0.0+`](https://www.arduino.cc/en/Reference/Ethernet) for W5100, W5200 and W5500.
    - [`Ethernet2 library v1.0.4+`](https://github.com/khoih-prog/Ethernet2) for W5500 (Deprecated, use Arduino Ethernet library).
    - [`Ethernet3 library v1.5.3+`](https://github.com/sstaub/Ethernet3) for W5500/WIZ550io/WIZ850io/USR-ES1 with Wiznet W5500 chip.
    - [`EthernetLarge library v2.0.0+`](https://github.com/OPEnSLab-OSU/EthernetLarge) for W5100, W5200 and W5500.
-14. [`WiFiNINA_Generic library v1.8.0+`](https://github.com/khoih-prog/WiFiNINA_Generic) to use WiFiNINA modules/shields. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic) if using WiFiNINA for boards such as Nano 33 IoT, nRF52, Teensy, etc.
-15. [`WiFiWebServer library v1.1.0+`](https://github.com/khoih-prog/WiFiWebServer) to use WiFi/WiFiNINA modules/shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
-16. [`EthernetWebServer library v1.2.0+`](https://github.com/khoih-prog/EthernetWebServer) to use Ethernet modules/shields on boards other than STM32F/L/H/G/WB/MP1. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/EthernetWebServer.svg?)](https://www.ardu-badge.com/EthernetWebServer).
-17. [`EthernetWebServer_STM32 library v1.1.0+`](https://github.com/khoih-prog/EthernetWebServer_STM32) to use Ethernet modules/shields on STM32F/L/H/G/WB/MP1 boards. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/EthernetWebServer_STM32.svg?)](https://www.ardu-badge.com/EthernetWebServer_STM32).
-18. [`ESP8266_AT_WebServer library v1.1.1+`](https://github.com/khoih-prog/ESP8266_AT_WebServer) to use ESP8266-AT/ESP32-AT WiFi modules/shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
-
+15. [`WiFiNINA_Generic library v1.8.0+`](https://github.com/khoih-prog/WiFiNINA_Generic) to use WiFiNINA modules/shields. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic) if using WiFiNINA for boards such as Nano 33 IoT, nRF52, Teensy, etc.
+16. [`WiFiWebServer library v1.1.1+`](https://github.com/khoih-prog/WiFiWebServer) to use WiFi/WiFiNINA modules/shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
+17. [`EthernetWebServer library v1.2.1+`](https://github.com/khoih-prog/EthernetWebServer) to use Ethernet modules/shields on boards other than STM32F/L/H/G/WB/MP1. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/EthernetWebServer.svg?)](https://www.ardu-badge.com/EthernetWebServer).
+18. [`EthernetWebServer_STM32 library v1.1.1+`](https://github.com/khoih-prog/EthernetWebServer_STM32) to use Ethernet modules/shields on STM32F/L/H/G/WB/MP1 boards. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/EthernetWebServer_STM32.svg?)](https://www.ardu-badge.com/EthernetWebServer_STM32).
+19. [`ESP8266_AT_WebServer library v1.1.2+`](https://github.com/khoih-prog/ESP8266_AT_WebServer) to use ESP8266-AT/ESP32-AT WiFi modules/shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
+20. [`Timezone_Generic library v1.3.0+`](https://github.com/khoih-prog/Timezone_Generic) to use examples. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/Timezone_Generic.svg?)](https://www.ardu-badge.com/Timezone_Generic).
 
 ---
 
@@ -113,7 +207,9 @@ Another way to install is to:
 
 ### Packages' Patches
 
- 1. **To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards**, you have to copy the whole [nRF52 0.21.0](Packages_Patches/adafruit/hardware/nrf52/0.21.0) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0). 
+#### 1. For Adafruit nRF52840 and nRF52832 boards
+
+**To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards**, you have to copy the whole [nRF52 0.21.0](Packages_Patches/adafruit/hardware/nrf52/0.21.0) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0). 
 
 Supposing the Adafruit nRF52 version is 0.21.0. These files must be copied into the directory:
 - `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0/platform.txt`
@@ -135,18 +231,22 @@ These files must be copied into the directory:
 - `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B112_ublox/variant.cpp`
 - **`~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/cores/nRF5/Udp.h`**
 
- 2. **To be able to compile and run on Teensy boards**, you have to copy the file [Teensy boards.txt](Packages_Patches/hardware/teensy/avr/boards.txt) into Teensy hardware directory (./arduino-1.8.12/hardware/teensy/avr/boards.txt). 
+#### 2. For Teensy boards
+ 
+ **To be able to compile and run on Teensy boards**, you have to copy the file [Teensy boards.txt](Packages_Patches/hardware/teensy/avr/boards.txt) into Teensy hardware directory (./arduino-1.8.13/hardware/teensy/avr/boards.txt). 
 
-Supposing the Arduino version is 1.8.12. This file must be copied into the directory:
+Supposing the Arduino version is 1.8.13. This file must be copied into the directory:
 
-- `./arduino-1.8.12/hardware/teensy/avr/boards.txt`
+- `./arduino-1.8.13/hardware/teensy/avr/boards.txt`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
 
 - `./arduino-x.yy.zz/hardware/teensy/avr/boards.txt`
 
- 3. **To be able to compile and run on SAM DUE boards**, you have to copy the whole [SAM DUE](Packages_Patches/arduino/hardware/sam/1.6.12) directory into Arduino sam directory (~/.arduino15/packages/arduino/hardware/sam/1.6.12). 
+#### 3. For Arduino SAM DUE boards
+ 
+ **To be able to compile and run on SAM DUE boards**, you have to copy the whole [SAM DUE](Packages_Patches/arduino/hardware/sam/1.6.12) directory into Arduino sam directory (~/.arduino15/packages/arduino/hardware/sam/1.6.12). 
 
 Supposing the Arduino SAM core version is 1.6.12. This file must be copied into the directory:
 
@@ -157,13 +257,15 @@ This file must be copied into the directory:
 
 - `~/.arduino15/packages/arduino/hardware/sam/x.yy.zz/platform.txt`
 
- 4. ***To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD cores 1.8.10](Packages_Patches/arduino/hardware/samd/1.8.10) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.10).
+#### 4. For Arduino SAMD boards
+ 
+ ***To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD cores 1.8.11](Packages_Patches/arduino/hardware/samd/1.8.11) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.11).
  
 #### For core version v1.8.10+
 
-Supposing the Arduino SAMD version is 1.8.10. Now only one file must be copied into the directory:
+Supposing the Arduino SAMD version is 1.8.11. Now only one file must be copied into the directory:
 
-- `~/.arduino15/packages/arduino/hardware/samd/1.8.10/platform.txt`
+- `~/.arduino15/packages/arduino/hardware/samd/1.8.11/platform.txt`
 
 Whenever a new version is installed, remember to copy this files into the new version directory. For example, new version is x.yy.zz
 
@@ -194,7 +296,9 @@ These files must be copied into the directory:
 
 Whenever the above-mentioned compiler error issue is fixed with the new Arduino SAMD release, you don't need to copy the `Arduino.h` file anymore.
 
- 5. ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.4) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.4). 
+#### 5. For Adafruit SAMD boards
+ 
+ ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.4) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.4). 
 
 Supposing the Adafruit SAMD core version is 1.6.4. This file must be copied into the directory:
 
@@ -205,7 +309,9 @@ This file must be copied into the directory:
 
 - `~/.arduino15/packages/adafruit/hardware/samd/x.yy.zz/platform.txt`
 
- 6. ***To be able to automatically detect and display BOARD_NAME on Seeeduino SAMD (XIAO M0, Wio Terminal, etc) boards***, you have to copy the file [Seeeduino SAMD platform.txt](Packages_Patches/Seeeduino/hardware/samd/1.8.1) into Adafruit samd directory (~/.arduino15/packages/Seeeduino/hardware/samd/1.8.1). 
+#### 6. For Seeeduino SAMD boards
+ 
+ ***To be able to automatically detect and display BOARD_NAME on Seeeduino SAMD (XIAO M0, Wio Terminal, etc) boards***, you have to copy the file [Seeeduino SAMD platform.txt](Packages_Patches/Seeeduino/hardware/samd/1.8.1) into Adafruit samd directory (~/.arduino15/packages/Seeeduino/hardware/samd/1.8.1). 
 
 Supposing the Seeeduino SAMD core version is 1.8.1. This file must be copied into the directory:
 
@@ -216,7 +322,9 @@ This file must be copied into the directory:
 
 - `~/.arduino15/packages/Seeeduino/hardware/samd/x.yy.zz/platform.txt`
 
-7. **To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards**, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/1.9.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
+#### 7. For STM32 boards
+
+**To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards**, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/1.9.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
 
 Supposing the STM32 stm32 core version is 1.9.0. These files must be copied into the directory:
 
@@ -230,61 +338,71 @@ theses files must be copied into the corresponding directory:
 - `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_L053R8/variant.h`
 
 ---
+---
 
 ### Libraries' Patches
 
-1. If your application requires 2K+ HTML page, the current [`Ethernet library`](https://www.arduino.cc/en/Reference/Ethernet) must be modified if you are using W5200/W5500 Ethernet shields. W5100 is not supported for 2K+ buffer. If you use boards requiring different CS/SS pin for W5x00 Ethernet shield, for example ESP32, ESP8266, nRF52, etc., you also have to modify the following libraries to be able to specify the CS/SS pin correctly.
+#### Notes: These patches are totally optional and necessary only when you use the related Ethernet library and get certain error or issues.
 
-2. To fix [`Ethernet library`](https://www.arduino.cc/en/Reference/Ethernet), just copy these following files into the [`Ethernet library`](https://www.arduino.cc/en/Reference/Ethernet) directory to overwrite the old files:
+#### 1. For application requiring 2K+ HTML page
 
+If your application requires 2K+ HTML page, the current [`Ethernet library`](https://www.arduino.cc/en/Reference/Ethernet) must be modified if you are using W5200/W5500 Ethernet shields. W5100 is not supported for 2K+ buffer. If you use boards requiring different CS/SS pin for W5x00 Ethernet shield, for example ESP32, ESP8266, nRF52, etc., you also have to modify the following libraries to be able to specify the CS/SS pin correctly.
+
+#### 2. For Ethernet library
+
+To fix [`Ethernet library`](https://www.arduino.cc/en/Reference/Ethernet), just copy these following files into the [`Ethernet library`](https://www.arduino.cc/en/Reference/Ethernet) directory to overwrite the old files:
 - [Ethernet.h](LibraryPatches/Ethernet/src/Ethernet.h)
 - [Ethernet.cpp](LibraryPatches/Ethernet/src/Ethernet.cpp)
 - [EthernetServer.cpp](LibraryPatches/Ethernet/src/EthernetServer.cpp)
 - [w5100.h](LibraryPatches/Ethernet/src/utility/w5100.h)
 - [w5100.cpp](LibraryPatches/Ethernet/src/utility/w5100.cpp)
 
-3. To fix [`EthernetLarge library`](https://github.com/OPEnSLab-OSU/EthernetLarge), just copy these following files into the [`EthernetLarge library`](https://github.com/OPEnSLab-OSU/EthernetLarge) directory to overwrite the old files:
+#### 3. For EthernetLarge library
 
+To fix [`EthernetLarge library`](https://github.com/OPEnSLab-OSU/EthernetLarge), just copy these following files into the [`EthernetLarge library`](https://github.com/OPEnSLab-OSU/EthernetLarge) directory to overwrite the old files:
 - [EthernetLarge.h](LibraryPatches/EthernetLarge/src/EthernetLarge.h)
 - [EthernetLarge.cpp](LibraryPatches/EthernetLarge/src/EthernetLarge.cpp)
 - [EthernetServer.cpp](LibraryPatches/EthernetLarge/src/EthernetServer.cpp)
 - [w5100.h](LibraryPatches/EthernetLarge/src/utility/w5100.h)
 - [w5100.cpp](LibraryPatches/EthernetLarge/src/utility/w5100.cpp)
 
-4. To fix [`Ethernet2 library`](https://github.com/khoih-prog/Ethernet2), just copy these following files into the [`Ethernet2 library`](https://github.com/khoih-prog/Ethernet2) directory to overwrite the old files:
+
+#### 4. For Ethernet2 library
+
+To fix [`Ethernet2 library`](https://github.com/khoih-prog/Ethernet2), just copy these following files into the [`Ethernet2 library`](https://github.com/khoih-prog/Ethernet2) directory to overwrite the old files:
 
 - [Ethernet2.h](LibraryPatches/Ethernet2/src/Ethernet2.h)
 - [Ethernet2.cpp](LibraryPatches/Ethernet2/src/Ethernet2.cpp)
 
-To add UDP Multicast support, necessary for this [**UPnP_Generic library**](https://github.com/khoih-prog/UPnP_Generic):
+To add UDP Multicast support, necessary for the [**UPnP_Generic library**](https://github.com/khoih-prog/UPnP_Generic):
 
 - [EthernetUdp2.h](LibraryPatches/Ethernet2/src/EthernetUdp2.h)
 - [EthernetUdp2.cpp](LibraryPatches/Ethernet2/src/EthernetUdp2.cpp)
 
-5. To fix [`Ethernet3 library`](https://github.com/sstaub/Ethernet3), just copy these following files into the [`Ethernet3 library`](https://github.com/sstaub/Ethernet3) directory to overwrite the old files:
+#### 5. For Ethernet3 library
 
+5. To fix [`Ethernet3 library`](https://github.com/sstaub/Ethernet3), just copy these following files into the [`Ethernet3 library`](https://github.com/sstaub/Ethernet3) directory to overwrite the old files:
 - [Ethernet3.h](LibraryPatches/Ethernet3/src/Ethernet3.h)
 - [Ethernet3.cpp](LibraryPatches/Ethernet3/src/Ethernet3.cpp)
 
-6. **To be able to compile and run on nRF52 boards with ENC28J60 using UIPEthernet library**, you have to copy these following files into the UIPEthernet `utility` directory to overwrite the old files:
+#### 6. For UIPEthernet library
 
-- For [UIPEthernet v2.0.8](https://github.com/UIPEthernet/UIPEthernet)
+***To be able to compile and run on nRF52 boards with ENC28J60 using UIPEthernet library***, you have to copy these following files into the UIPEthernet `utility` directory to overwrite the old files:
 
-  - [UIPEthernet.h](LibraryPatches/UIPEthernet/UIPEthernet.h)
-  - [UIPEthernet.cpp](LibraryPatches/UIPEthernet/UIPEthernet.cpp)
-  - [Enc28J60Network.h](LibraryPatches/UIPEthernet/utility/Enc28J60Network.h)
-  - [Enc28J60Network.cpp](LibraryPatches/UIPEthernet/utility/Enc28J60Network.cpp)
+- [UIPEthernet.h](LibraryPatches/UIPEthernet/UIPEthernet.h)
+- [UIPEthernet.cpp](LibraryPatches/UIPEthernet/UIPEthernet.cpp)
+- [Enc28J60Network.h](LibraryPatches/UIPEthernet/utility/Enc28J60Network.h)
+- [Enc28J60Network.cpp](LibraryPatches/UIPEthernet/utility/Enc28J60Network.cpp)
 
-- For [UIPEthernet v2.0.9](https://github.com/UIPEthernet/UIPEthernet)
+#### 7. For fixing ESP32 compile error
 
-  - [UIPEthernet.h](LibraryPatches/UIPEthernet-2.0.9/UIPEthernet.h)
-  - [UIPEthernet.cpp](LibraryPatches/UIPEthernet-2.0.9/UIPEthernet.cpp)
-  - [Enc28J60Network.h](LibraryPatches/UIPEthernet-2.0.9/utility/Enc28J60Network.h)
-  - [Enc28J60Network.cpp](LibraryPatches/UIPEthernet-2.0.9/utility/Enc28J60Network.cpp)
-
-7. To fix [`ESP32 compile error`](https://github.com/espressif/arduino-esp32), just copy the following file into the [`ESP32`](https://github.com/espressif/arduino-esp32) cores/esp32 directory (e.g. ./arduino-1.8.12/hardware/espressif/cores/esp32) to overwrite the old file:
-
+To fix [`ESP32 compile error`](https://github.com/espressif/arduino-esp32), just copy the following file into the [`ESP32`](https://github.com/espressif/arduino-esp32) cores/esp32 directory (e.g. ./arduino-1.8.12/hardware/espressif/cores/esp32) to overwrite the old file:
 - [Server.h](LibraryPatches/esp32/cores/esp32/Server.h)
+
+#### 8. For STM32 core F3 and F4 using UIPEthernet library
+
+Check if you need to install the UIPEthernet patch [new STM32 core F3/F4 compatibility](https://github.com/UIPEthernet/UIPEthernet/commit/c6d6519a260166b722b9cee5dd1f0fb2682e6782) to avoid errors `#include HardwareSPI.h` on some STM32 boards (Nucleo-32 F303K8, etc.)
+
 
 ---
 ---
@@ -567,12 +685,14 @@ bool clearAlarm(const AlarmSel a);
  1. [**Alarm_Ethernet**](examples/Alarm/Ethernet/Alarm_Ethernet)
  2. [**Alarm_STM32_Ethernet**](examples/Alarm/Ethernet/Alarm_STM32_Ethernet)
  3. [**Alarm_WiFiNINA**](examples/Alarm/WiFiNINA/Alarm_WiFiNINA)
+ 4. [**Alarm_ESP**](examples/Alarm/ESP/Alarm_ESP)
  
 ### 2. Time
 
- 4. [**RTC_Ethernet**](examples/Time/Ethernet/RTC_Ethernet)
- 5. [**RTC_STM32_Ethernet**](examples/Time/Ethernet/RTC_STM32_Ethernet)
- 6. [**RTC_WiFiNINA**](examples/Time/WiFiNINA/RTC_WiFiNINA)
+ 5. [**RTC_Ethernet**](examples/Time/Ethernet/RTC_Ethernet)
+ 6. [**RTC_STM32_Ethernet**](examples/Time/Ethernet/RTC_STM32_Ethernet)
+ 7. [**RTC_WiFiNINA**](examples/Time/WiFiNINA/RTC_WiFiNINA)
+ 8. [**RTC_ESP**](examples/Time/ESP/RTC_ESP)
 
 ---
 ---
@@ -583,7 +703,6 @@ bool clearAlarm(const AlarmSel a);
 #### 1. File [RTC_Ethernet.ino](examples/Time/Ethernet/RTC_Ethernet/RTC_Ethernet.ino)
 
 ```cpp
-
 #include "defines.h"
 
 #include <Timezone_Generic.h>             // https://github.com/khoih-prog/Timezone_Generic
@@ -688,8 +807,21 @@ void getNTPTime(void)
       setTime(epoch_t);
 
       // Update RTC
+      // Can use either one of these functions
+      
+      // 1) DateTime(tmElements_t). Must create tmElements_t if not present
+      //tmElements_t tm;
+      //breakTime(epoch_t, tm);
+      //rtc.now( DateTime(tm) );
+      
+      // 2) DateTime(year, month, day, hour, min, sec)
       //rtc.now( DateTime(year(epoch_t), month(epoch_t), day(epoch_t), hour(epoch_t), minute(epoch_t), second(epoch_t) ) );
-      rtc.now( DateTime(epoch) );
+
+      // 3) DateTime (time_t)
+      //rtc.now( DateTime(epoch_t) );
+
+      // 4) DateTime(unsigned long epoch). The best and easiest way
+      rtc.now( DateTime((uint32_t) epoch) );
       
       // print the hour, minute and second:
       Serial.print(F("The UTC time is "));       // UTC is the time at Greenwich Meridian (GMT)
@@ -739,8 +871,12 @@ void setup()
   Serial.begin(115200);
   while (!Serial);
 
-  Serial.print("\nStart RTC_Ethernet on " + String(BOARD_NAME));
-  Serial.println(" with " + String(SHIELD_TYPE));
+  delay(200);
+
+  Serial.print(F("\nStart RTC_Ethernet on ")); Serial.print(BOARD_NAME);
+  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE);
+  Serial.println(TIMEZONE_GENERIC_VERSION);
+  Serial.println(DS323X_GENERIC_VERSION);
 
   Wire.begin();
 
@@ -897,17 +1033,12 @@ void setup()
   // Just info to know how to connect correctly
   Serial.println(F("========================="));
   Serial.println(F("Currently Used SPI pinout:"));
-  Serial.print(F("MOSI:"));
-  Serial.println(MOSI);
-  Serial.print(F("MISO:"));
-  Serial.println(MISO);
-  Serial.print(F("SCK:"));
-  Serial.println(SCK);
-  Serial.print(F("SS:"));
-  Serial.println(SS);
+  Serial.print(F("MOSI:")); Serial.println(MOSI);
+  Serial.print(F("MISO:")); Serial.println(MISO);
+  Serial.print(F("SCK:"));  Serial.println(SCK);
+  Serial.print(F("SS:"));   Serial.println(SS);
 #if USE_ETHERNET3
-  Serial.print(F("SPI_CS:"));
-  Serial.println(SPI_CS);
+  Serial.print(F("SPI_CS:")); Serial.println(SPI_CS);
 #endif
   Serial.println(F("========================="));
 
@@ -1159,29 +1290,40 @@ void loop()
 #endif
 
 #elif ( defined(ESP8266) )
-// For ESP8266
-#warning Use ESP8266 architecture
-#include <ESP8266mDNS.h>
-#define ETHERNET_USE_ESP8266
-#define BOARD_TYPE      "ESP8266"
+  // For ESP8266
+  #warning Use ESP8266 architecture
+  #include <ESP8266mDNS.h>
+  #define ETHERNET_USE_ESP8266
+  #define BOARD_TYPE      "ESP8266"
+  
+  #define USE_LITTLEFS      true
+  #define USE_SPIFFS        false
 
 #elif ( defined(ESP32) )
-// For ESP32
-#warning Use ESP32 architecture
-#define ETHERNET_USE_ESP32
-#define BOARD_TYPE      "ESP32"
+  // For ESP32
+  #warning Use ESP32 architecture
+  #define ETHERNET_USE_ESP32
+  #define BOARD_TYPE      "ESP32"
+  
+  #define W5500_RST_PORT   21
 
-#define W5500_RST_PORT   21
+  #define USE_LITTLEFS      true
+  #define USE_SPIFFS        false  
 
 #else
-// For Mega
-// Default pin 10 to SS/CS
-#define USE_THIS_SS_PIN       10
-#define BOARD_TYPE            "AVR Mega"
+  // For Mega
+  // Default pin 10 to SS/CS
+  #define USE_THIS_SS_PIN       10
+  #define BOARD_TYPE            "AVR Mega"
+  #define USING_AVR_BOARD       true
 #endif
 
 #ifndef BOARD_NAME
-#define BOARD_NAME    BOARD_TYPE
+  #if defined(ARDUINO_BOARD)
+    #define BOARD_NAME      ARDUINO_BOARD
+  #else   
+    #define BOARD_NAME      BOARD_TYPE
+  #endif  
 #endif
 
 #include <SPI.h>
@@ -1192,8 +1334,8 @@ void loop()
 // Use true  for ENC28J60 and UIPEthernet library (https://github.com/UIPEthernet/UIPEthernet)
 // Use false for W5x00 and Ethernetx library      (https://www.arduino.cc/en/Reference/Ethernet)
 
-#define USE_UIP_ETHERNET   true
-//#define USE_UIP_ETHERNET   false
+//#define USE_UIP_ETHERNET   true
+#define USE_UIP_ETHERNET   false
 
 //#define USE_CUSTOM_ETHERNET     true
 
@@ -1210,9 +1352,9 @@ void loop()
 #define USE_ETHERNET          false
 #define USE_ETHERNET2         false
 #define USE_ETHERNET3         false
-#define USE_ETHERNET_LARGE    false
+#define USE_ETHERNET_LARGE    true
 #define USE_ETHERNET_ESP8266  false
-#define USE_ETHERNET_ENC      true
+#define USE_ETHERNET_ENC      false
 #define USE_CUSTOM_ETHERNET   false
 
 #if !USE_ETHERNET_WRAPPER
@@ -1310,12 +1452,16 @@ IPAddress ip(192, 168, 2, 222);
 ---
 ---
 
-### Debug Termimal Output Samples
+### Debug Terminal Output Samples
 
-1. The following is debug terminal output when running example [**Alarm_Ethernet**](examples/Alarm/Ethernet/Alarm_Ethernet) on Adafruit NRF52840_FEATHER_EXPRESS with ENC28J60 using EthernetENC Library
+### 1. Alarm_Ethernet on NRF52840_FEATHER with ENC28J60
+
+The following is debug terminal output when running example [**Alarm_Ethernet**](examples/Alarm/Ethernet/Alarm_Ethernet) on Adafruit NRF52840_FEATHER_EXPRESS with ENC28J60 using EthernetENC Library
 
 ```
 Start Alarm_Ethernet on NRF52840_FEATHER with ENC28J60 using EthernetENC Library
+Timezone_Generic v1.3.0
+DS323x_Generic v1.1.0
 [ETHERNET_WEBSERVER] =========================
 [ETHERNET_WEBSERVER] Default SPI pinout:
 [ETHERNET_WEBSERVER] MOSI: 25
@@ -1386,10 +1532,14 @@ Alarm 1 activated
 
 ---
 
-2. The following is debug terminal output when running example [**Alarm_STM32_Ethernet**](examples/Alarm/Ethernet/Alarm_STM32_Ethernet) on STM32F7 Nucleo-144 NUCLEO_F767ZI with LAN8742A using STM32Ethernet Library
+### 2. Alarm_STM32_Ethernet on STM32F7 Nucleo-144 NUCLEO_F767ZI with LAN8742A
+
+The following is debug terminal output when running example [**Alarm_STM32_Ethernet**](examples/Alarm/Ethernet/Alarm_STM32_Ethernet) on STM32F7 Nucleo-144 NUCLEO_F767ZI with LAN8742A using STM32Ethernet Library
 
 ```
 Start Alarm_STM32_Ethernet on NUCLEO_F767ZI, using LAN8742A Ethernet & STM32Ethernet Library
+Timezone_Generic v1.3.0
+DS323x_Generic v1.1.0
 [ETHERNET_WEBSERVER] Board : NUCLEO_F767ZI , setCsPin: 10
 [ETHERNET_WEBSERVER] Default SPI pinout:
 [ETHERNET_WEBSERVER] MOSI: 11
@@ -1438,10 +1588,14 @@ Alarm 1 activated
 
 ---
 
-3. The following is debug terminal output when running example [**RTC_WiFiNINA**](examples/Time/WiFiNINA/RTC_WiFiNINA) on Arduino SAMD21 SAMD_NANO_33_IOT with WiFiNINA using WiFiNINA_Generic Library
+### 3. RTC_WiFiNINA on SAMD_NANO_33_IOT with WiFiNINA 
+
+The following is debug terminal output when running example [**RTC_WiFiNINA**](examples/Time/WiFiNINA/RTC_WiFiNINA) on Arduino SAMD21 SAMD_NANO_33_IOT with WiFiNINA using WiFiNINA_Generic Library
 
 ```
 Start RTC_WiFiNINA on SAMD_NANO_33_IOT with WiFiNINA using WiFiNINA_Generic Library
+Timezone_Generic v1.3.0
+DS323x_Generic v1.1.0
 Connecting to WPA SSID: HueNet1
 You're connected to the network, IP = 192.168.2.128
 Packet received
@@ -1459,10 +1613,14 @@ The UTC time is 0:09:05
 
 ---
 
-4. The following is debug terminal output when running example [**RTC_Ethernet**](examples/Time/Ethernet/RTC_Ethernet) on Adafruit NRF52840_FEATHER with W5500 using EthernetLarge Library
+### 4. RTC_Ethernet on NRF52840_FEATHER with W5500 
+
+The following is debug terminal output when running example [**RTC_Ethernet**](examples/Time/Ethernet/RTC_Ethernet) on Adafruit NRF52840_FEATHER with W5500 using EthernetLarge Library
 
 ```
 Start RTC_Ethernet on NRF52840_FEATHER with W5x00 using EthernetLarge Library
+Timezone_Generic v1.3.0
+DS323x_Generic v1.1.0
 [ETHERNET_WEBSERVER] =========== USE_ETHERNET_LARGE ===========
 [ETHERNET_WEBSERVER] Default SPI pinout:
 [ETHERNET_WEBSERVER] MOSI: 25
@@ -1498,10 +1656,14 @@ The UTC time is 23:27:44
 
 ---
 
-5. The following is debug terminal output when running example [**RTC_STM32_Ethernet**](examples/Time/Ethernet/RTC_STM32_Ethernet) on STM32F7 Nucleo-144 NUCLEO_F767ZI with LAN8742A using STM32Ethernet Library
+### 5. RTC_STM32_Ethernet on STM32F7 Nucleo-144 NUCLEO_F767ZI with LAN8742A
+
+The following is debug terminal output when running example [**RTC_STM32_Ethernet**](examples/Time/Ethernet/RTC_STM32_Ethernet) on STM32F7 Nucleo-144 NUCLEO_F767ZI with LAN8742A using STM32Ethernet Library
 
 ```
 Start RTC_STM32_Ethernet on NUCLEO_F767ZI, using LAN8742A Ethernet & STM32Ethernet Library
+Timezone_Generic v1.3.0
+DS323x_Generic v1.1.0
 [ETHERNET_WEBSERVER] Board : NUCLEO_F767ZI , setCsPin: 10
 [ETHERNET_WEBSERVER] Default SPI pinout:
 [ETHERNET_WEBSERVER] MOSI: 11
@@ -1524,11 +1686,15 @@ The UTC time is 23:53:39
 
 ---
 
-6. The following is debug terminal output when running example [**RTC_STM32_Ethernet**](examples/Time/Ethernet/RTC_STM32_Ethernet) on STM32F7 Nucleo-144 NUCLEO_F767ZI with W5500 using Ethernet2 Library
+### 6. RTC_STM32_Ethernet on STM32F7 Nucleo-144 NUCLEO_F767ZI with W5500
+
+The following is debug terminal output when running example [**RTC_STM32_Ethernet**](examples/Time/Ethernet/RTC_STM32_Ethernet) on STM32F7 Nucleo-144 NUCLEO_F767ZI with W5500 using Ethernet2 Library
 
 
 ```
 Start RTC_STM32_Ethernet on NUCLEO_F767ZI, using W5x00 & Ethernet2 Library
+Timezone_Generic v1.3.0
+DS323x_Generic v1.1.0
 [ETHERNET_WEBSERVER] Board : NUCLEO_F767ZI , setCsPin: 10
 [ETHERNET_WEBSERVER] Default SPI pinout:
 [ETHERNET_WEBSERVER] MOSI: 11
@@ -1552,10 +1718,14 @@ The UTC time is 0:00:37
 
 ---
 
-7. The following is debug terminal output when running example [**RTC_Ethernet**](examples/Time/Ethernet/RTC_Ethernet) on Arduino SAM DUE with W5500 using EthernetLarge Library
+### 7. RTC_Ethernet on SAM-DUE with W5500 
+
+The following is debug terminal output when running example [**RTC_Ethernet**](examples/Time/Ethernet/RTC_Ethernet) on Arduino SAM DUE with W5500 using EthernetLarge Library
 
 ```
 Start RTC_Ethernet on SAM DUE with W5x00 using EthernetLarge Library
+Timezone_Generic v1.3.0
+DS323x_Generic v1.1.0
 [ETHERNET_WEBSERVER] =========== USE_ETHERNET_LARGE ===========
 [ETHERNET_WEBSERVER] Default SPI pinout:
 [ETHERNET_WEBSERVER] MOSI: 75
@@ -1585,6 +1755,14 @@ You're connected to the network, IP = 192.168.2.108
 
 ## Releases
 
+### Releases v1.1.0
+
+1. Add examples for ESP32/ESP8266 using LittleFS/SPIFFS
+2. Add support to AVR, UNO WiFi Rev2 boards.
+3. Clean-up all compiler warnings possible.
+4. Optimize library and examples to reduce memory usage by using Flash String whenever possible.
+5. Add Table of Contents
+
 ### Releases v1.0.0
 
 1. Initial porting to many Generic boards using WiFi/Ethernet modules/shields.
@@ -1603,6 +1781,8 @@ You're connected to the network, IP = 192.168.2.108
   - **Seeeduino SAMD21/SAMD51 boards (SEEED_WIO_TERMINAL, SEEED_FEMTO_M0, SEEED_XIAO_M0, Wio_Lite_MG126, WIO_GPS_BOARD, SEEEDUINO_ZERO, SEEEDUINO_LORAWAN, SEEED_GROVE_UI_WIRELESS, etc.)**
   - **STM32 (Nucleo-144, Nucleo-64, Nucleo-32, Discovery, STM32F1, STM32F3, STM32F4, STM32H7, STM32L0, etc.)**.
   - **STM32F/L/H/G/WB/MP1 (Nucleo-64 L053R8,Nucleo-144, Nucleo-64, Nucleo-32, Discovery, STM32Fx, STM32H7, STM32Lx, STM32Gx, STM32WB, STM32MP1, etc.) having 64K+ Flash program memory.**
+  - **Arduino AVR boards (UNO, Nano, Mega, etc.)**
+  - **Arduino MegaAVR boards (UNO WiFi Rev 2, Nano Every, etc.)**
   
 #### Currently Supported WiFi Modules/Shields
 
@@ -1620,10 +1800,11 @@ You're connected to the network, IP = 192.168.2.108
 ---
 ---
 
-### Issues ###
+### Issues
 
 Submit issues to: [DS323x_Generic issues](https://github.com/khoih-prog/DS323x_Generic/issues)
 
+---
 ---
 
 ### TO DO
@@ -1631,6 +1812,7 @@ Submit issues to: [DS323x_Generic issues](https://github.com/khoih-prog/DS323x_G
 1. Bug Searching and Killing
 2. Add more examples
 
+---
 
 ### DONE
 
@@ -1641,10 +1823,12 @@ Submit issues to: [DS323x_Generic issues](https://github.com/khoih-prog/DS323x_G
  5. Add support to SAM DUE.
  6. Add support to Ethernet W5x00, using either [`Ethernet`](https://www.arduino.cc/en/Reference/Ethernet), [`Ethernet2`](https://github.com/adafruit/Ethernet2), [`Ethernet3`](https://github.com/sstaub/Ethernet3) or [`EthernetLarge`](https://github.com/OPEnSLab-OSU/EthernetLarge) library
  7. Add support to Ethernet ENC28J60, using [`UIPEthernet`](https://github.com/UIPEthernet/UIPEthernet) library
- 8. Add support to ESP32 and ESP8266
+ 8. Add support to ESP32 and ESP8266 using LittleFS or SPIFFS
  9. Add support to Seeeduino SAMD21/SAMD51: LoRaWAN, Zero, Femto M0, XIAO M0, Wio GPS Board, Wio Terminal, Grove UI Wireless
 10. Add support to [`EthernetENC`](https://github.com/jandrassy/EthernetENC)
- 
+11. Add support to Arduino AVR boards (UNO, Nano, Mega, etc.)
+12. Add support to Arduino MegaAVR boards (UNO WiFi Rev 2, Nano Every, etc.)
+
 ---
 ---
 

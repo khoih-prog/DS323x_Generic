@@ -9,11 +9,13 @@
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
-  Version: 1.0.0
+  Version: 1.1.0
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0  K Hoang      19/10/2020 Initial porting to many Generic boards using WiFi/Ethernet modules/shields.
+  1.1.0  K Hoang      09/01/2021 Add examples for ESP32/ESP8266 using LittleFS/SPIFFS, and support to  AVR, UNO WiFi Rev2, etc.
+                                 Fix compiler warnings.
  *****************************************************************************************************************************/
 
 #ifndef defines_h
@@ -225,29 +227,40 @@
 #endif
 
 #elif ( defined(ESP8266) )
-// For ESP8266
-#warning Use ESP8266 architecture
-#include <ESP8266mDNS.h>
-#define ETHERNET_USE_ESP8266
-#define BOARD_TYPE      "ESP8266"
+  // For ESP8266
+  #warning Use ESP8266 architecture
+  #include <ESP8266mDNS.h>
+  #define ETHERNET_USE_ESP8266
+  #define BOARD_TYPE      "ESP8266"
+  
+  #define USE_LITTLEFS      true
+  #define USE_SPIFFS        false
 
 #elif ( defined(ESP32) )
-// For ESP32
-#warning Use ESP32 architecture
-#define ETHERNET_USE_ESP32
-#define BOARD_TYPE      "ESP32"
+  // For ESP32
+  #warning Use ESP32 architecture
+  #define ETHERNET_USE_ESP32
+  #define BOARD_TYPE      "ESP32"
+  
+  #define W5500_RST_PORT   21
 
-#define W5500_RST_PORT   21
+  #define USE_LITTLEFS      true
+  #define USE_SPIFFS        false 
 
 #else
-// For Mega
-// Default pin 10 to SS/CS
-#define USE_THIS_SS_PIN       10
-#define BOARD_TYPE            "AVR Mega"
+  // For Mega
+  // Default pin 10 to SS/CS
+  #define USE_THIS_SS_PIN       10
+  #define BOARD_TYPE            "AVR Mega"
+  #define USING_AVR_BOARD       true
 #endif
 
 #ifndef BOARD_NAME
-#define BOARD_NAME    BOARD_TYPE
+  #if defined(ARDUINO_BOARD)
+    #define BOARD_NAME      ARDUINO_BOARD
+  #else   
+    #define BOARD_NAME      BOARD_TYPE
+  #endif  
 #endif
 
 #include <SPI.h>
@@ -276,9 +289,9 @@
 #define USE_ETHERNET          false
 #define USE_ETHERNET2         false
 #define USE_ETHERNET3         false
-#define USE_ETHERNET_LARGE    false
+#define USE_ETHERNET_LARGE    true
 #define USE_ETHERNET_ESP8266  false
-#define USE_ETHERNET_ENC      true
+#define USE_ETHERNET_ENC      false
 #define USE_CUSTOM_ETHERNET   false
 
 #if !USE_ETHERNET_WRAPPER

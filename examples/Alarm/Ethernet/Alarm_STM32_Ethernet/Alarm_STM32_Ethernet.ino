@@ -8,11 +8,13 @@
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
-  Version: 1.0.0
+  Version: 1.1.0
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0  K Hoang      19/10/2020 Initial porting to many Generic boards using WiFi/Ethernet modules/shields.
+  1.1.0  K Hoang      09/01/2021 Add examples for ESP32/ESP8266 using LittleFS/SPIFFS, and support to  AVR, UNO WiFi Rev2, etc.
+                                 Fix compiler warnings.
  *****************************************************************************************************************************/
 
 #include "defines.h"
@@ -133,7 +135,7 @@ void getNTPTime(void)
       //rtc.now( DateTime(epoch_t) );
 
       // 4) DateTime(unsigned long epoch). The best and easiest way
-      rtc.now( DateTime(epoch) );
+      rtc.now( DateTime((uint32_t) epoch) );
 
       // print the hour, minute and second:
       Serial.print(F("The UTC time is "));       // UTC is the time at Greenwich Meridian (GMT)
@@ -196,9 +198,9 @@ void set_RTC_Alarm1(DateTime& alarmTime)
   rtc.rate(DS323x::A1Rate::MATCH_SECOND);
   //rtc.rate(DS323x::A1Rate::MATCH_SECOND_MINUTE_HOUR);
 
-  Serial.print("Alarm 1 is set to  : ");
+  Serial.print(F("Alarm 1 is set to  : "));
   Serial.println(rtc.alarm(DS323x::AlarmSel::A1).timestamp(DateTime::TIMESTAMP_TIME));
-  Serial.print("Alarm 1 alarm rate : ");
+  Serial.print(F("Alarm 1 alarm rate : "));
   Serial.println((uint8_t)rtc.rateA1());
 
   // alarm flags must be cleard to get next alarm
@@ -224,9 +226,9 @@ void set_RTC_Alarm2(DateTime& alarmTime)
   //rtc.rate(DS323x::A2Rate::MATCH_MINUTE);
   rtc.rate(DS323x::A2Rate::MATCH_MINUTE_HOUR);
   
-  Serial.print("Alarm 2 is set to  : ");
+  Serial.print(F("Alarm 2 is set to  : "));
   Serial.println(rtc.alarm(DS323x::AlarmSel::A2).timestamp(DateTime::TIMESTAMP_TIME));
-  Serial.print("Alarm 2 alarm rate : ");
+  Serial.print(F("Alarm 2 alarm rate : "));
   Serial.println((uint8_t)rtc.rateA2());
 
   // alarm flags must be cleard to get next alarm
@@ -242,7 +244,12 @@ void setup()
   Serial.begin(115200);
   while (!Serial);
 
-  Serial.println("\nStart Alarm_STM32_Ethernet on " + String(BOARD_NAME) + ", using " + String(SHIELD_TYPE));
+  delay(200);
+
+  Serial.print(F("\nStart Alarm_STM32_Ethernet on ")); Serial.print(BOARD_NAME);
+  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE);
+  Serial.println(TIMEZONE_GENERIC_VERSION);
+  Serial.println(DS323X_GENERIC_VERSION);  
 
   Wire.begin();
 
@@ -335,7 +342,7 @@ void loop()
     prev_ms = millis();
     
     DateTime now = rtc.now();
-    Serial.println("============================");
+    Serial.println(F("============================"));
 
     time_t utc = now.get_time_t();
     time_t local = myTZ.toLocal(utc, &tcr);
@@ -346,13 +353,13 @@ void loop()
     // alarm flags must be cleard to get next alarm
     if (rtc.hasAlarmed(DS323x::AlarmSel::A1))
     {
-      Serial.println("Alarm 1 activated");
+      Serial.println(F("Alarm 1 activated"));
       rtc.clearAlarm(DS323x::AlarmSel::A1);
     }
 
     if (rtc.hasAlarmed(DS323x::AlarmSel::A2))
     {
-      Serial.println("Alarm 2 activated");
+      Serial.println(F("Alarm 2 activated"));
       rtc.clearAlarm(DS323x::AlarmSel::A2);
     }
   }

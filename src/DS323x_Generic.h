@@ -9,14 +9,21 @@
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
-  Version: 1.0.0
+  Version: 1.1.0
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0  K Hoang      19/10/2020 Initial porting to many Generic boards using WiFi/Ethernet modules/shields.
+  1.1.0  K Hoang      09/01/2021 Add examples for ESP32/ESP8266 using LittleFS/SPIFFS, and support to  AVR, UNO WiFi Rev2, etc.
+                                 Fix compiler warnings.
  *****************************************************************************************************************************/
  
 #pragma once
+
+#ifndef DS323X_GENERIC_H
+#define DS323X_GENERIC_H
+
+#define DS323X_GENERIC_VERSION       "DS323x_Generic v1.1.0"
 
 #include <Wire.h>
 #include "DateTime_Generic.h"
@@ -674,10 +681,24 @@ template <typename WireType> class DS323x_
       return writeByte(Reg::AGING_OFFSET, (uint8_t)o);
     }
 
+#if 1
+    // Original from v0.1.1
+    float temperature() 
+    {
+      uint8_t val = readByte(Reg::MSB_TEMP);
+      bool sign   = bool(val & 0x80);
+      float temp  = float(sign ? -((uint8_t)~val + 1) : val);
+      
+      temp += float(readByte(Reg::LSB_TEMP) >> 6) * 0.25f;
+      
+      return temp;
+    }
+#else    
     float temperature() 
     {
       return ((float)(((uint16_t)readByte(Reg::MSB_TEMP) << 8) | (uint16_t)readByte(Reg::LSB_TEMP) >> 6)) * 0.25f;
     }
+#endif
 
   /////////////////////////////////////////////////
   
@@ -789,7 +810,8 @@ template <typename WireType> class DS323x_
       wire->beginTransmission(I2C_ADDR);
       wire->write((uint8_t)reg);
       wire->endTransmission();
-      wire->requestFrom(I2C_ADDR, size);
+
+      wire->requestFrom((int) I2C_ADDR, (int) size);
       
       int8_t count = 0;
       
@@ -804,7 +826,8 @@ template <typename WireType> class DS323x_
       wire->beginTransmission(I2C_ADDR);
       wire->write((uint8_t)reg);
       wire->endTransmission();
-      wire->requestFrom(I2C_ADDR, size);
+
+      wire->requestFrom((int) I2C_ADDR, (int) size);
       
       int8_t count = 0;
       
@@ -965,4 +988,6 @@ template <typename WireType> class DS323x_
 } // namespace ds323x_generic
 
 using DS323x = ds323x_generic::DS323x_<TwoWire>;
+
+#endif    // DS323X_GENERIC_H
 

@@ -9,15 +9,21 @@
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
-  Version: 1.0.0
+  Version: 1.1.0
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0  K Hoang      19/10/2020 Initial porting to many Generic boards using WiFi/Ethernet modules/shields.
+  1.1.0  K Hoang      09/01/2021 Add examples for ESP32/ESP8266 using LittleFS/SPIFFS, and support to  AVR, UNO WiFi Rev2, etc.
+                                 Fix compiler warnings.
  *****************************************************************************************************************************/
 
 #ifndef defines_h
 #define defines_h
+
+#if (ESP32 || ESP8266)
+  #error This code is not designed to run on ESP32/ESP8266 platform! Please check your Tools->Board setting.
+#endif  
 
 #define DEBUG_WIFI_WEBSERVER_PORT   Serial
 
@@ -296,13 +302,18 @@
     #warning STM32 unknown board selected
     #define BOARD_TYPE  "STM32 Unknown"
   #endif
-
 #else
-  #define BOARD_TYPE      "AVR Mega"
+  // For Mega
+  #define BOARD_TYPE            "AVR Mega"
+  #define USING_AVR_BOARD       true
 #endif
 
 #ifndef BOARD_NAME
-  #define BOARD_NAME    BOARD_TYPE
+  #if defined(ARDUINO_BOARD)
+    #define BOARD_NAME      ARDUINO_BOARD
+  #else   
+    #define BOARD_NAME      BOARD_TYPE
+  #endif  
 #endif
 
 #include <WiFiWebServer.h>

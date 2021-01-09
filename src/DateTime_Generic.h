@@ -9,14 +9,19 @@
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
-  Version: 1.0.0
+  Version: 1.1.0
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0  K Hoang      19/10/2020 Initial porting to many Generic boards using WiFi/Ethernet modules/shields.
+  1.1.0  K Hoang      09/01/2021 Add examples for ESP32/ESP8266 using LittleFS/SPIFFS, and support to  AVR, UNO WiFi Rev2, etc.
+                                 Fix compiler warnings.
  *****************************************************************************************************************************/
  
 #pragma once
+
+#ifndef DATETIME_GENERIC_H
+#define DATETIME_GENERIC_H
 
 #include <Time.h>
 
@@ -114,7 +119,7 @@ class DateTime
       {
         leap = yOff % 4 == 0;
         
-        if (days < 365 + leap)
+        if ( days < (uint16_t) (365 + leap) )
           break;
           
         days -= 365 + leap;
@@ -183,6 +188,7 @@ class DateTime
     
     #define YEARS_FROM_1970_TO_2000     30
     
+#if !USING_AVR_BOARD   
     DateTime (const tmElements_t& tm)
     {     
       setFrom_tmElements_t(tm);
@@ -192,8 +198,9 @@ class DateTime
     {
       setFrom_time_t(timeInput);
     }
-    
-    tmElements_t get_tmElements_t(void)
+#endif
+ 
+    tmElements_t get_tmElements_t()
     {
       tmElements_t tm;
 
@@ -223,7 +230,7 @@ class DateTime
       ss  = tm.Second;
     }
     
-    time_t get_time_t(void)
+    time_t get_time_t()
     {
       return makeTime(get_tmElements_t());
     }   
@@ -303,7 +310,7 @@ class DateTime
     }
 
     /** 32-bit times as seconds since 1/1/1970 */
-    uint32_t unixtime(void) const
+    uint32_t unixtime() const
     {
       uint32_t t;
       uint16_t days = date2days(yOff, m, d);
@@ -323,7 +330,7 @@ class DateTime
 
     String timestamp(timestampOpt opt = TIMESTAMP_FULL)
     {
-      char buffer[20];
+      char buffer[28];
 
       // Generate timestamp according to opt
       switch (opt) 
@@ -334,11 +341,11 @@ class DateTime
           break;
         case TIMESTAMP_DATE:
           // Only date
-          sprintf(buffer, "%d-%02d-%02d", 2000 + yOff, m, d);
+          sprintf(buffer, "%04d-%02d-%02d", 2000 + yOff, m, d);
           break;
         default:
           // Full
-          sprintf(buffer, "%d-%02d-%02dT%02d:%02d:%02d", 2000 + yOff, m, d, hh, mm, ss);
+          sprintf(buffer, "%04d-%02d-%02dT%02d:%02d:%02d", 2000 + yOff, m, d, hh, mm, ss);
       }
       
       return String(buffer);
@@ -346,17 +353,17 @@ class DateTime
 
     DateTime operator+(const TimeSpan& span)
     {
-      return DateTime(unixtime() + span.totalseconds());
+      return DateTime( ( unixtime() + (uint32_t) span.totalseconds() ));
     }
     
     DateTime operator-(const TimeSpan& span)
     {
-      return DateTime(unixtime() - span.totalseconds());
+      return DateTime( ( unixtime() - (uint32_t) span.totalseconds() ));
     }
     
     TimeSpan operator-(const DateTime& right)
     {
-      return TimeSpan(unixtime() - right.unixtime());
+      return TimeSpan( (int32_t) ( unixtime() - right.unixtime() ));
     }
     
     bool operator<(const DateTime& right) const
@@ -416,3 +423,5 @@ class DateTime
       return ((days * 24L + h) * 60 + m) * 60 + s;
     }
 };
+
+#endif    //  DATETIME_GENERIC_H
