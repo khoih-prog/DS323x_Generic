@@ -17,6 +17,7 @@
   * [Currently Supported WiFi Modules and Shields](#currently-supported-wifi-modules-and-shields)
   * [Currently Supported Ethernet Modules and Shields](#currently-supported-ethernet-modules-and-shields)
 * [Changelog](#changelog)
+  * [Releases v1.2.0](#releases-v120)
   * [Releases v1.1.0](#releases-v110)
   * [Releases v1.0.0](#releases-v100)
 * [Prerequisites](#prerequisites)
@@ -33,7 +34,12 @@
       * [For core version v1.8.9-](#for-core-version-v189-)
   * [5. For Adafruit SAMD boards](#5-for-adafruit-samd-boards)
   * [6. For Seeeduino SAMD boards](#6-for-seeeduino-samd-boards)
-  * [7. For STM32 boards](#7-for-stm32-boards)
+  * [7. For STM32 boards](#7-for-stm32-boards) 
+    * [7.1. For STM32 boards to use LAN8720](#71-for-stm32-boards-to-use-lan8720)
+    * [7.2. For STM32 boards to use Serial1](#72-for-stm32-boards-to-use-serial1)
+  * [8. For RP2040-based boards using Earle Philhower arduino-pico core](#8-for-rp2040-based-boards-using-earle-philhower-arduino-pico-core)
+    * [8.1. To use BOARD_NAME](#81-to-use-board_name)
+    * [8.2. To avoid compile error relating to microsecondsToClockCycles](#82-to-avoid-compile-error-relating-to-microsecondstoclockcycles)
 * [Libraries' Patches](#libraries-patches)
   * [1. For application requiring 2K+ HTML page](#1-for-application-requiring-2k-html-page)
   * [2. For Ethernet library](#2-for-ethernet-library)
@@ -42,7 +48,21 @@
   * [5. For Ethernet3 library](#5-for-ethernet3-library)
   * [6. For UIPEthernet library](#6-for-uipethernet-library)
   * [7. For fixing ESP32 compile error](#7-for-fixing-esp32-compile-error)
-  * [8. For STM32 core F3 and F4 using UIPEthernet library](#8-for-stm32-core-f3-and-f4-using-uipethernet-library)
+* [HOWTO Install esp32 core for ESP32-S2 (Saola, AI-Thinker ESP-12K) and ESP32-C3 boards into Arduino IDE](#howto-install-esp32-core-for-esp32-s2-saola-ai-thinker-esp-12k-and-esp32-c3-boards-into-arduino-ide)
+  * [1. Save the original esp32 core](#1-save-the-original-esp32-core)
+  * [2. Install esp32 core v1.0.6](#2-install-esp32-core-v106)
+    * [2.1 Install esp32 core](#21-install-esp32-core)
+    * [2.2 Download latest zip with esp32-s2 support](#22-download-latest-zip-with-esp32-s2-support)
+    * [2.3 Unzip](#23-unzip)
+    * [2.3 Update esp32 core directories](#24-update-esp32-core-directories)
+  * [3. Download tools for ESP32-S2](#3-download-tools-for-esp32-s2) 
+    * [3.1 Download Toolchain for Xtensa (ESP32-S2) based on GCC](#31-download-toolchain-for-xtensa-esp32-s2-based-on-gcc)
+    * [3.2 Download esptool](#32-download-esptool)
+    * [3.3 Unzip](#33-unzip)
+  * [4. Update tools](#4-update-tools)
+    * [4.1 Update Toolchain](#41-update-toolchain)
+    * [4.2 Update esptool](#42-update-esptool)
+  * [5. Download tools for ESP32-C3](#5-download-tools-for-esp32-c3)
 * [HOWTO Use analogRead() with ESP32 running WiFi and/or BlueTooth (BT/BLE)](#howto-use-analogread-with-esp32-running-wifi-andor-bluetooth-btble)
   * [1. ESP32 has 2 ADCs, named ADC1 and ADC2](#1--esp32-has-2-adcs-named-adc1-and-adc2)
   * [2. ESP32 ADCs functions](#2-esp32-adcs-functions)
@@ -131,6 +151,11 @@ This [**DS323x_Generic library**](https://github.com/khoih-prog/DS323x_Generic) 
 
 ## Changelog
 
+### Releases v1.2.0
+
+1. Add support to RP2040-based boards and ESP32-S2/ESP32-C3
+2. Add support to ESP32-S2/ESP32-C3
+
 ### Releases v1.1.0
 
 1. Add examples for ESP32/ESP8266 using LittleFS/SPIFFS
@@ -151,30 +176,40 @@ This [**DS323x_Generic library**](https://github.com/khoih-prog/DS323x_Generic) 
 
 ## Prerequisites
 
- 1. [`Arduino IDE v1.8.13+` for Arduino](https://www.arduino.cc/en/Main/Software)
+ 1. [`Arduino IDE v1.8.15+` for Arduino](https://www.arduino.cc/en/Main/Software)
  2. [`Arduino AVR core 1.8.3+`](https://github.com/arduino/ArduinoCore-avr) for Arduino (Use Arduino Board Manager) for AVR boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-avr.svg)](https://github.com/arduino/ArduinoCore-avr/releases/latest)
  3. [`Arduino MegaAVR core v1.8.3+`](https://github.com/arduino/ArduinoCore-megaavr) for Arduino MegaAVR boards such as Arduino Uno WiFi Rev2. Use Arduino Board Manager to install. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-megaavr.svg)](https://github.com/arduino/ArduinoCore-megaavr/releases/latest)
- 4. [`ESP32 Core 1.0.4+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/)
- 5. [`ESP8266 Core 2.7.4+`](https://github.com/esp8266/Arduino) for ESP8266-based boards. [![Latest release](https://img.shields.io/github/release/esp8266/Arduino.svg)](https://github.com/esp8266/Arduino/releases/latest/). To use ESP8266 core 2.7.1+ for LittleFS.
- 6. [`Teensy core v1.53+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0) boards. **Not ready in v1.0.0.**
- 7. [`Arduino SAM DUE core v1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards.
- 8. [`Arduino SAMD core 1.8.11+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
- 9. [`Adafruit SAMD core 1.6.5+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
-10. [`Seeeduino SAMD core 1.8.1+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
-11. [`Adafruit nRF52 v0.21.0+`](https://github.com/adafruit/Adafruit_nRF52_Arduino) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
-12. [`Arduino Core for STM32 v1.9.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards. [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
-13. [`Time v1.6+`](https://github.com/PaulStoffregen/Time). [![GitHub release](https://img.shields.io/github/release/PaulStoffregen/Time.svg)](https://github.com/PaulStoffregen/Time/releases/latest)
-14. Depending on which Ethernet card you're using:
+ 4. [`ESP32 Core 1.0.6+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/)
+ 5. [`ESP32-S2/C3 Core 1.0.6+`](https://github.com/espressif/arduino-esp32) for ESP32-S2/C3-based boards. Must follow [HOWTO Install esp32 core for ESP32-S2 (Saola, AI-Thinker ESP-12K) and ESP32-C3 boards into Arduino IDE](#howto-install-esp32-core-for-esp32-s2-saola-ai-thinker-esp-12k-and-esp32-c3-boards-into-arduino-ide).
+ 6. [`ESP8266 Core 3.0.0+`](https://github.com/esp8266/Arduino) for ESP8266-based boards. [![Latest release](https://img.shields.io/github/release/esp8266/Arduino.svg)](https://github.com/esp8266/Arduino/releases/latest/). To use ESP8266 core 2.7.1+ for LittleFS.
+ 7. [`Teensy core v1.53+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0) boards. **Not ready in v1.0.0.**
+ 8. [`Arduino SAM DUE core v1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards.
+ 9. [`Arduino SAMD core 1.8.11+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
+10. [`Adafruit SAMD core 1.7.2+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
+11. [`Seeeduino SAMD core 1.8.1+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
+
+12. [`Adafruit nRF52 v0.21.0`](https://github.com/adafruit/Adafruit_nRF52_Arduino) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
+ 
+ **Warnings** : Use [`Adafruit nRF52 v0.22.0+`](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/tag/0.22.0) will create **compiler errors** to some boards. If so, please use the [`Adafruit nRF52 v0.21.0`](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/tag/0.21.0) until the issue fixed.
+ 
+13. [`Arduino Core for STM32 v2.0.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards. [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
+
+14. [`Arduino mbed_rp2040 core 2.1.0+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+15. [`Earle Philhower's arduino-pico core v1.8.2+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
+
+
+16. [`Time v1.6+`](https://github.com/PaulStoffregen/Time). [![GitHub release](https://img.shields.io/github/release/PaulStoffregen/Time.svg)](https://github.com/PaulStoffregen/Time/releases/latest)
+17. Depending on which Ethernet card you're using:
    - [`Ethernet library v2.0.0+`](https://github.com/arduino-libraries/Ethernet) for W5100, W5200 and W5500.  [![GitHub release](https://img.shields.io/github/release/arduino-libraries/Ethernet.svg)](https://github.com/arduino-libraries/Ethernet/releases/latest)
    - [`EthernetLarge library v2.0.0+`](https://github.com/OPEnSLab-OSU/EthernetLarge) for W5100, W5200 and W5500.
    - [`Ethernet2 library v1.0.4+`](https://github.com/khoih-prog/Ethernet2) for W5500. [![GitHub release](https://img.shields.io/github/release/adafruit/Ethernet2.svg)](https://github.com/adafruit/Ethernet2/releases/latest)
    - [`Ethernet3 library v1.5.5+`](https://github.com/sstaub/Ethernet3) for W5500/WIZ550io/WIZ850io/USR-ES1 with Wiznet W5500 chip. [![GitHub release](https://img.shields.io/github/release/sstaub/Ethernet3.svg)](https://github.com/sstaub/Ethernet3/releases/latest)
-15. [`WiFiNINA_Generic library v1.8.2+`](https://github.com/khoih-prog/WiFiNINA_Generic) to use WiFiNINA modules/shields. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic) if using WiFiNINA for boards such as Nano 33 IoT, nRF52, Teensy, etc.
-16. [`WiFiWebServer library v1.1.1+`](https://github.com/khoih-prog/WiFiWebServer) to use WiFi/WiFiNINA modules/shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
-17. [`EthernetWebServer library v1.3.0+`](https://github.com/khoih-prog/EthernetWebServer) to use Ethernet modules/shields on boards other than STM32F/L/H/G/WB/MP1. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/EthernetWebServer.svg?)](https://www.ardu-badge.com/EthernetWebServer).
-18. [`EthernetWebServer_STM32 library v1.1.1+`](https://github.com/khoih-prog/EthernetWebServer_STM32) to use Ethernet modules/shields on STM32F/L/H/G/WB/MP1 boards. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/EthernetWebServer_STM32.svg?)](https://www.ardu-badge.com/EthernetWebServer_STM32).
-19. [`ESP8266_AT_WebServer library v1.1.2+`](https://github.com/khoih-prog/ESP8266_AT_WebServer) to use ESP8266-AT/ESP32-AT WiFi modules/shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
-20. [`Timezone_Generic library v1.3.0+`](https://github.com/khoih-prog/Timezone_Generic) to use examples. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/Timezone_Generic.svg?)](https://www.ardu-badge.com/Timezone_Generic).
+18. [`WiFiNINA_Generic library v1.8.10-1+`](https://github.com/khoih-prog/WiFiNINA_Generic) to use WiFiNINA modules/shields. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic) if using WiFiNINA for boards such as Nano 33 IoT, nRF52, Teensy, etc.
+19. [`WiFiWebServer library v1.2.0+`](https://github.com/khoih-prog/WiFiWebServer) to use WiFi/WiFiNINA modules/shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
+20. [`EthernetWebServer library v1.5.0+`](https://github.com/khoih-prog/EthernetWebServer) to use Ethernet modules/shields on boards other than STM32F/L/H/G/WB/MP1. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/EthernetWebServer.svg?)](https://www.ardu-badge.com/EthernetWebServer).
+21. [`EthernetWebServer_STM32 library v1.2.0+`](https://github.com/khoih-prog/EthernetWebServer_STM32) to use Ethernet modules/shields on STM32F/L/H/G/WB/MP1 boards. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/EthernetWebServer_STM32.svg?)](https://www.ardu-badge.com/EthernetWebServer_STM32).
+22. [`ESP8266_AT_WebServer library v1.3.0+`](https://github.com/khoih-prog/ESP8266_AT_WebServer) to use ESP8266-AT/ESP32-AT WiFi modules/shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
+23. [`Timezone_Generic library v1.4.0+`](https://github.com/khoih-prog/Timezone_Generic) to use examples. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/Timezone_Generic.svg?)](https://www.ardu-badge.com/Timezone_Generic).
 
 ---
 
@@ -208,6 +243,8 @@ Another way to install is to:
 ### Packages' Patches
 
 #### 1. For Adafruit nRF52840 and nRF52832 boards
+
+**Don't use v0.22.0+ yet because of compiler error. To be fixed.**
 
 **To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards**, you have to copy the whole [nRF52 0.21.0](Packages_Patches/adafruit/hardware/nrf52/0.21.0) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0). 
 
@@ -265,9 +302,9 @@ This file must be copied into the directory:
 
 #### 4. For Arduino SAMD boards
  
- ***To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD cores 1.8.10](Packages_Patches/arduino/hardware/samd/1.8.10) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.10).
+ ***To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD cores 1.8.11](Packages_Patches/arduino/hardware/samd/1.8.11) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.11).
  
-#### For core version v1.8.11+
+#### For core version v1.8.10+
 
 Supposing the Arduino SAMD version is 1.8.11. Now only one file must be copied into the directory:
 
@@ -304,11 +341,11 @@ Whenever the above-mentioned compiler error issue is fixed with the new Arduino 
 
 #### 5. For Adafruit SAMD boards
  
- ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.4) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.4). 
+ ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.7.2) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.7.2). 
 
-Supposing the Adafruit SAMD core version is 1.6.4. This file must be copied into the directory:
+Supposing the Adafruit SAMD core version is 1.7.2. This file must be copied into the directory:
 
-- `~/.arduino15/packages/adafruit/hardware/samd/1.6.4/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.2/platform.txt`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
@@ -330,12 +367,36 @@ This file must be copied into the directory:
 
 #### 7. For STM32 boards
 
-**To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards**, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/1.9.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
+#### 7.1 For STM32 boards to use LAN8720
 
-Supposing the STM32 stm32 core version is 1.9.0. These files must be copied into the directory:
+To use LAN8720 on some STM32 boards 
 
-- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/variants/NUCLEO_F767ZI/variant.h` for Nucleo-144 NUCLEO_F767ZI.
-- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/variants/NUCLEO_L053R8/variant.h` for Nucleo-64 NUCLEO_L053R8.
+- **Nucleo-144 (F429ZI, NUCLEO_F746NG, NUCLEO_F746ZG, NUCLEO_F756ZG)**
+- **Discovery (DISCO_F746NG)**
+- **STM32F4 boards (BLACK_F407VE, BLACK_F407VG, BLACK_F407ZE, BLACK_F407ZG, BLACK_F407VE_Mini, DIYMORE_F407VGT, FK407M1)**
+
+you have to copy the files [stm32f4xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/2.0.0/system/STM32F4xx) and [stm32f7xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/2.0.0/system/STM32F7xx) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/2.0.0/system) to overwrite the old files.
+
+Supposing the STM32 stm32 core version is 2.0.0. These files must be copied into the directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/2.0.0/system/STM32F4xx/stm32f4xx_hal_conf_default.h` for STM32F4.
+- `~/.arduino15/packages/STM32/hardware/stm32/2.0.0/system/STM32F7xx/stm32f7xx_hal_conf_default.h` for Nucleo-144 STM32F7.
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz,
+theses files must be copied into the corresponding directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/system/STM32F4xx/stm32f4xx_hal_conf_default.h`
+- `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/system/STM32F7xx/stm32f7xx_hal_conf_default.h
+
+
+#### 7.2 For STM32 boards to use Serial1
+
+**To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards**, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/2.0.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/2.0.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
+
+Supposing the STM32 stm32 core version is 2.0.0. These files must be copied into the directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/2.0.0/variants/NUCLEO_F767ZI/variant.h` for Nucleo-144 NUCLEO_F767ZI.
+- `~/.arduino15/packages/STM32/hardware/stm32/2.0.0/variants/NUCLEO_L053R8/variant.h` for Nucleo-64 NUCLEO_L053R8.
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz,
 theses files must be copied into the corresponding directory:
@@ -343,12 +404,41 @@ theses files must be copied into the corresponding directory:
 - `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_F767ZI/variant.h`
 - `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_L053R8/variant.h`
 
----
+#### 8. For RP2040-based boards using [Earle Philhower arduino-pico core](https://github.com/earlephilhower/arduino-pico)
+
+#### 8.1 To use BOARD_NAME
+
+ **To be able to automatically detect and display BOARD_NAME on RP2040-based boards (RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040, GENERIC_RP2040, etc) boards**, you have to copy the file [RP2040 platform.txt](Packages_Patches/rp2040/hardware/rp2040/1.4.0) into rp2040 directory (~/.arduino15/packages/rp2040/hardware/rp2040/1.4.0). 
+
+Supposing the rp2040 core version is 1.4.0. This file must be copied into the directory:
+
+- `~/.arduino15/packages/rp2040/hardware/rp2040/1.4.0/platform.txt`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/rp2040/hardware/rp2040/x.yy.zz/platform.txt`
+
+With core after v1.5.0, this step is not necessary anymore thanks to the PR [Add -DBOARD_NAME="{build.board}" #136](https://github.com/earlephilhower/arduino-pico/pull/136).
+
+#### 8.2 To avoid compile error relating to microsecondsToClockCycles
+
+Some libraries, such as [Adafruit DHT-sensor-library](https://github.com/adafruit/DHT-sensor-library), require the definition of microsecondsToClockCycles(). **To be able to compile and run on RP2040-based boards**, you have to copy the files in [**RP2040 Arduino.h**](Packages_Patches/rp2040/hardware/rp2040/1.4.0/cores/rp2040/Arduino.h) into rp2040 directory (~/.arduino15/packages/rp2040/hardware/rp2040/1.4.0).
+
+Supposing the rp2040 core version is 1.4.0. This file must be copied to replace:
+
+- `~/.arduino15/packages/rp2040/hardware/rp2040/1.4.0/cores/rp2040/Arduino.h`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied to replace:
+
+- `~/.arduino15/packages/rp2040/hardware/rp2040/x.yy.zz/cores/rp2040/Arduino.h`
+
+With core after v1.5.0, this step is not necessary anymore thanks to the PR [Add defs for compatibility #142](https://github.com/earlephilhower/arduino-pico/pull/142).
+
 ---
 
 ### Libraries' Patches
-
-#### Notes: These patches are totally optional and necessary only when you use the related Ethernet library and get certain error or issues.
 
 #### 1. For application requiring 2K+ HTML page
 
@@ -409,6 +499,152 @@ To fix [`ESP32 compile error`](https://github.com/espressif/arduino-esp32), just
 
 Check if you need to install the UIPEthernet patch [new STM32 core F3/F4 compatibility](https://github.com/UIPEthernet/UIPEthernet/commit/c6d6519a260166b722b9cee5dd1f0fb2682e6782) to avoid errors `#include HardwareSPI.h` on some STM32 boards (Nucleo-32 F303K8, etc.)
 
+---
+---
+
+## HOWTO Install esp32 core for ESP32-S2 (Saola, AI-Thinker ESP-12K) and ESP32-C3 boards into Arduino IDE
+
+
+These are instructions demonstrating the steps to install esp32-s2/c3 core on Ubuntu machines. For Windows or other OS'es, just follow the the similar principles and steps.
+
+* Windows 10, follows these steps in [Steps to install Arduino ESP32 support on Windows](https://github.com/espressif/arduino-esp32/blob/master/docs/arduino-ide/windows.md) 
+
+* Mac OS, follows these steps in [Installation instructions for Mac OS](https://github.com/espressif/arduino-esp32/blob/master/docs/arduino-ide/mac.md)
+
+* Fedora, follows these steps in [Installation instructions for Fedora](https://github.com/espressif/arduino-esp32/blob/master/docs/arduino-ide/fedora.md)
+
+* openSUSE, follows these steps in [Installation instructions for openSUSE](https://github.com/espressif/arduino-esp32/blob/master/docs/arduino-ide/opensuse.md)
+
+* You can also try to add [package_esp32_dev_index.json](https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_dev_index.json) into Arduino IDE `File - Preferences - Additional Boards Manager URLs` 
+
+
+```
+https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_dev_index.json
+```
+
+and have Board Manager auto-install the **development** esp32 core. For example : esp32 core `v2.0.0-alpha1`
+
+
+---
+
+If you're already successful in testing the core, after installing by using the above procedures, you don't need to follows the hereafter manual steps.
+
+---
+
+Assuming you already installed Arduino IDE ESP32 core and the installed directory is
+
+`/home/your_account/.arduino15/packages/esp32`
+
+
+### 1. Save the original esp32 core
+
+First, copy the whole original esp32 core to another safe place. Then delete all the sub-directories of
+
+`/home/your_account/.arduino15/packages/esp32/hardware/esp32/1.0.4`
+
+---
+
+
+### 2. Install esp32 core v1.0.6
+
+#### 2.1 Install esp32 core
+
+Just use Arduino IDE Board Manager to install [ESP32 Arduino Release 1.0.6 based on ESP-IDF v3.3.5](https://github.com/espressif/arduino-esp32/releases/tag/1.0.6). This official v1.06 core doesn't have esp32-s2/s3 support. You have to download and use the latest master branch.
+
+
+#### 2.2 Download latest zip with esp32-s2 support
+
+As of **April 16th 2021**, the **esp32-s2/c3** board support has been included in master branch of esp32 core. Download [**esp32 core, master branch**](https://github.com/espressif/arduino-esp32) in the zip format.
+
+#### 2.3 Unzip
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/DS323x_Generic/blob/main/pics/esp32_s2_Core_Unzipped.png">
+</p>
+
+#### 2.4 Update esp32 core directories
+
+Copy all subdirectories of esp32 core into `/home/your_account/.arduino15/packages/esp32/hardware/esp32/1.0.6`
+
+
+---
+
+### 3 Download tools for ESP32-S2
+
+
+#### 3.1 Download Toolchain for Xtensa (ESP32-S2) based on GCC
+
+Download [**esp32-s2 Toolchain**](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/api-guides/tools/idf-tools.html#xtensa-esp32s2-elf) corresponding to your environment (linux-amd64, win64, etc.).
+
+For example `xtensa-esp32s2-elf-gcc8_4_0-esp-2020r3-linux-amd64.tar.gz`, then un-archive.
+
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/DS323x_Generic/blob/main/pics/esp32_s2_Toolchain.png">
+</p>
+
+#### 3.2 Download esptool
+
+
+Download [esptool](https://github.com/espressif/esptool/releases) int the `zip` format:
+
+`esptool-3.0.zip`
+
+#### 3.3 Unzip
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/DS323x_Generic/blob/main/pics/esp32_s2_esptool.png">
+</p>
+
+---
+
+### 4. Update tools
+
+#### 4.1 Update Toolchain
+
+Copy whole `xtensa-esp32s2-elf` directory into `/home/your_account/.arduino15/packages/esp32/hardware/esp32/1.0.6/tools`
+
+
+#### 4.2 Update esptool
+
+Rename `esptool-3.0` directory to `esptool`
+
+
+Copy whole `esptool` directory into `/home/your_account/.arduino15/packages/esp32/hardware/esp32/1.0.6/tools`
+
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/DS323x_Generic/blob/main/pics/esp32_s2_tools.png">
+</p>
+
+
+### 5 Download tools for ESP32-C3
+
+Download [**esp32-c3 Toolchain**](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/api-guides/tools/idf-tools.html#riscv32-esp-elf) corresponding to your environment (linux-amd64, win64, etc.).
+
+For example`riscv32-esp-elf-gcc8_4_0-crosstool-ng-1.24.0-123-g64eb9ff-linux-amd64.tar.gz`, then un-archive.
+
+Then using the similar steps as in
+
+* [3. Download tools for ESP32-S2](#3-download-tools-for-esp32-s2) 
+  * [3.1 Download Toolchain for Xtensa (ESP32-S2) based on GCC](#31-download-toolchain-for-xtensa-esp32-s2-based-on-gcc)
+  * [3.2 Download esptool](#32-download-esptool)
+  * [3.3 Unzip](#33-unzip)
+* [4. Update tools](#4-update-tools)
+  * [4.1 Update Toolchain](#41-update-toolchain)
+  * [4.2 Update esptool](#42-update-esptool)
+
+then copy whole `riscv32-esp-elf` directory into `/home/your_account/.arduino15/packages/esp32/hardware/esp32/1.0.6/tools`
+
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/DS323x_Generic/blob/main/pics/TZ_ESP32_C3_Support.png">
+</p>
+
+
+---
+
+That's it. You're now ready to compile and test for **ESP32-S2 and ESP32-C3** now
 
 ---
 ---
@@ -722,7 +958,7 @@ DS323x rtc;
 // US Eastern Time Zone (New York, Detroit)
 TimeChangeRule myDST = {"EDT", Second, Sun, Mar, 2, -240};    //Daylight time = UTC - 4 hours
 TimeChangeRule mySTD = {"EST", First, Sun, Nov, 2, -300};     //Standard time = UTC - 5 hours
-Timezone myTZ(myDST, mySTD);
+Timezone *myTZ;
 
 TimeChangeRule *tcr;        //pointer to the time change rule, use to get TZ abbrev
 
@@ -1055,6 +1291,8 @@ void setup()
   Serial.print(F("You're connected to the network, IP = "));
   Serial.println(Ethernet.localIP());
 
+  myTZ = new Timezone(myDST, mySTD);
+
   Udp.begin(localPort);
 
   rtc.attach(Wire);
@@ -1072,14 +1310,13 @@ void loop()
   Serial.println("============================");
 
   time_t utc = now.get_time_t();
-  time_t local = myTZ.toLocal(utc, &tcr);
+  time_t local = myTZ->toLocal(utc, &tcr);
   
   printDateTime(utc, "UTC");
   printDateTime(local, tcr -> abbrev);
   
   delay(10000);
 }
-
 ```
 
 ---
@@ -1100,26 +1337,33 @@ void loop()
       || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
       || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
       || defined(__SAMD51G19A__) || defined(__SAMD51P19A__) || defined(__SAMD21G18A__) )
-#if defined(ETHERNET_USE_SAMD)
-#undef ETHERNET_USE_SAMD
-#endif
-#define ETHERNET_USE_SAMD      true
+  #if defined(ETHERNET_USE_SAMD)
+    #undef ETHERNET_USE_SAMD
+  #endif
+  #define ETHERNET_USE_SAMD      true
 #endif
 
 #if ( defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
         defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || defined(NRF52840_CLUE) || \
         defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || defined(NINA_B302_ublox) || defined(NINA_B112_ublox) )
-#if defined(ETHERNET_USE_NRF528XX)
-#undef ETHERNET_USE_NRF528XX
-#endif
-#define ETHERNET_USE_NRF528XX      true
+  #if defined(ETHERNET_USE_NRF528XX)
+    #undef ETHERNET_USE_NRF528XX
+  #endif
+  #define ETHERNET_USE_NRF528XX      true
 #endif
 
 #if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
-#if defined(ETHERNET_USE_SAM_DUE)
-#undef ETHERNET_USE_SAM_DUE
+  #if defined(ETHERNET_USE_SAM_DUE)
+    #undef ETHERNET_USE_SAM_DUE
+  #endif
+  #define ETHERNET_USE_SAM_DUE      true
 #endif
-#define ETHERNET_USE_SAM_DUE      true
+
+#if ( defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) || defined(ARDUINO_GENERIC_RP2040) )
+  #if defined(ETHERNET_USE_RP2040)
+    #undef ETHERNET_USE_RP2040
+  #endif
+  #define ETHERNET_USE_RP2040      true
 #endif
 
 #if defined(ETHERNET_USE_SAMD)
@@ -1127,173 +1371,168 @@ void loop()
 // Default pin 10 to SS/CS
 #define USE_THIS_SS_PIN       10
 
-#if ( defined(ARDUINO_SAMD_ZERO) && !defined(SEEED_XIAO_M0) )
-#define BOARD_TYPE      "SAMD Zero"
-#elif defined(ARDUINO_SAMD_MKR1000)
-#define BOARD_TYPE      "SAMD MKR1000"
-#elif defined(ARDUINO_SAMD_MKRWIFI1010)
-#define BOARD_TYPE      "SAMD MKRWIFI1010"
-#elif defined(ARDUINO_SAMD_NANO_33_IOT)
-#define BOARD_TYPE      "SAMD NANO_33_IOT"
-#elif defined(ARDUINO_SAMD_MKRFox1200)
-#define BOARD_TYPE      "SAMD MKRFox1200"
-#elif ( defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) )
-#define BOARD_TYPE      "SAMD MKRWAN13X0"
-#elif defined(ARDUINO_SAMD_MKRGSM1400)
-#define BOARD_TYPE      "SAMD MKRGSM1400"
-#elif defined(ARDUINO_SAMD_MKRNB1500)
-#define BOARD_TYPE      "SAMD MKRNB1500"
-#elif defined(ARDUINO_SAMD_MKRVIDOR4000)
-#define BOARD_TYPE      "SAMD MKRVIDOR4000"
-#elif defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS)
-#define BOARD_TYPE      "SAMD ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS"
-#elif defined(ADAFRUIT_FEATHER_M0_EXPRESS)
-#define BOARD_TYPE      "SAMD21 ADAFRUIT_FEATHER_M0_EXPRESS"
-#elif defined(ADAFRUIT_METRO_M0_EXPRESS)
-#define BOARD_TYPE      "SAMD21 ADAFRUIT_METRO_M0_EXPRESS"
-#elif defined(ADAFRUIT_CIRCUITPLAYGROUND_M0)
-#define BOARD_TYPE      "SAMD21 ADAFRUIT_CIRCUITPLAYGROUND_M0"
-#elif defined(ADAFRUIT_GEMMA_M0)
-#define BOARD_TYPE      "SAMD21 ADAFRUIT_GEMMA_M0"
-#elif defined(ADAFRUIT_TRINKET_M0)
-#define BOARD_TYPE      "SAMD21 ADAFRUIT_TRINKET_M0"
-#elif defined(ADAFRUIT_ITSYBITSY_M0)
-#define BOARD_TYPE      "SAMD21 ADAFRUIT_ITSYBITSY_M0"
-#elif defined(ARDUINO_SAMD_HALLOWING_M0)
-#define BOARD_TYPE      "SAMD21 ARDUINO_SAMD_HALLOWING_M0"
-#elif defined(ADAFRUIT_METRO_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_METRO_M4_EXPRESS"
-#elif defined(ADAFRUIT_GRAND_CENTRAL_M4)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_GRAND_CENTRAL_M4"
-#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_FEATHER_M4_EXPRESS"
-#elif defined(ADAFRUIT_ITSYBITSY_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_ITSYBITSY_M4_EXPRESS"
-#define USE_THIS_SS_PIN       10
-#elif defined(ADAFRUIT_TRELLIS_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_TRELLIS_M4_EXPRESS"
-#elif defined(ADAFRUIT_PYPORTAL)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYPORTAL"
-#elif defined(ADAFRUIT_PYPORTAL_M4_TITANO)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYPORTAL_M4_TITANO"
-#elif defined(ADAFRUIT_PYBADGE_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYBADGE_M4_EXPRESS"
-#elif defined(ADAFRUIT_METRO_M4_AIRLIFT_LITE)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_METRO_M4_AIRLIFT_LITE"
-#elif defined(ADAFRUIT_PYGAMER_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYGAMER_M4_EXPRESS"
-#elif defined(ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS"
-#elif defined(ADAFRUIT_PYBADGE_AIRLIFT_M4)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_PYBADGE_AIRLIFT_M4"
-#elif defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_MONSTER_M4SK_EXPRESS"
-#elif defined(ADAFRUIT_HALLOWING_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD51 ADAFRUIT_HALLOWING_M4_EXPRESS"
-#elif defined(SEEED_WIO_TERMINAL)
-#define BOARD_TYPE      "SAMD SEEED_WIO_TERMINAL"
-#elif defined(SEEED_FEMTO_M0)
-#define BOARD_TYPE      "SAMD SEEED_FEMTO_M0"
-#elif defined(SEEED_XIAO_M0)
-#define BOARD_TYPE      "SAMD SEEED_XIAO_M0"
-#ifdef USE_THIS_SS_PIN
-#undef USE_THIS_SS_PIN
-#endif
-#define USE_THIS_SS_PIN       A1
-#warning define SEEED_XIAO_M0 USE_THIS_SS_PIN == A1
-#elif defined(Wio_Lite_MG126)
-#define BOARD_TYPE      "SAMD SEEED Wio_Lite_MG126"
-#elif defined(WIO_GPS_BOARD)
-#define BOARD_TYPE      "SAMD SEEED WIO_GPS_BOARD"
-#elif defined(SEEEDUINO_ZERO)
-#define BOARD_TYPE      "SAMD SEEEDUINO_ZERO"
-#elif defined(SEEEDUINO_LORAWAN)
-#define BOARD_TYPE      "SAMD SEEEDUINO_LORAWAN"
-#elif defined(SEEED_GROVE_UI_WIRELESS)
-#define BOARD_TYPE      "SAMD SEEED_GROVE_UI_WIRELESS"
-#elif defined(__SAMD21E18A__)
-#define BOARD_TYPE      "SAMD21E18A"
-#elif defined(__SAMD21G18A__)
-#define BOARD_TYPE      "SAMD21G18A"
-#elif defined(__SAMD51G19A__)
-#define BOARD_TYPE      "SAMD51G19A"
-#elif defined(__SAMD51J19A__)
-#define BOARD_TYPE      "SAMD51J19A"
-#elif defined(__SAMD51J20A__)
-#define BOARD_TYPE      "SAMD51J20A"
-#elif defined(__SAM3X8E__)
-#define BOARD_TYPE      "SAM3X8E"
-#elif defined(__CPU_ARC__)
-#define BOARD_TYPE      "CPU_ARC"
-#elif defined(__SAMD51__)
-#define BOARD_TYPE      "SAMD51"
-#else
-#define BOARD_TYPE      "SAMD Unknown"
-#endif
+   #if ( defined(ARDUINO_SAMD_ZERO) && !defined(SEEED_XIAO_M0) )
+    #define BOARD_TYPE      "SAMD Zero"
+  #elif defined(ARDUINO_SAMD_MKR1000)
+    #define BOARD_TYPE      "SAMD MKR1000"
+  #elif defined(ARDUINO_SAMD_MKRWIFI1010)
+    #define BOARD_TYPE      "SAMD MKRWIFI1010"
+  #elif defined(ARDUINO_SAMD_NANO_33_IOT)
+    #define BOARD_TYPE      "SAMD NANO_33_IOT"
+  #elif defined(ARDUINO_SAMD_MKRFox1200)
+    #define BOARD_TYPE      "SAMD MKRFox1200"
+  #elif ( defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) )
+    #define BOARD_TYPE      "SAMD MKRWAN13X0"
+  #elif defined(ARDUINO_SAMD_MKRGSM1400)
+    #define BOARD_TYPE      "SAMD MKRGSM1400"
+  #elif defined(ARDUINO_SAMD_MKRNB1500)
+    #define BOARD_TYPE      "SAMD MKRNB1500"
+  #elif defined(ARDUINO_SAMD_MKRVIDOR4000)
+    #define BOARD_TYPE      "SAMD MKRVIDOR4000"
+  #elif defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS)
+    #define BOARD_TYPE      "SAMD ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS"
+  #elif defined(ADAFRUIT_FEATHER_M0_EXPRESS)
+    #define BOARD_TYPE      "SAMD21 ADAFRUIT_FEATHER_M0_EXPRESS"
+  #elif defined(ADAFRUIT_METRO_M0_EXPRESS)
+    #define BOARD_TYPE      "SAMD21 ADAFRUIT_METRO_M0_EXPRESS"
+  #elif defined(ADAFRUIT_CIRCUITPLAYGROUND_M0)
+    #define BOARD_TYPE      "SAMD21 ADAFRUIT_CIRCUITPLAYGROUND_M0"
+  #elif defined(ADAFRUIT_GEMMA_M0)
+    #define BOARD_TYPE      "SAMD21 ADAFRUIT_GEMMA_M0"
+  #elif defined(ADAFRUIT_TRINKET_M0)
+    #define BOARD_TYPE      "SAMD21 ADAFRUIT_TRINKET_M0"
+  #elif defined(ADAFRUIT_ITSYBITSY_M0)
+    #define BOARD_TYPE      "SAMD21 ADAFRUIT_ITSYBITSY_M0"
+  #elif defined(ARDUINO_SAMD_HALLOWING_M0)
+    #define BOARD_TYPE      "SAMD21 ARDUINO_SAMD_HALLOWING_M0"
+  #elif defined(ADAFRUIT_METRO_M4_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_METRO_M4_EXPRESS"
+  #elif defined(ADAFRUIT_GRAND_CENTRAL_M4)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_GRAND_CENTRAL_M4"
+  #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_FEATHER_M4_EXPRESS"
+  #elif defined(ADAFRUIT_ITSYBITSY_M4_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_ITSYBITSY_M4_EXPRESS"
+  #elif defined(ADAFRUIT_TRELLIS_M4_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_TRELLIS_M4_EXPRESS"
+  #elif defined(ADAFRUIT_PYPORTAL)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYPORTAL"
+  #elif defined(ADAFRUIT_PYPORTAL_M4_TITANO)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYPORTAL_M4_TITANO"
+  #elif defined(ADAFRUIT_PYBADGE_M4_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYBADGE_M4_EXPRESS"
+  #elif defined(ADAFRUIT_METRO_M4_AIRLIFT_LITE)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_METRO_M4_AIRLIFT_LITE"
+  #elif defined(ADAFRUIT_PYGAMER_M4_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYGAMER_M4_EXPRESS"
+  #elif defined(ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS"
+  #elif defined(ADAFRUIT_PYBADGE_AIRLIFT_M4)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_PYBADGE_AIRLIFT_M4"
+  #elif defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_MONSTER_M4SK_EXPRESS"
+  #elif defined(ADAFRUIT_HALLOWING_M4_EXPRESS)
+    #define BOARD_TYPE      "SAMD51 ADAFRUIT_HALLOWING_M4_EXPRESS"
+  #elif defined(SEEED_WIO_TERMINAL)
+    #define BOARD_TYPE      "SAMD SEEED_WIO_TERMINAL"
+  #elif defined(SEEED_FEMTO_M0)
+    #define BOARD_TYPE      "SAMD SEEED_FEMTO_M0"
+  #elif defined(SEEED_XIAO_M0)
+    #define BOARD_TYPE      "SAMD SEEED_XIAO_M0"
+    #define USE_THIS_SS_PIN       A1
+    #warning define SEEED_XIAO_M0 USE_THIS_SS_PIN == A1
+  #elif defined(Wio_Lite_MG126)
+    #define BOARD_TYPE      "SAMD SEEED Wio_Lite_MG126"
+  #elif defined(WIO_GPS_BOARD)
+    #define BOARD_TYPE      "SAMD SEEED WIO_GPS_BOARD"
+  #elif defined(SEEEDUINO_ZERO)
+    #define BOARD_TYPE      "SAMD SEEEDUINO_ZERO"
+  #elif defined(SEEEDUINO_LORAWAN)
+    #define BOARD_TYPE      "SAMD SEEEDUINO_LORAWAN"
+  #elif defined(SEEED_GROVE_UI_WIRELESS)
+    #define BOARD_TYPE      "SAMD SEEED_GROVE_UI_WIRELESS"
+  #elif defined(__SAMD21E18A__)
+    #define BOARD_TYPE      "SAMD21E18A"
+  #elif defined(__SAMD21G18A__)
+    #define BOARD_TYPE      "SAMD21G18A"
+  #elif defined(__SAMD51G19A__)
+    #define BOARD_TYPE      "SAMD51G19A"
+  #elif defined(__SAMD51J19A__)
+    #define BOARD_TYPE      "SAMD51J19A"
+  #elif defined(__SAMD51J20A__)
+    #define BOARD_TYPE      "SAMD51J20A"
+  #elif defined(__SAM3X8E__)
+    #define BOARD_TYPE      "SAM3X8E"
+  #elif defined(__CPU_ARC__)
+    #define BOARD_TYPE      "CPU_ARC"
+  #elif defined(__SAMD51__)
+    #define BOARD_TYPE      "SAMD51"
+  #else
+    #define BOARD_TYPE      "SAMD Unknown"
+  #endif
 
 #elif (ETHERNET_USE_SAM_DUE)
-// Default pin 10 to SS/CS
-#define USE_THIS_SS_PIN       10
-#define BOARD_TYPE      "SAM DUE"
+  // Default pin 10 to SS/CS
+  #define USE_THIS_SS_PIN       10
+  #define BOARD_TYPE      "SAM DUE"
 
 #elif (ETHERNET_USE_NRF528XX)
-// Default pin 10 to SS/CS
-#define USE_THIS_SS_PIN       10
+  // Default pin 10 to SS/CS
+  #define USE_THIS_SS_PIN       10
 
-#if defined(NRF52840_FEATHER)
-#define BOARD_TYPE      "NRF52840_FEATHER"
-#elif defined(NRF52832_FEATHER)
-#define BOARD_TYPE      "NRF52832_FEATHER"
-#elif defined(NRF52840_FEATHER_SENSE)
-#define BOARD_TYPE      "NRF52840_FEATHER_SENSE"
-#elif defined(NRF52840_ITSYBITSY)
-#define BOARD_TYPE      "NRF52840_ITSYBITSY"
-#define USE_THIS_SS_PIN   10    // For other boards
-#elif defined(NRF52840_CIRCUITPLAY)
-#define BOARD_TYPE      "NRF52840_CIRCUITPLAY"
-#elif defined(NRF52840_CLUE)
-#define BOARD_TYPE      "NRF52840_CLUE"
-#elif defined(NRF52840_METRO)
-#define BOARD_TYPE      "NRF52840_METRO"
-#elif defined(NRF52840_PCA10056)
-#define BOARD_TYPE      "NRF52840_PCA10056"
-#elif defined(NINA_B302_ublox)
-#define BOARD_TYPE      "NINA_B302_ublox"
-#elif defined(NINA_B112_ublox)
-#define BOARD_TYPE      "NINA_B112_ublox"
-#elif defined(PARTICLE_XENON)
-#define BOARD_TYPE      "PARTICLE_XENON"
-#elif defined(ARDUINO_NRF52_ADAFRUIT)
-#define BOARD_TYPE      "ARDUINO_NRF52_ADAFRUIT"
-#else
-#define BOARD_TYPE      "nRF52 Unknown"
-#endif
+  #if defined(NRF52840_FEATHER)
+    #define BOARD_TYPE      "NRF52840_FEATHER"
+  #elif defined(NRF52832_FEATHER)
+    #define BOARD_TYPE      "NRF52832_FEATHER"
+  #elif defined(NRF52840_FEATHER_SENSE)
+    #define BOARD_TYPE      "NRF52840_FEATHER_SENSE"
+  #elif defined(NRF52840_ITSYBITSY)
+    #define BOARD_TYPE      "NRF52840_ITSYBITSY"
+  #elif defined(NRF52840_CIRCUITPLAY)
+    #define BOARD_TYPE      "NRF52840_CIRCUITPLAY"
+  #elif defined(NRF52840_CLUE)
+    #define BOARD_TYPE      "NRF52840_CLUE"
+  #elif defined(NRF52840_METRO)
+    #define BOARD_TYPE      "NRF52840_METRO"
+  #elif defined(NRF52840_PCA10056)
+    #define BOARD_TYPE      "NRF52840_PCA10056"
+  #elif defined(NINA_B302_ublox)
+    #define BOARD_TYPE      "NINA_B302_ublox"
+  #elif defined(NINA_B112_ublox)
+    #define BOARD_TYPE      "NINA_B112_ublox"
+  #elif defined(PARTICLE_XENON)
+    #define BOARD_TYPE      "PARTICLE_XENON"
+  #elif defined(ARDUINO_NRF52_ADAFRUIT)
+    #define BOARD_TYPE      "ARDUINO_NRF52_ADAFRUIT"
+  #else
+    #define BOARD_TYPE      "nRF52 Unknown"
+  #endif
 
 #elif ( defined(CORE_TEENSY) )
-// Default pin 10 to SS/CS
-#define USE_THIS_SS_PIN       10
+  // Default pin 10 to SS/CS
+  #define USE_THIS_SS_PIN       10
 
-#if defined(__IMXRT1062__)
-// For Teensy 4.1/4.0
-#define BOARD_TYPE      "TEENSY 4.1/4.0"
-#elif defined(__MK66FX1M0__)
-#define BOARD_TYPE "Teensy 3.6"
-#elif defined(__MK64FX512__)
-#define BOARD_TYPE "Teensy 3.5"
-#elif defined(__MKL26Z64__)
-#define BOARD_TYPE "Teensy LC"
-#elif defined(__MK20DX256__)
-#define BOARD_TYPE "Teensy 3.2" // and Teensy 3.1 (obsolete)
-#elif defined(__MK20DX128__)
-#define BOARD_TYPE "Teensy 3.0"
-#elif defined(__AVR_AT90USB1286__)
-#error Teensy 2.0++ not supported yet
-#elif defined(__AVR_ATmega32U4__)
-#error Teensy 2.0 not supported yet
-#else
-// For Other Boards
-#define BOARD_TYPE      "Unknown Teensy Board"
-#endif
+  #if defined(__IMXRT1062__)
+    // For Teensy 4.1/4.0
+    #define BOARD_TYPE      "TEENSY 4.1/4.0"
+  #elif defined(__MK66FX1M0__)
+    #define BOARD_TYPE "Teensy 3.6"
+  #elif defined(__MK64FX512__)
+    #define BOARD_TYPE "Teensy 3.5"
+  #elif defined(__MKL26Z64__)
+    #define BOARD_TYPE "Teensy LC"
+  #elif defined(__MK20DX256__)
+    #define BOARD_TYPE "Teensy 3.2" // and Teensy 3.1 (obsolete)
+  #elif defined(__MK20DX128__)
+    #define BOARD_TYPE "Teensy 3.0"
+  #elif defined(__AVR_AT90USB1286__)
+    #error Teensy 2.0++ not supported yet
+  #elif defined(__AVR_ATmega32U4__)
+    #error Teensy 2.0 not supported yet
+  #else
+    // For Other Boards
+    #define BOARD_TYPE      "Unknown Teensy Board"
+  #endif
 
 #elif ( defined(ESP8266) )
   // For ESP8266
@@ -1314,8 +1553,47 @@ void loop()
   #define W5500_RST_PORT   21
 
   #define USE_LITTLEFS      true
-  #define USE_SPIFFS        false  
+  #define USE_SPIFFS        false 
 
+#elif ETHERNET_USE_RP2040
+  
+  // Default pin 5 (in Mbed) or 17 to SS/CS
+  #if defined(ARDUINO_ARCH_MBED)
+    // For RPI Pico using Arduino Mbed RP2040 core
+    // SCK: GPIO2,  MOSI: GPIO3, MISO: GPIO4, SS/CS: GPIO5
+    // SDA: 6,  SCL: 7
+    // For Nano_RP2040_Connect using Arduino Mbed RP2040 core
+    // SDA: 14 = A4,  SCL: 19 = A5
+    
+    #define USE_THIS_SS_PIN       5
+
+    #if defined(BOARD_NAME)
+      #undef BOARD_NAME
+    #endif
+
+    #if defined(ARDUINO_RASPBERRY_PI_PICO) 
+      #define BOARD_TYPE      "MBED RASPBERRY_PI_PICO"
+    #elif defined(ARDUINO_ADAFRUIT_FEATHER_RP2040)
+      #define BOARD_TYPE      "MBED DAFRUIT_FEATHER_RP2040"
+    #elif defined(ARDUINO_GENERIC_RP2040)
+      #define BOARD_TYPE      "MBED GENERIC_RP2040"
+    #else
+      #define BOARD_TYPE      "MBED Unknown RP2040"
+    #endif
+    
+  #else
+    // For RPI Pico using E. Philhower RP2040 core
+    // SCK: GPIO18,  MOSI: GPIO19, MISO: GPIO16, SS/CS: GPIO17
+    // SDA: 4,  SCL: 5
+    #define USE_THIS_SS_PIN       17
+
+  #endif
+    
+  #define SS_PIN_DEFAULT        USE_THIS_SS_PIN
+
+  // For RPI Pico
+  #warning Use RPI-Pico RP2040 architecture
+  
 #else
   // For Mega
   // Default pin 10 to SS/CS
@@ -1324,12 +1602,10 @@ void loop()
   #define USING_AVR_BOARD       true
 #endif
 
-#ifndef BOARD_NAME
-  #if defined(ARDUINO_BOARD)
-    #define BOARD_NAME      ARDUINO_BOARD
-  #else   
-    #define BOARD_NAME      BOARD_TYPE
-  #endif  
+#if defined(ARDUINO_BOARD)
+  #define BOARD_NAME    ARDUINO_BOARD
+#elif !defined(BOARD_NAME)
+  #define BOARD_NAME    BOARD_TYPE
 #endif
 
 #include <SPI.h>
@@ -1349,76 +1625,77 @@ void loop()
 // In order to USE_ETHERNET_ESP8266
 #if ( !defined(USE_UIP_ETHERNET) || !USE_UIP_ETHERNET )
 
-// To override the default CS/SS pin. Don't use unless you know exactly which pin to use
-// You can define here or customize for each board at same place with BOARD_TYPE
-// Check @ defined(SEEED_XIAO_M0)
-//#define USE_THIS_SS_PIN   22  //21  //5 //4 //2 //15
-
-// Only one of the following to be true
-#define USE_ETHERNET          false
-#define USE_ETHERNET2         false
-#define USE_ETHERNET3         false
-#define USE_ETHERNET_LARGE    true
-#define USE_ETHERNET_ESP8266  false
-#define USE_ETHERNET_ENC      false
-#define USE_CUSTOM_ETHERNET   false
-
-#if !USE_ETHERNET_WRAPPER
-
-#if ( USE_ETHERNET2 || USE_ETHERNET3 || USE_ETHERNET_LARGE || USE_ETHERNET_ESP8266 || USE_ETHERNET_ENC )
-#ifdef USE_CUSTOM_ETHERNET
-#undef USE_CUSTOM_ETHERNET
-#endif
-#define USE_CUSTOM_ETHERNET   false //true
-#endif
-
-#if USE_ETHERNET3
-#include "Ethernet3.h"
-#warning Using Ethernet3 lib
-#define SHIELD_TYPE           "W5x00 using Ethernet3 Library"
-#elif USE_ETHERNET2
-#include "Ethernet2.h"
-#warning Using Ethernet2 lib
-#define SHIELD_TYPE           "W5x00 using Ethernet2 Library"
-#elif USE_ETHERNET_LARGE
-#include "EthernetLarge.h"
-#warning Using EthernetLarge lib
-#define SHIELD_TYPE           "W5x00 using EthernetLarge Library"
-#elif USE_ETHERNET_ESP8266
-#include "Ethernet_ESP8266.h"
-#warning Using Ethernet_ESP8266 lib
-#define SHIELD_TYPE           "W5x00 using Ethernet_ESP8266 Library"
-#elif USE_ETHERNET_ENC
-#include "EthernetENC.h"
-#warning Using EthernetENC lib
-#define SHIELD_TYPE           "ENC28J60 using EthernetENC Library"
-#elif USE_CUSTOM_ETHERNET
-//#include "Ethernet_XYZ.h"
-#include "EthernetENC.h"
-#warning Using Custom Ethernet library. You must include a library and initialize.
-#define SHIELD_TYPE           "Custom Ethernet using Ethernet_XYZ Library"
-#else
-#define USE_ETHERNET          true
-#include "Ethernet.h"
-#warning Using Ethernet lib
-#define SHIELD_TYPE           "W5x00 using Ethernet Library"
-#endif
-
-// Ethernet_Shield_W5200, EtherCard, EtherSia not supported
-// Select just 1 of the following #include if uncomment #define USE_CUSTOM_ETHERNET
-// Otherwise, standard Ethernet library will be used for W5x00
-
-#endif    //  USE_ETHERNET_WRAPPER
+  // To override the default CS/SS pin. Don't use unless you know exactly which pin to use
+  // You can define here or customize for each board at same place with BOARD_TYPE
+  // Check @ defined(SEEED_XIAO_M0)
+  //#define USE_THIS_SS_PIN   22  //21  //5 //4 //2 //15
+  
+  // Only one of the following to be true
+  #define USE_ETHERNET          false
+  #define USE_ETHERNET2         false
+  #define USE_ETHERNET3         false
+  #define USE_ETHERNET_LARGE    true
+  #define USE_ETHERNET_ESP8266  false
+  #define USE_ETHERNET_ENC      false
+  #define USE_CUSTOM_ETHERNET   false
+  
+  #if !USE_ETHERNET_WRAPPER
+  
+    #if ( USE_ETHERNET2 || USE_ETHERNET3 || USE_ETHERNET_LARGE || USE_ETHERNET_ESP8266 || USE_ETHERNET_ENC )
+      #ifdef USE_CUSTOM_ETHERNET
+        #undef USE_CUSTOM_ETHERNET
+      #endif
+      #define USE_CUSTOM_ETHERNET   false //true
+    #endif
+    
+    #if USE_ETHERNET3
+      #include "Ethernet3.h"
+      #warning Using Ethernet3 lib
+      #define SHIELD_TYPE           "W5x00 using Ethernet3 Library"
+    #elif USE_ETHERNET2
+      #include "Ethernet2.h"
+      #warning Using Ethernet2 lib
+      #define SHIELD_TYPE           "W5x00 using Ethernet2 Library"
+    #elif USE_ETHERNET_LARGE
+      #include "EthernetLarge.h"
+      #warning Using EthernetLarge lib
+      #define SHIELD_TYPE           "W5x00 using EthernetLarge Library"
+    #elif USE_ETHERNET_ESP8266
+      #include "Ethernet_ESP8266.h"
+      #warning Using Ethernet_ESP8266 lib
+      #define SHIELD_TYPE           "W5x00 using Ethernet_ESP8266 Library"
+    #elif USE_ETHERNET_ENC
+      #include "EthernetENC.h"
+      #warning Using EthernetENC lib
+      #define SHIELD_TYPE           "ENC28J60 using EthernetENC Library"
+    #elif USE_CUSTOM_ETHERNET
+      //#include "Ethernet_XYZ.h"
+      #include "EthernetENC.h"
+      #warning Using Custom Ethernet library. You must include a library and initialize.
+      #define SHIELD_TYPE           "Custom Ethernet using Ethernet_XYZ Library"
+    #else
+      #define USE_ETHERNET          true
+      #include "Ethernet.h"
+      #warning Using Ethernet lib
+      #define SHIELD_TYPE           "W5x00 using Ethernet Library"
+    #endif
+    
+    // Ethernet_Shield_W5200, EtherCard, EtherSia not supported
+    // Select just 1 of the following #include if uncomment #define USE_CUSTOM_ETHERNET
+    // Otherwise, standard Ethernet library will be used for W5x00
+  
+  #endif    //  USE_ETHERNET_WRAPPER
+  
 #elif USE_UIP_ETHERNET
-#include "UIPEthernet.h"
-#warning Using UIPEthernet library
-#define SHIELD_TYPE           "ENC28J60 using UIPEthernet Library"
+  #include "UIPEthernet.h"
+  #warning Using UIPEthernet library
+  #define SHIELD_TYPE           "ENC28J60 using UIPEthernet Library"
 #endif      // #if !USE_UIP_ETHERNET
 
 #include <EthernetWebServer.h>
 
 #ifndef SHIELD_TYPE
-#define SHIELD_TYPE     "Unknown Ethernet shield/library"
+  #define SHIELD_TYPE     "Unknown Ethernet shield/library"
 #endif
 
 // Enter a MAC address and IP address for your controller below.
@@ -1466,8 +1743,8 @@ The following is debug terminal output when running example [**Alarm_Ethernet**]
 
 ```
 Start Alarm_Ethernet on NRF52840_FEATHER with ENC28J60 using EthernetENC Library
-Timezone_Generic v1.3.0
-DS323x_Generic v1.1.0
+Timezone_Generic v1.4.0
+DS323x_Generic v1.2.0
 [ETHERNET_WEBSERVER] =========================
 [ETHERNET_WEBSERVER] Default SPI pinout:
 [ETHERNET_WEBSERVER] MOSI: 25
@@ -1544,8 +1821,8 @@ The following is debug terminal output when running example [**Alarm_STM32_Ether
 
 ```
 Start Alarm_STM32_Ethernet on NUCLEO_F767ZI, using LAN8742A Ethernet & STM32Ethernet Library
-Timezone_Generic v1.3.0
-DS323x_Generic v1.1.0
+Timezone_Generic v1.4.0
+DS323x_Generic v1.2.0
 [ETHERNET_WEBSERVER] Board : NUCLEO_F767ZI , setCsPin: 10
 [ETHERNET_WEBSERVER] Default SPI pinout:
 [ETHERNET_WEBSERVER] MOSI: 11
@@ -1600,8 +1877,8 @@ The following is debug terminal output when running example [**RTC_WiFiNINA**](e
 
 ```
 Start RTC_WiFiNINA on SAMD_NANO_33_IOT with WiFiNINA using WiFiNINA_Generic Library
-Timezone_Generic v1.3.0
-DS323x_Generic v1.1.0
+Timezone_Generic v1.4.0
+DS323x_Generic v1.2.0
 Connecting to WPA SSID: HueNet1
 You're connected to the network, IP = 192.168.2.128
 Packet received
@@ -1625,8 +1902,8 @@ The following is debug terminal output when running example [**RTC_Ethernet**](e
 
 ```
 Start RTC_Ethernet on NRF52840_FEATHER with W5x00 using EthernetLarge Library
-Timezone_Generic v1.3.0
-DS323x_Generic v1.1.0
+Timezone_Generic v1.4.0
+DS323x_Generic v1.2.0
 [ETHERNET_WEBSERVER] =========== USE_ETHERNET_LARGE ===========
 [ETHERNET_WEBSERVER] Default SPI pinout:
 [ETHERNET_WEBSERVER] MOSI: 25
@@ -1668,8 +1945,8 @@ The following is debug terminal output when running example [**RTC_STM32_Etherne
 
 ```
 Start RTC_STM32_Ethernet on NUCLEO_F767ZI, using LAN8742A Ethernet & STM32Ethernet Library
-Timezone_Generic v1.3.0
-DS323x_Generic v1.1.0
+Timezone_Generic v1.4.0
+DS323x_Generic v1.2.0
 [ETHERNET_WEBSERVER] Board : NUCLEO_F767ZI , setCsPin: 10
 [ETHERNET_WEBSERVER] Default SPI pinout:
 [ETHERNET_WEBSERVER] MOSI: 11
@@ -1699,8 +1976,8 @@ The following is debug terminal output when running example [**RTC_STM32_Etherne
 
 ```
 Start RTC_STM32_Ethernet on NUCLEO_F767ZI, using W5x00 & Ethernet2 Library
-Timezone_Generic v1.3.0
-DS323x_Generic v1.1.0
+Timezone_Generic v1.4.0
+DS323x_Generic v1.2.0
 [ETHERNET_WEBSERVER] Board : NUCLEO_F767ZI , setCsPin: 10
 [ETHERNET_WEBSERVER] Default SPI pinout:
 [ETHERNET_WEBSERVER] MOSI: 11
@@ -1730,8 +2007,8 @@ The following is debug terminal output when running example [**RTC_Ethernet**](e
 
 ```
 Start RTC_Ethernet on SAM DUE with W5x00 using EthernetLarge Library
-Timezone_Generic v1.3.0
-DS323x_Generic v1.1.0
+Timezone_Generic v1.4.0
+DS323x_Generic v1.2.0
 [ETHERNET_WEBSERVER] =========== USE_ETHERNET_LARGE ===========
 [ETHERNET_WEBSERVER] Default SPI pinout:
 [ETHERNET_WEBSERVER] MOSI: 75
@@ -1760,6 +2037,11 @@ You're connected to the network, IP = 192.168.2.108
 ---
 
 ## Releases
+
+### Releases v1.2.0
+
+1. Add support to RP2040-based boards and ESP32-S2/ESP32-C3
+2. Add support to ESP32-S2/ESP32-C3
 
 ### Releases v1.1.0
 

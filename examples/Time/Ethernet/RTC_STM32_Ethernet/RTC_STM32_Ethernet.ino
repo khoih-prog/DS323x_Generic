@@ -8,13 +8,14 @@
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
-  Version: 1.1.0
+  Version: 1.2.0
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0  K Hoang      19/10/2020 Initial porting to many Generic boards using WiFi/Ethernet modules/shields.
   1.1.0  K Hoang      09/01/2021 Add examples for ESP32/ESP8266 using LittleFS/SPIFFS, and support to  AVR, UNO WiFi Rev2, etc.
                                  Fix compiler warnings.
+  1.2.0  K Hoang      12/06/2021 Add support to RP2040-based boards and ESP32-S2/ESP32-C3
  *****************************************************************************************************************************/
 
 #include "defines.h"
@@ -30,7 +31,7 @@ DS323x rtc;
 // US Eastern Time Zone (New York, Detroit)
 TimeChangeRule myDST = {"EDT", Second, Sun, Mar, 2, -240};    //Daylight time = UTC - 4 hours
 TimeChangeRule mySTD = {"EST", First, Sun, Nov, 2, -300};     //Standard time = UTC - 5 hours
-Timezone myTZ(myDST, mySTD);
+Timezone *myTZ;
 
 // If TimeChangeRules are already stored in EEPROM, comment out the three
 // lines above and uncomment the line below.
@@ -241,6 +242,8 @@ void setup()
   Serial.print(F("You're connected to the network, IP = "));
   Serial.println(Ethernet.localIP());
 
+  myTZ = new Timezone(myDST, mySTD);
+
   Udp.begin(localPort);
 
   rtc.attach(Wire);
@@ -258,7 +261,7 @@ void loop()
   Serial.println(F("============================"));
 
   time_t utc = now.get_time_t();
-  time_t local = myTZ.toLocal(utc, &tcr);
+  time_t local = myTZ->toLocal(utc, &tcr);
   
   printDateTime(utc, "UTC");
   printDateTime(local, tcr -> abbrev);

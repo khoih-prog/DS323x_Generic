@@ -8,13 +8,6 @@
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
-  Version: 1.1.0
-  
-  Version Modified By   Date      Comments
-  ------- -----------  ---------- -----------
-  1.0.0  K Hoang      19/10/2020 Initial porting to many Generic boards using WiFi/Ethernet modules/shields.
-  1.1.0  K Hoang      09/01/2021 Add examples for ESP32/ESP8266 using LittleFS/SPIFFS, and support to  AVR, UNO WiFi Rev2, etc.
-                                 Fix compiler warnings.
  *****************************************************************************************************************************/
 
 #ifndef defines_h

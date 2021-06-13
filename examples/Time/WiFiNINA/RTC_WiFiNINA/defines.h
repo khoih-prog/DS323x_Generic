@@ -9,13 +9,6 @@
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
-  Version: 1.1.0
-  
-  Version Modified By   Date      Comments
-  ------- -----------  ---------- -----------
-  1.0.0  K Hoang      19/10/2020 Initial porting to many Generic boards using WiFi/Ethernet modules/shields.
-  1.1.0  K Hoang      09/01/2021 Add examples for ESP32/ESP8266 using LittleFS/SPIFFS, and support to  AVR, UNO WiFi Rev2, etc.
-                                 Fix compiler warnings.
  *****************************************************************************************************************************/
 
 #ifndef defines_h
@@ -23,7 +16,7 @@
 
 #if (ESP32 || ESP8266)
   #error This code is not designed to run on ESP32/ESP8266 platform! Please check your Tools->Board setting.
-#endif  
+#endif 
 
 #define DEBUG_WIFI_WEBSERVER_PORT   Serial
 
@@ -98,6 +91,13 @@
     #undef WIFI_USE_STM32
   #endif
   #define WIFI_USE_STM32      true
+#endif
+
+#if ( defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) || defined(ARDUINO_GENERIC_RP2040) )
+  #if defined(WIFI_USE_RP2040)
+    #undef WIFI_USE_RP2040
+  #endif
+  #define WIFI_USE_RP2040      true
 #endif
 
 #ifdef CORE_TEENSY
@@ -302,6 +302,42 @@
     #warning STM32 unknown board selected
     #define BOARD_TYPE  "STM32 Unknown"
   #endif
+
+#elif WIFI_USE_RP2040
+  
+  #if defined(ARDUINO_ARCH_MBED)
+    // For RPI Pico using Arduino Mbed RP2040 core
+    // SDA: 6,  SCL: 7
+    // For Nano_RP2040_Connect using Arduino Mbed RP2040 core
+    // SDA: 14 = A4,  SCL: 19 = A5
+    
+    #if defined(BOARD_NAME)
+      #undef BOARD_NAME
+    #endif
+
+    #if defined(ARDUINO_NANO_RP2040_CONNECT)
+      #define BOARD_NAME      "MBED NANO_RP2040_CONNECT"
+    #elif defined(ARDUINO_RASPBERRY_PI_PICO) 
+      #define BOARD_NAME      "MBED RASPBERRY_PI_PICO"
+    #elif defined(ARDUINO_ADAFRUIT_FEATHER_RP2040)
+      #define BOARD_NAME      "MBED DAFRUIT_FEATHER_RP2040"
+    #elif defined(ARDUINO_GENERIC_RP2040)
+      #define BOARD_NAME      "MBED GENERIC_RP2040"
+    #else
+      #define BOARD_NAME      "MBED Unknown RP2040"
+    #endif
+    
+  #else
+    // For RPI Pico using E. Philhower RP2040 core
+    // SDA: 4,  SCL: 5
+
+  #endif
+    
+  #define SS_PIN_DEFAULT        USE_THIS_SS_PIN
+
+  // For RPI Pico
+  #warning Use RPI-Pico RP2040 architecture
+  
 #else
   // For Mega
   #define BOARD_TYPE            "AVR Mega"
@@ -309,11 +345,7 @@
 #endif
 
 #ifndef BOARD_NAME
-  #if defined(ARDUINO_BOARD)
-    #define BOARD_NAME      ARDUINO_BOARD
-  #else   
-    #define BOARD_NAME      BOARD_TYPE
-  #endif  
+  #define BOARD_NAME    BOARD_TYPE
 #endif
 
 #include <WiFiWebServer.h>

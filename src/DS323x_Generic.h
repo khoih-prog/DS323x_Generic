@@ -1,7 +1,7 @@
 /****************************************************************************************************************************
   DS323x_Generic.h
   
-  For all Generic boards such as ESP8266, ESP32, SAMD21/SAMD51, nRF52, STM32F/L/H/G/WB/MP1
+  For all Generic boards such as ESP8266, ESP32, SAMD21/SAMD51, nRF52, STM32F/L/H/G/WB/MP1, RP2040-based boards
   with WiFiNINA, ESP8266/ESP32 WiFi, ESP8266-AT, W5x00, ENC28J60, LAN8742A Ethernet modules/shields
   
   DS323x_Generic Arduino library for DS3231/DS3232 Extremely Accurate I2C-Integrated RTC/TCXO/Crystal.
@@ -9,13 +9,14 @@
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
-  Version: 1.1.0
+  Version: 1.2.0
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0  K Hoang      19/10/2020 Initial porting to many Generic boards using WiFi/Ethernet modules/shields.
   1.1.0  K Hoang      09/01/2021 Add examples for ESP32/ESP8266 using LittleFS/SPIFFS, and support to  AVR, UNO WiFi Rev2, etc.
                                  Fix compiler warnings.
+  1.2.0  K Hoang      12/06/2021 Add support to RP2040-based boards and ESP32-S2/ESP32-C3
  *****************************************************************************************************************************/
  
 #pragma once
@@ -23,7 +24,7 @@
 #ifndef DS323X_GENERIC_H
 #define DS323X_GENERIC_H
 
-#define DS323X_GENERIC_VERSION       "DS323x_Generic v1.1.0"
+#define DS323X_GENERIC_VERSION       "DS323x_Generic v1.2.0"
 
 #include <Wire.h>
 #include "DateTime_Generic.h"
