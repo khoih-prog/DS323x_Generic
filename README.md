@@ -85,16 +85,19 @@
     * [7. **RTC_WiFiNINA**](examples/Time/WiFiNINA/RTC_WiFiNINA)
     * [8. **RTC_ESP**](examples/Time/ESP/RTC_ESP)
 * [Example RTC_Ethernet](#example-rtc_ethernet)
-  * [1. File RTC_Ethernet.ino](#1-file-rtc_ethernetino)
-  * [2. File defines.h](#2-file-definesh) 
+  * [ 1. File RTC_Ethernet.ino](#1-file-rtc_ethernetino)
+  * [ 2. File defines.h](#2-file-definesh) 
 * [Debug Terminal Output Samples](#debug-terminal-output-samples)
-  * [1. Alarm_Ethernet on NRF52840_FEATHER with ENC28J60](#1-alarm_ethernet-on-nrf52840_feather-with-enc28j60)
-  * [2. Alarm_STM32_Ethernet on STM32F7 Nucleo-144 NUCLEO_F767ZI with LAN8742A](#2-alarm_stm32_ethernet-on-stm32f7-nucleo-144-nucleo_f767zi-with-lan8742a)
-  * [3. RTC_WiFiNINA on SAMD_NANO_33_IOT with WiFiNINA ](#3-rtc_wifinina-on-samd_nano_33_iot-with-wifinina)
-  * [4. RTC_Ethernet on NRF52840_FEATHER with W5500](#4-rtc_ethernet-on-nrf52840_feather-with-w5500)
-  * [5. RTC_STM32_Ethernet on STM32F7 Nucleo-144 NUCLEO_F767ZI with LAN8742A](#5-rtc_stm32_ethernet-on-stm32f7-nucleo-144-nucleo_f767zi-with-lan8742a)
-  * [6. RTC_STM32_Ethernet on STM32F7 Nucleo-144 NUCLEO_F767ZI with W5500](#6-rtc_stm32_ethernet-on-stm32f7-nucleo-144-nucleo_f767zi-with-w5500)
-  * [7. RTC_Ethernet on SAM-DUE with W5500 ](#7-rtc_ethernet-on-sam-due-with-w5500 )
+  * [ 1. Alarm_Ethernet on NRF52840_FEATHER with ENC28J60](#1-alarm_ethernet-on-nrf52840_feather-with-enc28j60)
+  * [ 2. Alarm_STM32_Ethernet on STM32F7 Nucleo-144 NUCLEO_F767ZI with LAN8742A](#2-alarm_stm32_ethernet-on-stm32f7-nucleo-144-nucleo_f767zi-with-lan8742a)
+  * [ 3. RTC_WiFiNINA on SAMD_NANO_33_IOT with WiFiNINA ](#3-rtc_wifinina-on-samd_nano_33_iot-with-wifinina)
+  * [ 4. RTC_Ethernet on NRF52840_FEATHER with W5500](#4-rtc_ethernet-on-nrf52840_feather-with-w5500)
+  * [ 5. RTC_STM32_Ethernet on STM32F7 Nucleo-144 NUCLEO_F767ZI with LAN8742A](#5-rtc_stm32_ethernet-on-stm32f7-nucleo-144-nucleo_f767zi-with-lan8742a)
+  * [ 6. RTC_STM32_Ethernet on STM32F7 Nucleo-144 NUCLEO_F767ZI with W5500](#6-rtc_stm32_ethernet-on-stm32f7-nucleo-144-nucleo_f767zi-with-w5500)
+  * [ 7. RTC_Ethernet on SAM-DUE with W5500](#7-rtc_ethernet-on-sam-due-with-w5500)
+  * [ 8. Alarm_WiFiNINA on MBED NANO_RP2040_CONNECT with WiFiNINA](#8-alarm_wifinina-on-mbed-nano_rp2040_connect-with-wifinina)
+  * [ 9. Alarm_Ethernet on MBED RASPBERRY_PI_PICO with W5500](#9-alarm_ethernet-on-mbed-raspberry_pi_pico-with-w5500)
+  * [10. Alarm_Ethernet on RASPBERRY_PI_PICO with W5500](#10-alarm_ethernet-on-raspberry_pi_pico-with-w5500)
 * [Releases](#releases)
 * [Issues](#issues)
 * [TO DO](#to-do)
@@ -195,7 +198,7 @@ This [**DS323x_Generic library**](https://github.com/khoih-prog/DS323x_Generic) 
 13. [`Arduino Core for STM32 v2.0.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards. [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
 
 14. [`Arduino mbed_rp2040 core 2.1.0+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
-15. [`Earle Philhower's arduino-pico core v1.8.2+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
+15. [`Earle Philhower's arduino-pico core v1.8.3+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
 
 
 16. [`Time v1.6+`](https://github.com/PaulStoffregen/Time). [![GitHub release](https://img.shields.io/github/release/PaulStoffregen/Time.svg)](https://github.com/PaulStoffregen/Time/releases/latest)
@@ -2033,6 +2036,199 @@ You're connected to the network, IP = 192.168.2.108
 18:30:45 Sun 18 Oct 2020 UTC
 14:30:45 Sun 18 Oct 2020 EDT
 ```
+
+---
+
+### 8. Alarm_WiFiNINA on MBED NANO_RP2040_CONNECT with WiFiNINA
+
+The following is debug terminal output when running example [**Alarm_WiFiNINA**](examples/Alarm/WiFiNINA/Alarm_WiFiNINA) on MBED NANO_RP2040_CONNECT with WiFiNINA using WiFiNINA_Generic Library
+
+```
+Start Alarm_WiFiNINA on MBED NANO_RP2040_CONNECT with WiFiNINA using WiFiNINA_Generic Library
+Timezone_Generic v1.4.0
+DS323x_Generic v1.2.0
+Connecting to WPA SSID: HueNet1
+You're connected to the network, IP = 192.168.2.153
+Packet received
+Seconds since Jan 1 1900 = 3832547372
+Unix time = 1623558572
+The UTC time is 4:29:32
+Alarm 1 is set to  : 04:30:02
+Alarm 1 alarm rate : 1
+Alarm 2 is set to  : 04:30:00
+Alarm 2 alarm rate : 2
+============================
+04:29:33 Sun 13 Jun 2021 UTC
+00:29:33 Sun 13 Jun 2021 EDT
+============================
+04:29:34 Sun 13 Jun 2021 UTC
+00:29:34 Sun 13 Jun 2021 EDT
+...
+============================
+04:29:58 Sun 13 Jun 2021 UTC
+00:29:58 Sun 13 Jun 2021 EDT
+============================
+04:29:59 Sun 13 Jun 2021 UTC
+00:29:59 Sun 13 Jun 2021 EDT
+============================
+04:30:00 Sun 13 Jun 2021 UTC
+00:30:00 Sun 13 Jun 2021 EDT
+Alarm 2 activated
+============================
+04:30:01 Sun 13 Jun 2021 UTC
+00:30:01 Sun 13 Jun 2021 EDT
+============================
+04:30:02 Sun 13 Jun 2021 UTC
+00:30:02 Sun 13 Jun 2021 EDT
+Alarm 1 activated
+```
+
+---
+
+### 9. Alarm_Ethernet on MBED RASPBERRY_PI_PICO with W5500
+
+The following is debug terminal output when running example [**Alarm_Ethernet**](examples/Alarm/Ethernet/Alarm_Ethernet) on MBED RASPBERRY_PI_PICO with W5x00 using EthernetLarge Library
+
+```
+Start Alarm_Ethernet on MBED RASPBERRY_PI_PICO with W5x00 using EthernetLarge Library
+Timezone_Generic v1.4.0
+DS323x_Generic v1.2.0
+[EWS] =========== USE_ETHERNET_LARGE ===========
+[EWS] Default SPI pinout:
+[EWS] MOSI: 3
+[EWS] MISO: 4
+[EWS] SCK: 2
+[EWS] SS: 5
+[EWS] =========================
+[EWS] Board : MBED RASPBERRY_PI_PICO , setCsPin: 5
+_pinCS = 0
+W5100 init, using SS_PIN_DEFAULT = 5, new ss_pin = 10, W5100Class::ss_pin = 5
+W5100::init: W5500, SSIZE =8192
+=========================
+Currently Used SPI pinout:
+MOSI:3
+MISO:4
+SCK:2
+SS:5
+=========================
+Using mac index = 0
+You're connected to the network, IP = 192.168.2.118
+Packet received
+Seconds since Jan 1 1900 = 3832545254
+Unix time = 1623556454
+The UTC time is 3:54:14
+Alarm 1 is set to  : 03:54:44
+Alarm 1 alarm rate : 1
+Alarm 2 is set to  : 03:55:00
+Alarm 2 alarm rate : 2
+============================
+03:54:15 Sun 13 Jun 2021 UTC
+23:54:15 Sat 12 Jun 2021 EDT
+============================
+03:54:16 Sun 13 Jun 2021 UTC
+23:54:16 Sat 12 Jun 2021 EDT
+============================
+03:54:17 Sun 13 Jun 2021 UTC
+23:54:17 Sat 12 Jun 2021 EDT
+...
+============================
+03:54:43 Sun 13 Jun 2021 UTC
+23:54:43 Sat 12 Jun 2021 EDT
+============================
+03:54:44 Sun 13 Jun 2021 UTC
+23:54:44 Sat 12 Jun 2021 EDT
+Alarm 1 activated
+============================
+03:54:45 Sun 13 Jun 2021 UTC
+23:54:45 Sat 12 Jun 2021 EDT
+============================
+03:54:46 Sun 13 Jun 2021 UTC
+23:54:46 Sat 12 Jun 2021 EDT
+...
+============================
+03:54:59 Sun 13 Jun 2021 UTC
+23:54:59 Sat 12 Jun 2021 EDT
+============================
+03:55:00 Sun 13 Jun 2021 UTC
+23:55:00 Sat 12 Jun 2021 EDT
+Alarm 2 activated
+============================
+03:55:01 Sun 13 Jun 2021 UTC
+23:55:01 Sat 12 Jun 2021 EDT
+
+```
+
+
+---
+
+### 10. Alarm_Ethernet on RASPBERRY_PI_PICO with W5500
+
+The following is debug terminal output when running example [**Alarm_Ethernet**](examples/Alarm/Ethernet/Alarm_Ethernet) on RASPBERRY_PI_PICO with W5x00 using EthernetLarge Library
+
+
+```
+Start Alarm_Ethernet on RASPBERRY_PI_PICO with W5x00 using EthernetLarge Library
+Timezone_Generic v1.4.0
+DS323x_Generic v1.2.0
+[EWS] =========== USE_ETHERNET_LARGE ===========
+[EWS] Default SPI pinout:
+[EWS] MOSI: 19
+[EWS] MISO: 16
+[EWS] SCK: 18
+[EWS] SS: 17
+[EWS] =========================
+[EWS] Board : RASPBERRY_PI_PICO , setCsPin: 17
+_pinCS = 0
+W5100 init, using SS_PIN_DEFAULT = 10, new ss_pin = 10, W5100Class::ss_pin = 17
+W5100::init: W5500, SSIZE =8192
+=========================
+Currently Used SPI pinout:
+MOSI:19
+MISO:16
+SCK:18
+SS:17
+=========================
+Using mac index = 17
+You're connected to the network, IP = 192.168.2.101
+Packet received
+Seconds since Jan 1 1900 = 3832544284
+Unix time = 1623555484
+The UTC time is 3:38:04
+Alarm 1 is set to  : 03:38:34
+Alarm 1 alarm rate : 1
+Alarm 2 is set to  : 03:39:00
+Alarm 2 alarm rate : 2
+============================
+03:38:05 Sun 13 Jun 2021 UTC
+23:38:05 Sat 12 Jun 2021 EDT
+============================
+03:38:06 Sun 13 Jun 2021 UTC
+23:38:06 Sat 12 Jun 2021 EDT
+...
+============================
+03:38:33 Sun 13 Jun 2021 UTC
+23:38:33 Sat 12 Jun 2021 EDT
+============================
+03:38:34 Sun 13 Jun 2021 UTC
+23:38:34 Sat 12 Jun 2021 EDT
+Alarm 1 activated
+============================
+03:38:35 Sun 13 Jun 2021 UTC
+23:38:35 Sat 12 Jun 2021 EDT
+============================
+03:38:36 Sun 13 Jun 2021 UTC
+23:38:36 Sat 12 Jun 2021 EDT
+...
+============================
+03:38:59 Sun 13 Jun 2021 UTC
+23:38:59 Sat 12 Jun 2021 EDT
+============================
+03:39:00 Sun 13 Jun 2021 UTC
+23:39:00 Sat 12 Jun 2021 EDT
+Alarm 2 activated
+
+```
+
 ---
 ---
 
