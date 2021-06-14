@@ -125,7 +125,7 @@ This [**DS323x_Generic library**](https://github.com/khoih-prog/DS323x_Generic) 
 #### Currently Supported Boards
 
   - **ESP8266**
-  - **ESP32**
+  - **ESP32 (including ESP32-S2 and ESP32-C3)**
   - **AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox etc.**.
   - **Arduino SAMD21 (ZERO, MKR, NANO_33_IOT, etc.)**.
   - **Adafruit SAM21 (Itsy-Bitsy M0, Metro M0, Feather M0, Gemma M0, etc.)**.
@@ -156,8 +156,8 @@ This [**DS323x_Generic library**](https://github.com/khoih-prog/DS323x_Generic) 
 
 ### Releases v1.2.0
 
-1. Add support to RP2040-based boards and ESP32-S2/ESP32-C3
-2. Add support to ESP32-S2/ESP32-C3
+1. Add support to RP2040-based boards such as **NANO_RP2040_CONNECT, RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040** using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed) or [**Earle Philhower's arduino-pico core**](https://github.com/earlephilhower/arduino-pico).
+2. Add support to **ESP32-S2/ESP32-C3**
 
 ### Releases v1.1.0
 
@@ -2236,8 +2236,8 @@ Alarm 2 activated
 
 ### Releases v1.2.0
 
-1. Add support to RP2040-based boards and ESP32-S2/ESP32-C3
-2. Add support to ESP32-S2/ESP32-C3
+1. Add support to RP2040-based boards such as **NANO_RP2040_CONNECT, RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040** using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed) or [**Earle Philhower's arduino-pico core**](https://github.com/earlephilhower/arduino-pico).
+2. Add support to **ESP32-S2/ESP32-C3**
 
 ### Releases v1.1.0
 
@@ -2257,7 +2257,7 @@ Alarm 2 activated
 #### Currently Supported Boards
 
   - **ESP8266**
-  - **ESP32**
+  - **ESP32 (including ESP32-S2 and ESP32-C3)**
   - **AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox etc.**.
   - **Arduino SAMD21 (ZERO, MKR, NANO_33_IOT, etc.)**.
   - **Adafruit SAM21 (Itsy-Bitsy M0, Metro M0, Feather M0, Gemma M0, etc.)**.
@@ -2312,6 +2312,9 @@ Submit issues to: [DS323x_Generic issues](https://github.com/khoih-prog/DS323x_G
 10. Add support to [`EthernetENC`](https://github.com/jandrassy/EthernetENC)
 11. Add support to Arduino AVR boards (UNO, Nano, Mega, etc.)
 12. Add support to Arduino MegaAVR boards (UNO WiFi Rev 2, Nano Every, etc.)
+13. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Earle Philhower's arduino-pico core**](https://github.com/earlephilhower/arduino-pico).
+14. Add support to RP2040-based boards, such as **NANO_RP2040_CONNECT, RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed).
+15. Add support to ESP32-S2/ESP32-C3
 
 ---
 ---
