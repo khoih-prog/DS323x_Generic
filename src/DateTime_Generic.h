@@ -25,7 +25,6 @@
 #ifndef DATETIME_GENERIC_H
 #define DATETIME_GENERIC_H
 
-//#include <Time.h>
 #include <TimeLib.h>
 
 // port of https://github.com/adafruit/RTClib
