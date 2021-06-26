@@ -1,6 +1,6 @@
 {
   "name": "DS323x_Generic",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Library for DS3231/DS3232 Extremely Accurate I2C-Integrated RTC/TCXO/Crystal. For nRF52, SAMD21/SAMD51, STM32F/L/H/G/WB/MP1, Teensy, RP2040-based boards, etc. besides ESP8266/ESP32, using ESP WiFi, WiFiNINA, Ethernet W5x00, ENC28J60, LAN8742A, ESP8266/ESP32 AT-command WiFi",
   "keywords": "i2c,wire,rtc,ds3231,ds3232,ds323x,accuracy,precise",
   "authors": [
@@ -32,13 +32,13 @@
     {
       "owner": "paulstoffregen",
       "name": "Time",
-      "version": ">=1.6",
+      "version": ">=1.6.1",
       "platforms": ["*"]
     },
     {
       "owner": "khoih.prog",
       "name": "WiFiNINA_Generic",
-      "version": ">=1.8.10-1",
+      "version": ">=1.8.11",
       "platforms": ["*"]
     },
     {
@@ -68,7 +68,7 @@
     {
       "owner": "khoih.prog",
       "name": "Timezone_Generic",
-      "version": ">=1.4.0",
+      "version": ">=1.5.0",
       "platforms": ["*"]
     },
     {
@@ -80,7 +80,7 @@
     {
       "owner": "jandrassy",
       "name": "EthernetENC",
-      "version": ">=2.0.0",
+      "version": ">=2.0.1",
       "platforms": ["*"]
     },
     {
