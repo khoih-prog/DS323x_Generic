@@ -9,7 +9,7 @@
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
-  Version: 1.2.1
+  Version: 1.2.2
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -18,6 +18,7 @@
                                  Fix compiler warnings.
   1.2.0  K Hoang      12/06/2021 Add support to RP2040-based boards and ESP32-S2/ESP32-C3
   1.2.1  K Hoang      26/06/2021 Using TimeLib instead of Time
+  1.2.2  K Hoang      10/10/2021 Update `platform.ini` and `library.json`
  *****************************************************************************************************************************/
  
 #pragma once
@@ -25,7 +26,7 @@
 #ifndef DS323X_GENERIC_H
 #define DS323X_GENERIC_H
 
-#define DS323X_GENERIC_VERSION       "DS323x_Generic v1.2.1"
+#define DS323X_GENERIC_VERSION       "DS323x_Generic v1.2.2"
 
 #include <Wire.h>
 #include "DateTime_Generic.h"
