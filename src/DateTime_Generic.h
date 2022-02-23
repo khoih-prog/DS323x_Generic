@@ -9,7 +9,7 @@
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
-  Version: 1.2.2
+  Version: 1.2.3
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -18,7 +18,8 @@
                                  Fix compiler warnings.
   1.2.0  K Hoang      12/06/2021 Add support to RP2040-based boards and ESP32-S2/ESP32-C3
   1.2.1  K Hoang      26/06/2021 Using TimeLib instead of Time
-  1.2.2  K Hoang      10/10/2021 Update `platform.ini` and `library.json` 
+  1.2.2  K Hoang      10/10/2021 Update `platform.ini` and `library.json`
+  1.2.3  K Hoang      23/02/2022 Add ESP_Complex examples to update system time from RTC time. Optimize library.
  *****************************************************************************************************************************/
  
 #pragma once
@@ -144,7 +145,7 @@ class DateTime
       d = days + 1;
     }
 
-    DateTime (const uint16_t year, const uint8_t month, const uint8_t day, const uint8_t hour = 0, const uint8_t min = 0, const uint8_t sec = 0)
+    DateTime (const uint16_t& year, const uint8_t& month, const uint8_t& day, const uint8_t& hour = 0, const uint8_t& min = 0, const uint8_t& sec = 0)
     {
       if (year >= 2000)
         yOff = year - 2000;
@@ -325,13 +326,14 @@ class DateTime
     }
 
     /** ISO 8601 Timestamp function */
-    enum timestampOpt {
+    enum timestampOpt 
+    {
       TIMESTAMP_FULL, // YYYY-MM-DDTHH:MM:SS
       TIMESTAMP_TIME, // HH:MM:SS
       TIMESTAMP_DATE  // YYYY-MM-DD
     };
 
-    String timestamp(timestampOpt opt = TIMESTAMP_FULL)
+    String timestamp(const timestampOpt& opt = TIMESTAMP_FULL)
     {
       char buffer[28];
 
@@ -401,7 +403,7 @@ class DateTime
 
   protected:
 
-    uint16_t date2days(const uint16_t year, const uint8_t m, const uint8_t d) const
+    uint16_t date2days(const uint16_t& year, const uint8_t& m, const uint8_t& d) const
     {
       uint16_t y;
       
@@ -421,7 +423,7 @@ class DateTime
       return days + 365 * y + (y + 3) / 4 - 1;
     }
 
-    static long time2long(const uint16_t days, const uint8_t h, const uint8_t m, const uint8_t s)
+    static long time2long(const uint16_t& days, const uint8_t& h, const uint8_t& m, const uint8_t& s)
     {
       return ((days * 24L + h) * 60 + m) * 60 + s;
     }

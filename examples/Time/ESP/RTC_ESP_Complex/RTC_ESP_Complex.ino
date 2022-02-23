@@ -71,7 +71,7 @@ void getNTPTime(void)
 {
   static bool gotCurrentTime = false;
 
-  // Just get the correct ime once
+  // Just get the correct time once
   if (!gotCurrentTime)
   {
     sendNTPpacket(timeServer); // send an NTP packet to a time server

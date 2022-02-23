@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Releases v1.2.3](#releases-v123)
   * [Releases v1.2.2](#releases-v122)
   * [Releases v1.2.1](#releases-v121)
   * [Releases v1.2.0](#releases-v120)
@@ -22,6 +23,12 @@
 ---
 
 ## Changelog
+
+### Releases v1.2.3
+
+1. Optimize code by using passing by `reference` instead of by `value`
+1. Add `ESP_Complex` examples to update system time from RTC time. Check [setTime() does not set system time #1](https://github.com/khoih-prog/DS323x_Generic/issues/1)
+2. Update `Packages' Patches`
 
 ### Releases v1.2.2
 

@@ -9,7 +9,7 @@
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
-  Version: 1.2.2
+  Version: 1.2.3
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -19,6 +19,7 @@
   1.2.0  K Hoang      12/06/2021 Add support to RP2040-based boards and ESP32-S2/ESP32-C3
   1.2.1  K Hoang      26/06/2021 Using TimeLib instead of Time
   1.2.2  K Hoang      10/10/2021 Update `platform.ini` and `library.json`
+  1.2.3  K Hoang      23/02/2022 Add ESP_Complex examples to update system time from RTC time. Optimize library.
  *****************************************************************************************************************************/
  
 #pragma once
@@ -26,7 +27,15 @@
 #ifndef DS323X_GENERIC_H
 #define DS323X_GENERIC_H
 
-#define DS323X_GENERIC_VERSION       "DS323x_Generic v1.2.2"
+#ifndef DS323X_GENERIC_VERSION
+  #define DS323X_GENERIC_VERSION             "DS323x_Generic v1.2.3"
+  
+  #define DS323X_GENERIC_VERSION_MAJOR       1
+  #define DS323X_GENERIC_VERSION_MINOR       2
+  #define DS323X_GENERIC_VERSION_PATCH       3
+
+  #define DS323X_GENERIC_VERSION_INT         1002003
+#endif
 
 #include <Wire.h>
 #include "DateTime_Generic.h"
@@ -196,59 +205,59 @@ template <typename WireType> class DS323x_
       second(n.second());
     }
    
-    bool second(const uint8_t s) 
+    bool second(const uint8_t& s) 
     {
       return writeByte(Reg::SECONDS, dec_to_bcd(s));
     }
     
-    bool minute(const uint8_t m) 
+    bool minute(const uint8_t& m) 
     {
       return writeByte(Reg::MINUTES, dec_to_bcd(m));
     }
     
-    bool hour(const uint8_t h) 
+    bool hour(const uint8_t& h) 
     {
       return writeByte(Reg::HOURS, dec_to_bcd(h), mask_hour);
     }
     
-    bool weekday(const uint8_t w) 
+    bool weekday(const uint8_t& w) 
     {
       return writeByte(Reg::DAY_OF_WEEK, dec_to_bcd(w));
     }
     
-    bool day(const uint8_t d) 
+    bool day(const uint8_t& d) 
     {
       return writeByte(Reg::DATE, dec_to_bcd(d));
     }
     
-    bool month(const uint8_t m) 
+    bool month(const uint8_t& m) 
     {
       return writeByte(Reg::MONTH_CENTURY, dec_to_bcd(m));
     }
     
-    bool year(const uint8_t y) 
+    bool year(const uint8_t& y) 
     {
       return writeByte(Reg::YEAR, dec_to_bcd(y));
     }
     
-    bool ampm(const AMPM m) 
+    bool ampm(const AMPM& m) 
     {
       return writeBit(Reg::HOURS, 5, (uint8_t)m);
     }
     
-    bool format(const Format f) 
+    bool format(const Format& f) 
     {
       return writeBit(Reg::HOURS, 6, (uint8_t)f);
     }
 
     // alarm getters
 
-    DateTime alarm(const AlarmSel a) 
+    DateTime alarm(const AlarmSel& a) 
     {
       return DateTime(0, 0, day(a), hour(a), minute(a), second(a));
     }
 
-    uint8_t second(const AlarmSel a)
+    uint8_t second(const AlarmSel& a)
     {
       if (a == AlarmSel::A2) 
         return 0;
@@ -256,14 +265,14 @@ template <typename WireType> class DS323x_
       return bcd_to_dec(readByte(Reg::A1_SECONDS, (uint8_t)~MASK_ALARM_BIT));
     }
     
-    uint8_t minute(const AlarmSel a)
+    uint8_t minute(const AlarmSel& a)
     {
       Reg r = (a == AlarmSel::A1) ? Reg::A1_MINUTES : Reg::A2_MINUTES;
       
       return bcd_to_dec(readByte(r, (uint8_t)~MASK_ALARM_BIT));
     }
     
-    uint8_t hour(const AlarmSel a)
+    uint8_t hour(const AlarmSel& a)
     {
       Reg r = (a == AlarmSel::A1) ? Reg::A1_HOURS : Reg::A2_HOURS;
       uint8_t m = (a == AlarmSel::A1) ? mask_a1_hour : mask_a2_hour;
@@ -271,7 +280,7 @@ template <typename WireType> class DS323x_
       return bcd_to_dec(readByte(r, m));
     }
     
-    uint8_t weekday(const AlarmSel a)
+    uint8_t weekday(const AlarmSel& a)
     {
       Reg r = (a == AlarmSel::A1) ? Reg::A1_DAY_DATE : Reg::A2_DAY_DATE;
       uint8_t m = (a == AlarmSel::A1) ? mask_a1_dydt : mask_a2_dydt;
@@ -279,26 +288,26 @@ template <typename WireType> class DS323x_
       return bcd_to_dec(readByte(r, m));
     }
     
-    uint8_t day(const AlarmSel a)
+    uint8_t day(const AlarmSel& a)
     {
       return weekday(a);
     }
     
-    AMPM ampm(const AlarmSel a)
+    AMPM ampm(const AlarmSel& a)
     {
       Reg r = (a == AlarmSel::A1) ? Reg::A1_HOURS : Reg::A2_HOURS;
       
       return readBit(r, 5) ? AMPM::RTC_PM : AMPM::RTC_AM;
     }
     
-    Format format(const AlarmSel a)
+    Format format(const AlarmSel& a)
     {
       Reg r = (a == AlarmSel::A1) ? Reg::A1_HOURS : Reg::A2_HOURS;
       
       return readBit(r, 6) ? Format::H12 : Format::H24;
     }
     
-    DYDT dydt(const AlarmSel a)
+    DYDT dydt(const AlarmSel& a)
     {
       Reg r = (a == AlarmSel::A1) ? Reg::A1_DAY_DATE : Reg::A2_DAY_DATE;
       return readBit(r, 6) ? DYDT::DAY : DYDT::DATE;
@@ -351,7 +360,7 @@ template <typename WireType> class DS323x_
 
     // alarm setters
 
-    void alarm(const AlarmSel a, const DateTime& n)
+    void alarm(const AlarmSel& a, const DateTime& n)
     {
       day(a, n.day());
       hour(a, n.hour());
@@ -359,7 +368,7 @@ template <typename WireType> class DS323x_
       second(a, n.second());
     }
 
-    bool second(const AlarmSel a, const uint8_t s)
+    bool second(const AlarmSel& a, const uint8_t& s)
     {
       if (a == AlarmSel::A2) 
         return 0;
@@ -367,14 +376,14 @@ template <typename WireType> class DS323x_
       return writeByte(Reg::A1_SECONDS, dec_to_bcd(s), (uint8_t)~MASK_ALARM_BIT);
     }
     
-    bool minute(const AlarmSel a, const uint8_t m)
+    bool minute(const AlarmSel& a, const uint8_t& m)
     {
       Reg r = (a == AlarmSel::A1) ? Reg::A1_MINUTES : Reg::A2_MINUTES;
       
       return writeByte(r, dec_to_bcd(m), (uint8_t)~MASK_ALARM_BIT);
     }
     
-    bool hour(const AlarmSel a, const uint8_t h)
+    bool hour(const AlarmSel& a, const uint8_t& h)
     {
       Reg r = (a == AlarmSel::A1) ? Reg::A1_HOURS : Reg::A2_HOURS;
       uint8_t m = (a == AlarmSel::A1) ? mask_a1_hour : mask_a2_hour;
@@ -382,7 +391,7 @@ template <typename WireType> class DS323x_
       return writeByte(r, dec_to_bcd(h), m);
     }
     
-    bool weekday(const AlarmSel a, const uint8_t w)
+    bool weekday(const AlarmSel& a, const uint8_t& w)
     {
       Reg r = (a == AlarmSel::A1) ? Reg::A1_DAY_DATE : Reg::A2_DAY_DATE;
       uint8_t m = (a == AlarmSel::A1) ? mask_a1_dydt : mask_a2_dydt;
@@ -390,53 +399,53 @@ template <typename WireType> class DS323x_
       return writeByte(r, dec_to_bcd(w), m);
     }
     
-    bool day(const AlarmSel a, const uint8_t d)
+    bool day(const AlarmSel& a, const uint8_t& d)
     {
       return weekday(a, d);
     }
     
-    bool ampm(const AlarmSel a, const AMPM m)
+    bool ampm(const AlarmSel& a, const AMPM& m)
     {
       Reg r = (a == AlarmSel::A1) ? Reg::A1_HOURS : Reg::A2_HOURS;
       
       return writeBit(r, 5, (uint8_t)m);
     }
     
-    bool format(const AlarmSel a, const Format f)
+    bool format(const AlarmSel& a, const Format& f)
     {
       Reg r = (a == AlarmSel::A1) ? Reg::A1_HOURS : Reg::A2_HOURS;
       
       return writeBit(r, 6, (uint8_t)f);
     }
     
-    bool dydt(const AlarmSel a, const DYDT d)
+    bool dydt(const AlarmSel& a, const DYDT& d)
     {
       Reg r = (a == AlarmSel::A1) ? Reg::A1_DAY_DATE : Reg::A2_DAY_DATE;
       
       return writeBit(r, 6, (uint8_t)d);
     }
     
-    bool a1m1(const bool b) 
+    bool a1m1(const bool& b) 
     {
       return writeBit(Reg::A1_SECONDS, 7, b);
     }
     
-    bool a1m2(const bool b) 
+    bool a1m2(const bool& b) 
     {
       return writeBit(Reg::A1_MINUTES, 7, b);
     }
     
-    bool a1m3(const bool b) 
+    bool a1m3(const bool& b) 
     {
       return writeBit(Reg::A1_HOURS, 7, b);
     }
     
-    bool a1m4(const bool b) 
+    bool a1m4(const bool& b) 
     {
       return writeBit(Reg::A1_DAY_DATE, 7, b);
     }
     
-    bool rate(const A1Rate a)
+    bool rate(const A1Rate& a)
     {
       bool b = true;
       
@@ -488,22 +497,22 @@ template <typename WireType> class DS323x_
       return b;
     }
     
-    bool a2m2(const bool b) 
+    bool a2m2(const bool& b) 
     {
       return writeBit(Reg::A2_MINUTES, 7, b);
     }
     
-    bool a2m3(const bool b) 
+    bool a2m3(const bool& b) 
     {
       return writeBit(Reg::A2_HOURS, 7, b);
     }
     
-    bool a2m4(const bool b) 
+    bool a2m4(const bool& b) 
     {
       return writeBit(Reg::A2_DAY_DATE, 7, b);
     }
     
-    bool rate(const A2Rate a)
+    bool rate(const A2Rate& a)
     {
       bool b = true;
       
@@ -551,7 +560,7 @@ template <typename WireType> class DS323x_
       return !readBit(Reg::CONTROL, 7);
     }
     
-    bool enableOscillator(const bool b) 
+    bool enableOscillator(const bool& b) 
     {
       return writeBit(Reg::CONTROL, 7, !b);
     }
@@ -562,7 +571,7 @@ template <typename WireType> class DS323x_
       return readBit(Reg::CONTROL, 6);
     }
     
-    bool enableBatteryBackedSquareWave(const bool b) 
+    bool enableBatteryBackedSquareWave(const bool& b) 
     {
       return writeBit(Reg::CONTROL, 6, b);
     }
@@ -573,7 +582,7 @@ template <typename WireType> class DS323x_
       return readBit(Reg::CONTROL, 5);
     }
     
-    bool convertTemperature(const bool b) 
+    bool convertTemperature(const bool& b) 
     {
       return writeBit(Reg::CONTROL, 5, b);
     }
@@ -586,7 +595,7 @@ template <typename WireType> class DS323x_
       return (SquareWaveFreq)f;
     }
     
-    bool squareWaveFrequency(const SquareWaveFreq f)
+    bool squareWaveFrequency(const SquareWaveFreq& f)
     {
       bool rs1 = (uint8_t)f & 0x01;
       bool rs2 = (uint8_t)f & 0x02;
@@ -601,7 +610,7 @@ template <typename WireType> class DS323x_
       return (InterruptCtrl)(bool)readBit(Reg::CONTROL, 2);
     }
     
-    bool interruptControl(const InterruptCtrl i) 
+    bool interruptControl(const InterruptCtrl& i) 
     {
       return writeBit(Reg::CONTROL, 2, (bool)i);
     }
@@ -616,12 +625,12 @@ template <typename WireType> class DS323x_
       return readBit(Reg::CONTROL, 1);
     }
     
-    bool enableAlarm1(const bool b) 
+    bool enableAlarm1(const bool& b) 
     {
       return writeBit(Reg::CONTROL, 0, b);
     }
     
-    bool enableAlarm2(const bool b) 
+    bool enableAlarm2(const bool& b) 
     {
       return writeBit(Reg::CONTROL, 1, b);
     }
@@ -644,7 +653,7 @@ template <typename WireType> class DS323x_
       return readBit(Reg::STATUS, 7);
     }
     
-    bool oscillatorStopFlag(const bool b) 
+    bool oscillatorStopFlag(const bool& b) 
     {
       return writeBit(Reg::STATUS, 7, b);
     }
@@ -654,7 +663,7 @@ template <typename WireType> class DS323x_
       return readBit(Reg::STATUS, 3);
     }
     
-    bool enable32kHz(const bool b) 
+    bool enable32kHz(const bool& b) 
     {
       return writeBit(Reg::STATUS, 3, b);
     }
@@ -664,12 +673,12 @@ template <typename WireType> class DS323x_
       return readBit(Reg::STATUS, 2);
     }
 
-    bool hasAlarmed(const AlarmSel a) 
+    bool hasAlarmed(const AlarmSel& a) 
     {
       return readBit(Reg::STATUS, (a == AlarmSel::A2));
     }
     
-    bool clearAlarm(const AlarmSel a) 
+    bool clearAlarm(const AlarmSel& a) 
     {
       return writeBit(Reg::STATUS, (a == AlarmSel::A2), 0);
     }
@@ -679,7 +688,7 @@ template <typename WireType> class DS323x_
       return (int8_t)readByte(Reg::AGING_OFFSET);
     }
     
-    bool agingOffset(const int8_t o) 
+    bool agingOffset(const int8_t& o) 
     {
       return writeByte(Reg::AGING_OFFSET, (uint8_t)o);
     }
@@ -707,7 +716,7 @@ template <typename WireType> class DS323x_
   
   private:
 
-    A1Rate checkRateA1(const bool a1m1, const bool a1m2, const bool a1m3, const bool a1m4, const DYDT dydt)
+    A1Rate checkRateA1(const bool& a1m1, const bool& a1m2, const bool& a1m3, const bool& a1m4, const DYDT& dydt)
     {
       if ( a1m1 &&  a1m2 &&  a1m3 &&  a1m4) 
         return A1Rate::EVERY_SECOND;
@@ -729,7 +738,7 @@ template <typename WireType> class DS323x_
         return A1Rate::EVERY_SECOND;
     }
 
-    A2Rate checkRateA2(const bool a2m2, const bool a2m3, const bool a2m4, const DYDT dydt)
+    A2Rate checkRateA2(const bool& a2m2, const bool& a2m3, const bool& a2m4, const DYDT& dydt)
     {
       if ( a2m2 &&  a2m3 &&  a2m4) 
         return A2Rate::EVERY_MINUTE;
@@ -749,12 +758,12 @@ template <typename WireType> class DS323x_
         return A2Rate::EVERY_MINUTE;
     }
 
-    uint8_t dec_to_bcd(const uint8_t v) const 
+    uint8_t dec_to_bcd(const uint8_t& v) const 
     {
       return ((v / 10 * 16) + (v % 10));
     }
     
-    uint8_t bcd_to_dec(const uint8_t v) const 
+    uint8_t bcd_to_dec(const uint8_t& v) const 
     {
       return ((v / 16 * 10) + (v % 16));
     }
@@ -768,7 +777,7 @@ template <typename WireType> class DS323x_
       return status_;
     }
 
-    uint8_t readBit(const Reg reg, const uint8_t bit)
+    uint8_t readBit(const Reg& reg, const uint8_t& bit)
     {
       uint8_t b = readByte(reg);
       b &= (1 << bit);
@@ -776,7 +785,7 @@ template <typename WireType> class DS323x_
       return b;
     }
 
-    uint8_t readByte(const Reg reg)
+    uint8_t readByte(const Reg& reg)
     {
       uint8_t data;
       readBytes(reg, 1, &data);
@@ -784,7 +793,7 @@ template <typename WireType> class DS323x_
       return data;
     }
 
-    uint8_t readByte(const Reg reg, const uint8_t mask)
+    uint8_t readByte(const Reg& reg, const uint8_t mask)
     {
       uint8_t data;
       readBytes(reg, 1, &data, &mask);
@@ -792,7 +801,7 @@ template <typename WireType> class DS323x_
       return data;
     }
 
-    uint16_t readWord(const Reg reg)
+    uint16_t readWord(const Reg& reg)
     {
       uint16_t data;
       readWords(reg, 1, &data);
@@ -800,7 +809,7 @@ template <typename WireType> class DS323x_
       return data;
     }
 
-    uint16_t readWord(const Reg reg, const uint16_t mask)
+    uint16_t readWord(const Reg& reg, const uint16_t mask)
     {
       uint16_t data;
       readWords(reg, 1, &data, &mask);
@@ -808,7 +817,7 @@ template <typename WireType> class DS323x_
       return data;
     }
 
-    int8_t readBytes(const Reg reg, const uint8_t size, uint8_t *data)
+    int8_t readBytes(const Reg& reg, const uint8_t& size, uint8_t *data)
     {
       wire->beginTransmission(I2C_ADDR);
       wire->write((uint8_t)reg);
@@ -824,7 +833,7 @@ template <typename WireType> class DS323x_
       return count;
     }
 
-    int8_t readBytes(const Reg reg, const uint8_t size, uint8_t* data, const uint8_t* mask)
+    int8_t readBytes(const Reg& reg, const uint8_t& size, uint8_t* data, const uint8_t* mask)
     {
       wire->beginTransmission(I2C_ADDR);
       wire->write((uint8_t)reg);
@@ -843,7 +852,7 @@ template <typename WireType> class DS323x_
       return count;
     }
 
-    int8_t readWords(const Reg reg, const uint8_t size, const uint16_t *data)
+    int8_t readWords(const Reg& reg, const uint8_t& size, const uint16_t *data)
     {
       wire->beginTransmission(I2C_ADDR);
       wire->write((uint8_t)reg);
@@ -865,7 +874,7 @@ template <typename WireType> class DS323x_
       return count;
     }
 
-    int8_t readWords(const Reg reg, const uint8_t size, const uint16_t *data, const uint16_t* mask)
+    int8_t readWords(const Reg& reg, const uint8_t& size, const uint16_t *data, const uint16_t* mask)
     {
       wire->beginTransmission(I2C_ADDR);
       wire->write((uint8_t)reg);
@@ -893,7 +902,7 @@ template <typename WireType> class DS323x_
       return count;
     }
 
-    bool writeBit(const Reg reg, const uint8_t bit, const uint8_t data)
+    bool writeBit(const Reg& reg, const uint8_t& bit, const uint8_t& data)
     {
       uint8_t b = readByte(reg);
       b = (data != 0) ? (b | (1 << bit)) : (b & ~(1 << bit));
@@ -901,27 +910,27 @@ template <typename WireType> class DS323x_
       return writeByte(reg, b);
     }
 
-    bool writeByte(const Reg reg, const uint8_t data)
+    bool writeByte(const Reg& reg, const uint8_t data)
     {
       return writeBytes(reg, 1, &data);
     }
 
-    bool writeByte(const Reg reg, const uint8_t data, const uint8_t mask)
+    bool writeByte(const Reg& reg, const uint8_t data, const uint8_t mask)
     {
       return writeBytes(reg, 1, &data, &mask);
     }
 
-    bool writeWord(const Reg reg, const uint16_t data)
+    bool writeWord(const Reg& reg, const uint16_t data)
     {
       return writeWords(reg, 1, &data);
     }
 
-    bool writeWord(const Reg reg, const uint16_t data, const uint16_t mask)
+    bool writeWord(const Reg& reg, const uint16_t data, const uint16_t mask)
     {
       return writeWords(reg, 1, &data, &mask);
     }
 
-    bool writeBytes(const Reg reg, const uint8_t size, const uint8_t* data)
+    bool writeBytes(const Reg& reg, const uint8_t& size, const uint8_t* data)
     {
       wire->beginTransmission(I2C_ADDR);
       wire->write((uint8_t)reg);
@@ -934,7 +943,7 @@ template <typename WireType> class DS323x_
       return (status_ == 0);
     }
 
-    bool writeBytes(const Reg reg, const uint8_t size, const uint8_t* data, const uint8_t* mask)
+    bool writeBytes(const Reg& reg, const uint8_t& size, const uint8_t* data, const uint8_t* mask)
     {
       uint8_t r[size];
       readBytes(reg, size, r);
@@ -950,7 +959,7 @@ template <typename WireType> class DS323x_
       return (status_ == 0);
     }
 
-    bool writeWords(const Reg reg, const uint8_t size, const uint16_t* data)
+    bool writeWords(const Reg& reg, const uint8_t& size, const uint16_t* data)
     {
       wire->beginTransmission(I2C_ADDR);
       wire->write((uint8_t)reg);
@@ -966,7 +975,7 @@ template <typename WireType> class DS323x_
       return (status_ == 0);
     }
 
-    bool writeWords(const Reg reg, const uint8_t size, const uint16_t* data, const uint16_t* mask = nullptr)
+    bool writeWords(const Reg& reg, const uint8_t& size, const uint16_t* data, const uint16_t* mask = nullptr)
     {
       uint16_t r[size];
       readWords(reg, size, r);

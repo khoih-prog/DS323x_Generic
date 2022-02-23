@@ -71,7 +71,7 @@ bool gotCurrentTime = false;
 
 void getNTPTime(void)
 {  
-  // Just get the correct ime once
+  // Just get the correct time once
   if (!gotCurrentTime)
   {
     sendNTPpacket(timeServer); // send an NTP packet to a time server
@@ -314,7 +314,7 @@ void loop()
 
     printDateTime(utc, "UTC");
     printDateTime(local, tcr -> abbrev);
-   
+  
     // alarm flags must be cleard to get next alarm
     if (rtc.hasAlarmed(DS323x::AlarmSel::A1))
     {
