@@ -113,6 +113,9 @@ void getNTPTime(void)
       // adjust the following line accordingly if you're in another time zone
       setTime(epoch_t);
 
+      timeval tv = { epoch_t, 0 };
+      settimeofday(&tv, nullptr);
+
       // Update RTC
       // Can use either one of these functions
       
