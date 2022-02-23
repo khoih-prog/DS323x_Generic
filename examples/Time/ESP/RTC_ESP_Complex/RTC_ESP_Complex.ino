@@ -1,5 +1,5 @@
 /****************************************************************************************************************************
-  RTC_ESP.ino
+  RTC_ESP_Complex.ino
 
   For ESP8266, ESP32
   
@@ -113,6 +113,9 @@ void getNTPTime(void)
       // adjust the following line accordingly if you're in another time zone
       setTime(epoch_t);
 
+      timeval tv = { epoch_t, 0 };
+      settimeofday(&tv, nullptr);
+
       // Update RTC
       // Can use either one of these functions
       
@@ -180,7 +183,7 @@ void setup()
 
   delay(200);
 
-  Serial.print(F("\nStart RTC_ESP on ")); Serial.println(ARDUINO_BOARD);
+  Serial.print(F("\nStart RTC_ESP_Complex on ")); Serial.println(ARDUINO_BOARD);
   Serial.println(TIMEZONE_GENERIC_VERSION);
   Serial.println(DS323X_GENERIC_VERSION);
 
@@ -207,6 +210,9 @@ void setup()
   rtc.attach(Wire);
 }
 
+time_t timeNowUTC;
+struct tm * timeInfo;
+
 void loop()
 {
   // Get time from NTP once, then update RTC
@@ -223,6 +229,11 @@ void loop()
   
   printDateTime(utc, "UTC");
   printDateTime(local, tcr -> abbrev);
+
+  timeNowUTC = time(nullptr);
+  timeInfo = localtime(&timeNowUTC);
+  Serial.print("System Time UTC: ");
+  Serial.println(asctime(timeInfo));
   
   delay(10000);
 }
