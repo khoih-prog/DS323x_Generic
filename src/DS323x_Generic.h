@@ -9,7 +9,8 @@
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
-  Version: 1.2.3
+  
+  Version: 1.3.0
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -20,6 +21,7 @@
   1.2.1  K Hoang      26/06/2021 Using TimeLib instead of Time
   1.2.2  K Hoang      10/10/2021 Update `platform.ini` and `library.json`
   1.2.3  K Hoang      23/02/2022 Add ESP_Complex examples to update system time from RTC time. Optimize library.
+  1.3.0  K Hoang      07/04/2022 Use Ethernet_Generic library as default. Add support to Portenta_H7 Ethernet and WiFi
  *****************************************************************************************************************************/
  
 #pragma once
@@ -28,13 +30,13 @@
 #define DS323X_GENERIC_H
 
 #ifndef DS323X_GENERIC_VERSION
-  #define DS323X_GENERIC_VERSION             "DS323x_Generic v1.2.3"
+  #define DS323X_GENERIC_VERSION             "DS323x_Generic v1.3.0"
   
   #define DS323X_GENERIC_VERSION_MAJOR       1
-  #define DS323X_GENERIC_VERSION_MINOR       2
-  #define DS323X_GENERIC_VERSION_PATCH       3
+  #define DS323X_GENERIC_VERSION_MINOR       3
+  #define DS323X_GENERIC_VERSION_PATCH       0
 
-  #define DS323X_GENERIC_VERSION_INT         1002003
+  #define DS323X_GENERIC_VERSION_INT         1003000
 #endif
 
 #include <Wire.h>
