@@ -23,6 +23,7 @@
 // Debug Level from 0 to 4
 #define _WIFI_LOGLEVEL_             3
 #define _WIFININA_LOGLEVEL_         3
+#define _TZ_LOGLEVEL_               2
 
 #define USE_WIFI_NINA         true
 //#define USE_WIFI_NINA         false
@@ -350,7 +351,7 @@
 
 #include <WiFiWebServer.h>
 
-char ssid[] = "****";        // your network SSID (name)
-char pass[] = "****";        // your network password
+char ssid[] = "YOUR_SSID";        // your network SSID (name)
+char pass[] = "12345678";        // your network password
 
 #endif    //defines_h

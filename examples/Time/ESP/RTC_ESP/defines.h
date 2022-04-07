@@ -17,6 +17,8 @@
   #error This code is designed to run on ESP32/ESP8266 platform! Please check your Tools->Board setting.
 #endif 
 
+#define _TZ_LOGLEVEL_                       2
+
 #if (ESP8266)
   // For ESP8266
   #warning Use ESP8266 architecture
@@ -45,7 +47,9 @@
   #define BOARD_NAME    ARDUINO_BOARD
 #endif
 
-char ssid[] = "****";        // your network SSID (name)
-char pass[] = "****";        // your network password
+char ssid[] = "HueNet1";        // your network SSID (name)
+char pass[] = "jenniqqs";        // your network password
+//char ssid[] = "YOUR_SSID";        // your network SSID (name)
+//char pass[] = "12345678";        // your network password
 
 #endif    //defines_h

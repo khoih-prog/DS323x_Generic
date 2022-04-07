@@ -12,6 +12,9 @@
 
 #include "defines.h"
 
+//////////////////////////////////////////
+
+// To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
 #include <Timezone_Generic.h>             // https://github.com/khoih-prog/Timezone_Generic
 
 #include <DS323x_Generic.h>               // https://github.com/khoih-prog/DS323x_Generic
@@ -23,7 +26,7 @@ DS323x rtc;
 // US Eastern Time Zone (New York, Detroit)
 TimeChangeRule myDST = {"EDT", Second, Sun, Mar, 2, -240};    //Daylight time = UTC - 4 hours
 TimeChangeRule mySTD = {"EST", First, Sun, Nov, 2, -300};     //Standard time = UTC - 5 hours
-Timezone *myTZ;
+Timezone myTZ(myDST, mySTD);
 
 // If TimeChangeRules are already stored in EEPROM, comment out the three
 // lines above and uncomment the line below.
@@ -188,39 +191,56 @@ void setup()
   Serial.print(F(" with ")); Serial.println(SHIELD_TYPE);
   Serial.println(TIMEZONE_GENERIC_VERSION);
   Serial.println(DS323X_GENERIC_VERSION); 
+  
+#if defined(TIMEZONE_GENERIC_VERSION_MIN)
+  if (TIMEZONE_GENERIC_VERSION_INT < TIMEZONE_GENERIC_VERSION_MIN)
+  {
+    Serial.print("Warning. Must use this example on Version equal or later than : ");
+    Serial.println(TIMEZONE_GENERIC_VERSION_MIN_TARGET);
+  }
+#endif
+
+#if defined(PIN_WIRE_SDA)
+  // Arduino core, ESP8266, Adafruit
+  TZ_LOGWARN(F("Default DS323X pinout:"));
+  TZ_LOGWARN1(F("SDA:"), PIN_WIRE_SDA);
+  TZ_LOGWARN1(F("SCL:"), PIN_WIRE_SCL);
+#elif defined(PIN_WIRE0_SDA)
+  // arduino-pico core
+  TZ_LOGWARN(F("Default DS323X pinout:"));
+  TZ_LOGWARN1(F("SDA:"), PIN_WIRE0_SDA);
+  TZ_LOGWARN1(F("SCL:"), PIN_WIRE0_SCL);
+#elif defined(ESP32)
+  // ESP32
+  TZ_LOGWARN(F("Default DS323X pinout:"));
+  TZ_LOGWARN1(F("SDA:"), SDA);
+  TZ_LOGWARN1(F("SCL:"), SCL);
+#endif
 
   Wire.begin();
 
-  ET_LOGWARN3(F("Board :"), BOARD_NAME, F(", setCsPin:"), USE_THIS_SS_PIN);
-
-  ET_LOGWARN(F("Default SPI pinout:"));
-  ET_LOGWARN1(F("MOSI:"), MOSI);
-  ET_LOGWARN1(F("MISO:"), MISO);
-  ET_LOGWARN1(F("SCK:"),  SCK);
-  ET_LOGWARN1(F("SS:"),   SS);
-  ET_LOGWARN(F("========================="));
-
 #if !(USE_BUILTIN_ETHERNET || USE_UIP_ETHERNET)
+
+  TZ_LOGWARN3(F("Board :"), BOARD_NAME, F(", setCsPin:"), USE_THIS_SS_PIN);
+
+  TZ_LOGWARN(F("Default SPI pinout:"));
+  TZ_LOGWARN1(F("MOSI:"), MOSI);
+  TZ_LOGWARN1(F("MISO:"), MISO);
+  TZ_LOGWARN1(F("SCK:"),  SCK);
+  TZ_LOGWARN1(F("SS:"),   SS);
+  TZ_LOGWARN(F("========================="));
+
   // For other boards, to change if necessary
-  #if ( USE_ETHERNET || USE_ETHERNET_LARGE || USE_ETHERNET2  || USE_ETHERNET_ENC )
+  #if ( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
     // Must use library patch for Ethernet, Ethernet2, EthernetLarge libraries
     Ethernet.init (USE_THIS_SS_PIN);
-  
-  #elif USE_ETHERNET3
-    // Use  MAX_SOCK_NUM = 4 for 4K, 2 for 8K, 1 for 16K RX/TX buffer
-    #ifndef ETHERNET3_MAX_SOCK_NUM
-      #define ETHERNET3_MAX_SOCK_NUM      4
-    #endif
-  
-    Ethernet.setCsPin (USE_THIS_SS_PIN);
-    Ethernet.init (ETHERNET3_MAX_SOCK_NUM);
-  
+   
   #elif USE_CUSTOM_ETHERNET
     // You have to add initialization for your Custom Ethernet here
     // This is just an example to setCSPin to USE_THIS_SS_PIN, and can be not correct and enough
     //Ethernet.init(USE_THIS_SS_PIN);
   
-  #endif  //( ( USE_ETHERNET || USE_ETHERNET_LARGE || USE_ETHERNET2  || USE_ETHERNET_ENC )
+  #endif  //( ( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
 #endif
 
   // start the ethernet connection and the server:
@@ -233,8 +253,6 @@ void setup()
   // you're connected now, so print out the data
   Serial.print(F("You're connected to the network, IP = "));
   Serial.println(Ethernet.localIP());
-
-  myTZ = new Timezone(myDST, mySTD);
 
   Udp.begin(localPort);
 
@@ -253,7 +271,7 @@ void loop()
   Serial.println(F("============================"));
 
   time_t utc = now.get_time_t();
-  time_t local = myTZ->toLocal(utc, &tcr);
+  time_t local = myTZ.toLocal(utc, &tcr);
   
   printDateTime(utc, "UTC");
   printDateTime(local, tcr -> abbrev);

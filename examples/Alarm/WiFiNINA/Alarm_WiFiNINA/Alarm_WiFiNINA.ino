@@ -247,6 +247,23 @@ void setup()
   Serial.println(TIMEZONE_GENERIC_VERSION);
   Serial.println(DS323X_GENERIC_VERSION);
 
+#if defined(PIN_WIRE_SDA)
+  // Arduino core, ESP8266, Adafruit
+  TZ_LOGWARN(F("Default DS323X pinout:"));
+  TZ_LOGWARN1(F("SDA:"), PIN_WIRE_SDA);
+  TZ_LOGWARN1(F("SCL:"), PIN_WIRE_SCL);
+#elif defined(PIN_WIRE0_SDA)
+  // arduino-pico core
+  TZ_LOGWARN(F("Default DS323X pinout:"));
+  TZ_LOGWARN1(F("SDA:"), PIN_WIRE0_SDA);
+  TZ_LOGWARN1(F("SCL:"), PIN_WIRE0_SCL);
+#elif defined(ESP32)
+  // ESP32
+  TZ_LOGWARN(F("Default DS323X pinout:"));
+  TZ_LOGWARN1(F("SDA:"), SDA);
+  TZ_LOGWARN1(F("SCL:"), SCL);
+#endif
+
   Wire.begin();
 
   // check for the presence of the shield
@@ -283,6 +300,9 @@ void setup()
   Serial.println(WiFi.localIP());
 
   myTZ = new Timezone(myDST, mySTD);
+
+  // Comment out for first time run to write TZ rule to filesystem
+  myTZ->writeRules(0);    // write rules to address/offset 0
 
   Udp.begin(localPort);
 

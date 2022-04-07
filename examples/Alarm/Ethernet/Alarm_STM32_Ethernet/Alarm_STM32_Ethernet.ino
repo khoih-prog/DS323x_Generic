@@ -244,16 +244,33 @@ void setup()
   Serial.println(TIMEZONE_GENERIC_VERSION);
   Serial.println(DS323X_GENERIC_VERSION);  
 
+#if defined(PIN_WIRE_SDA)
+  // Arduino core, ESP8266, Adafruit
+  TZ_LOGWARN(F("Default DS323X pinout:"));
+  TZ_LOGWARN1(F("SDA:"), PIN_WIRE_SDA);
+  TZ_LOGWARN1(F("SCL:"), PIN_WIRE_SCL);
+#elif defined(PIN_WIRE0_SDA)
+  // arduino-pico core
+  TZ_LOGWARN(F("Default DS323X pinout:"));
+  TZ_LOGWARN1(F("SDA:"), PIN_WIRE0_SDA);
+  TZ_LOGWARN1(F("SCL:"), PIN_WIRE0_SCL);
+#elif defined(ESP32)
+  // ESP32
+  TZ_LOGWARN(F("Default DS323X pinout:"));
+  TZ_LOGWARN1(F("SDA:"), SDA);
+  TZ_LOGWARN1(F("SCL:"), SCL);
+#endif
+  
   Wire.begin();
 
-  ET_LOGWARN3(F("Board :"), BOARD_NAME, F(", setCsPin:"), USE_THIS_SS_PIN);
+  TZ_LOGWARN3(F("Board :"), BOARD_NAME, F(", setCsPin:"), USE_THIS_SS_PIN);
 
-  ET_LOGWARN(F("Default SPI pinout:"));
-  ET_LOGWARN1(F("MOSI:"), MOSI);
-  ET_LOGWARN1(F("MISO:"), MISO);
-  ET_LOGWARN1(F("SCK:"),  SCK);
-  ET_LOGWARN1(F("SS:"),   SS);
-  ET_LOGWARN(F("========================="));
+  TZ_LOGWARN(F("Default SPI pinout:"));
+  TZ_LOGWARN1(F("MOSI:"), MOSI);
+  TZ_LOGWARN1(F("MISO:"), MISO);
+  TZ_LOGWARN1(F("SCK:"),  SCK);
+  TZ_LOGWARN1(F("SS:"),   SS);
+  TZ_LOGWARN(F("========================="));
 
 #if !(USE_BUILTIN_ETHERNET || USE_UIP_ETHERNET)
   // For other boards, to change if necessary

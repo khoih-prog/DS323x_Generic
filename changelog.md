@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Releases v1.3.0](#releases-v130)
   * [Releases v1.2.3](#releases-v123)
   * [Releases v1.2.2](#releases-v122)
   * [Releases v1.2.1](#releases-v121)
@@ -24,11 +25,20 @@
 
 ## Changelog
 
+### Releases v1.3.0
+
+1. Add support to `Portenta_H7 Ethernet and WiFi`
+2. Use [Ethernet_Generic](https://github.com/khoih-prog/Ethernet_Generic) library as default for W5x00 Ethernet
+3. Rewrite all examples for new features with better debug information.
+4. Add examples `tzTest` and `WriteRules` and examples for `Portenta_H7 Ethernet and WiFi`
+5. Update `Packages_Patches`
+
+
 ### Releases v1.2.3
 
 1. Optimize code by using passing by `reference` instead of by `value`
-1. Add `ESP_Complex` examples to update system time from RTC time. Check [setTime() does not set system time #1](https://github.com/khoih-prog/DS323x_Generic/issues/1)
-2. Update `Packages' Patches`
+2. Add `ESP_Complex` examples to update system time from RTC time. Check [setTime() does not set system time #1](https://github.com/khoih-prog/DS323x_Generic/issues/1)
+3. Update `Packages' Patches`
 
 ### Releases v1.2.2
 

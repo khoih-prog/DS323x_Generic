@@ -1,5 +1,5 @@
 /****************************************************************************************************************************
-  RTC_WiFiNINA.ino
+  Alarm_WiFi.ino
 
   For all Generic boards such as ESP8266, ESP32, SAMD21/SAMD51, nRF52, STM32F/L/H/G/WB/MP1
   with WiFiNINA, ESP8266/ESP32 WiFi, ESP8266-AT, W5x00, ENC28J60, LAN8742A Ethernet modules/shields
@@ -23,7 +23,7 @@ DS323x rtc;
 
 // US Eastern Time Zone (New York, Detroit)
 TimeChangeRule myDST = {"EDT", Second, Sun, Mar, 2, -240};    //Daylight time = UTC - 4 hours
-TimeChangeRule mySTD = {"EST", First, Sun, Nov, 2, -300};     //Standard time = UTC - 5 hours
+TimeChangeRule mySTD = {"EST", First,  Sun, Nov, 2, -300};     //Standard time = UTC - 5 hours
 Timezone *myTZ;
 
 TimeChangeRule *tcr;        //pointer to the time change rule, use to get TZ abbrev
@@ -70,10 +70,10 @@ void sendNTPpacket(char *ntpSrv)
   Udp.endPacket();
 }
 
-void getNTPTime(void)
-{
-  static bool gotCurrentTime = false;
+bool gotCurrentTime = false;
 
+void getNTPTime(void)
+{  
   // Just get the correct ime once
   if (!gotCurrentTime)
   {
@@ -107,7 +107,7 @@ void getNTPTime(void)
 
       // print Unix time:
       Serial.println(epoch);
-      
+
       // Get the time_t from epoch
       time_t epoch_t = epoch;
 
@@ -132,7 +132,7 @@ void getNTPTime(void)
 
       // 4) DateTime(unsigned long epoch). The best and easiest way
       rtc.now( DateTime((uint32_t) epoch) );
-       
+
       // print the hour, minute and second:
       Serial.print(F("The UTC time is "));       // UTC is the time at Greenwich Meridian (GMT)
       Serial.print((epoch  % 86400L) / 3600); // print the hour (86400 equals secs per day)
@@ -176,6 +176,65 @@ void printDateTime(time_t t, const char *tz)
   Serial.println(buf);
 }
 
+//////////////////////////////////////////
+
+void set_RTC_Alarm1(DateTime& alarmTime)
+{
+  // set alarm1
+  rtc.format(DS323x::AlarmSel::A1, DS323x::Format::H12);
+  rtc.dydt(DS323x::AlarmSel::A1, DS323x::DYDT::DATE);
+
+  rtc.ampm(DS323x::AlarmSel::A1, DS323x::AMPM::RTC_PM);
+  //rtc.ampm(DS323x::AlarmSel::A1, DS323x::AMPM::AM);
+
+  rtc.weekday(DS323x::AlarmSel::A1, 1);
+  rtc.hour(DS323x::AlarmSel::A1, alarmTime.hour());
+  rtc.minute(DS323x::AlarmSel::A1, alarmTime.minute());
+  rtc.second(DS323x::AlarmSel::A1, alarmTime.second());
+  rtc.rate(DS323x::A1Rate::MATCH_SECOND);
+  //rtc.rate(DS323x::A1Rate::MATCH_SECOND_MINUTE_HOUR);
+
+  Serial.print(F("Alarm 1 is set to  : "));
+  Serial.println(rtc.alarm(DS323x::AlarmSel::A1).timestamp(DateTime::TIMESTAMP_TIME));
+  Serial.print(F("Alarm 1 alarm rate : "));
+  Serial.println((uint8_t)rtc.rateA1());
+
+  // alarm flags must be cleard to get next alarm
+  if (rtc.hasAlarmed(DS323x::AlarmSel::A1))
+    rtc.clearAlarm(DS323x::AlarmSel::A1);
+
+  // enable alarm1
+  rtc.enableAlarm1(true);
+}
+
+void set_RTC_Alarm2(DateTime& alarmTime)
+{
+  // set alarm2
+  rtc.format(DS323x::AlarmSel::A2, DS323x::Format::H24);
+  rtc.dydt(DS323x::AlarmSel::A2, DS323x::DYDT::DAY);
+
+  rtc.ampm(DS323x::AlarmSel::A2, DS323x::AMPM::RTC_PM);
+  //rtc.ampm(DS323x::AlarmSel::A2, DS323x::AMPM::PM);
+
+  rtc.day(DS323x::AlarmSel::A2, alarmTime.day());
+  rtc.hour(DS323x::AlarmSel::A2, alarmTime.hour());
+  rtc.minute(DS323x::AlarmSel::A2, alarmTime.minute());
+  //rtc.rate(DS323x::A2Rate::MATCH_MINUTE);
+  rtc.rate(DS323x::A2Rate::MATCH_MINUTE_HOUR);
+  
+  Serial.print(F("Alarm 2 is set to  : "));
+  Serial.println(rtc.alarm(DS323x::AlarmSel::A2).timestamp(DateTime::TIMESTAMP_TIME));
+  Serial.print(F("Alarm 2 alarm rate : "));
+  Serial.println((uint8_t)rtc.rateA2());
+
+  // alarm flags must be cleard to get next alarm
+  if (rtc.hasAlarmed(DS323x::AlarmSel::A2))
+    rtc.clearAlarm(DS323x::AlarmSel::A2);
+
+  // enable alarm2
+  rtc.enableAlarm2(true);
+}
+
 void setup()
 {
   Serial.begin(115200);
@@ -183,11 +242,10 @@ void setup()
 
   delay(200);
 
-  Serial.print(F("\nStart RTC_WiFiNINA on ")); Serial.print(BOARD_NAME);
-  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE);
+  Serial.print(F("\nStart Alarm_WiFi on ")); Serial.println(BOARD_NAME);
   Serial.println(TIMEZONE_GENERIC_VERSION);
   Serial.println(DS323X_GENERIC_VERSION);
-  
+
 #if defined(PIN_WIRE_SDA)
   // Arduino core, ESP8266, Adafruit
   TZ_LOGWARN(F("Default DS323X pinout:"));
@@ -208,24 +266,12 @@ void setup()
   Wire.begin();
 
   // check for the presence of the shield
-#if USE_WIFI_NINA
-  if (WiFi.status() == WL_NO_MODULE)
-#else
   if (WiFi.status() == WL_NO_SHIELD)
-#endif
   {
     Serial.println(F("WiFi shield not present"));
     // don't continue
     while (true);
   }
-
-#if USE_WIFI_NINA
-  String fv = WiFi.firmwareVersion();
-  if (fv < WIFI_FIRMWARE_LATEST_VERSION)
-  {
-    Serial.println(F("Please upgrade the firmware"));
-  }
-#endif
 
   // attempt to connect to WiFi network
   while ( status != WL_CONNECTED)
@@ -250,22 +296,66 @@ void setup()
   rtc.attach(Wire);
 }
 
+bool setAlarmDone = false;
+
+void setAlarm(void)
+{
+  // RTC is using UTC, so everything must use UTC, not local time
+  
+  // Valid when RTC is already correct
+  DateTime currentTime = rtc.now();
+
+  time_t utc = currentTime.get_time_t();
+
+  // Alarm 1 time is 30s from now
+  DateTime alarm1 = DateTime(utc + 30);
+
+  // Alarm 2 time is start of next minute from now
+  DateTime alarm2 = DateTime(utc + 60);
+
+  set_RTC_Alarm1(alarm1);
+  set_RTC_Alarm2(alarm2);
+
+  setAlarmDone = true;
+}
+
 void loop()
 {
   // Get time from NTP once, then update RTC
   // You certainly can make NTP check every hour/day to update RTC ti have better accuracy
   getNTPTime();
 
-  // Display time from RTC
-  DateTime now = rtc.now();
+  if (!setAlarmDone && gotCurrentTime)
+  {
+    setAlarm();
+  }
 
-  Serial.println(F("============================"));
+  static uint32_t prev_ms = millis();
 
-  time_t utc = now.get_time_t();
-  time_t local = myTZ->toLocal(utc, &tcr);
-  
-  printDateTime(utc, "UTC");
-  printDateTime(local, tcr -> abbrev);
-  
-  delay(10000);
+  if (millis() > prev_ms + 1000)
+  {
+    prev_ms = millis();
+    
+    DateTime now = rtc.now();
+    Serial.println("============================");
+
+    time_t utc = now.get_time_t();
+    time_t local = myTZ->toLocal(utc, &tcr);
+
+    printDateTime(utc, "UTC");
+    printDateTime(local, tcr -> abbrev);
+   
+    // alarm flags must be cleard to get next alarm
+    if (rtc.hasAlarmed(DS323x::AlarmSel::A1))
+    {
+      Serial.println(F("Alarm 1 activated"));
+      rtc.clearAlarm(DS323x::AlarmSel::A1);
+    }
+
+    if (rtc.hasAlarmed(DS323x::AlarmSel::A2))
+    {
+      Serial.println(F("Alarm 2 activated"));
+      rtc.clearAlarm(DS323x::AlarmSel::A2);
+    }
+  }
 }

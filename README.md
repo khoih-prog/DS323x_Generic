@@ -6,6 +6,9 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/DS323x_Generic.svg)](http://github.com/khoih-prog/DS323x_Generic/issues)
 
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
+
 ---
 ---
 
@@ -16,6 +19,7 @@
   * [Currently Supported Boards](#currently-supported-boards)
   * [Currently Supported WiFi Modules and Shields](#currently-supported-wifi-modules-and-shields)
   * [Currently Supported Ethernet Modules and Shields](#currently-supported-ethernet-modules-and-shields)
+  * [Currently Supported Storage](#currently-supported-storage)
 * [Changelog](changelog.md)
 * [Prerequisites](#prerequisites)
 * [Installation](#installation)
@@ -38,6 +42,9 @@
     * [8.1. To use BOARD_NAME](#81-to-use-board_name)
     * [8.2. To avoid compile error relating to microsecondsToClockCycles](#82-to-avoid-compile-error-relating-to-microsecondstoclockcycles)
   * [9. For Portenta_H7 boards using Arduino IDE in Linux](#9-for-portenta_h7-boards-using-arduino-ide-in-linux)
+  * [10. For RTL8720DN boards using AmebaD core](#10-for-rtl8720dn-boards-using-amebad-core)
+  * [11. For SAMD21 and SAMD51 boards using ArduinoCore-fab-sam core](#11-For-SAMD21-and-SAMD51-boards-using-ArduinoCore-fab-sam-core)
+  * [12. For Seeeduino RP2040 boards](#12-For-Seeeduino-RP2040-boards)
 * [Libraries' Patches](#libraries-patches)
   * [1. For application requiring 2K+ HTML page](#1-for-application-requiring-2k-html-page)
   * [2. For Ethernet library](#2-for-ethernet-library)
@@ -62,13 +69,18 @@
     * [2. **Alarm_STM32_Ethernet**](examples/Alarm/Ethernet/Alarm_STM32_Ethernet)
     * [3. **Alarm_WiFiNINA**](examples/Alarm/WiFiNINA/Alarm_WiFiNINA)
     * [4. **Alarm_ESP**](examples/Alarm/ESP/Alarm_ESP)
-    * [5. **Alarm_ESP_Complex**](examples/Alarm/ESP/Alarm_ESP_Complex) **New**
+    * [5. **Alarm_ESP_Complex**](examples/Alarm/ESP/Alarm_ESP_Complex)
+    * [6. **Alarm_WiFi**](examples/Alarm/Portenta_H7_WiFi/Alarm_WiFi) **New**
   * [2. Time](#2-time)
     * [1. **RTC_Ethernet**](examples/Time/Ethernet/RTC_Ethernet)
     * [2. **RTC_STM32_Ethernet**](examples/Time/Ethernet/RTC_STM32_Ethernet)
     * [3. **RTC_WiFiNINA**](examples/Time/WiFiNINA/RTC_WiFiNINA)
     * [4. **RTC_ESP**](examples/Time/ESP/RTC_ESP)
-    * [5. **RTC_ESP_Complex**](examples/Time/ESP/RTC_ESP_Complex) **New**
+    * [5. **RTC_ESP_Complex**](examples/Time/ESP/RTC_ESP_Complex)
+    * [6. **RTC_WiFi**](examples/Time/Portenta_H7_WiFi/RTC_WiFi) **New**
+  * [3. General use](#3-General-use)
+    * [1. **tzTest**](examples/tzTest) **New**
+    * [2. **WriteRules**](examples/WriteRules) **New**
 * [Example RTC_Ethernet](#example-rtc_ethernet)
   * [ 1. File RTC_Ethernet.ino](#1-file-rtc_ethernetino)
   * [ 2. File defines.h](#2-file-definesh) 
@@ -108,10 +120,10 @@ The examples will demonstrate how to get the UTC time from NTP server, then upda
 
 This [**DS323x_Generic library**](https://github.com/khoih-prog/DS323x_Generic) is based on and modified from [**Hideaki Tai's DS323x Library**](https://github.com/hideakitai/DS323x) to add functions and support to many boards and shields.
 
-#### Currently Supported Boards
+### Currently Supported Boards
 
-  - **ESP8266**
-  - **ESP32 (including ESP32-S2 and ESP32-C3)**
+  - **ESP8266**.
+  - **ESP32**.
   - **AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox etc.**.
   - **Arduino SAMD21 (ZERO, MKR, NANO_33_IOT, etc.)**.
   - **Adafruit SAM21 (Itsy-Bitsy M0, Metro M0, Feather M0, Gemma M0, etc.)**.
@@ -121,19 +133,39 @@ This [**DS323x_Generic library**](https://github.com/khoih-prog/DS323x_Generic) 
   - **STM32F/L/H/G/WB/MP1 (Nucleo-64 L053R8,Nucleo-144, Nucleo-64, Nucleo-32, Discovery, STM32Fx, STM32H7, STM32Lx, STM32Gx, STM32WB, STM32MP1, etc.) having 64K+ Flash program memory.**
   - **Arduino AVR boards (UNO, Nano, Mega, etc.)**
   - **Arduino MegaAVR boards (UNO WiFi Rev 2, Nano Every, etc.)**
+  - RP2040-based boards, such as **Nano_RP2040_Connect**, using [**Arduino mbed OS for Nano boards**](https://github.com/arduino/ArduinoCore-mbed).
+  - RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed) or [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico).
+  - **WT32_ETH01 boards** using ESP32-based boards and LAN8720 Ethernet
+  - **RTL8720DN, RTL8722DM, RTL8722CSM, etc. boards**
+  - **Portenta_H7**
   
-#### Currently Supported WiFi Modules and Shields
+### Currently Supported WiFi Modules and Shields
 
-  - **ESP8266 built-in WiFi**
-  - **ESP32 built-in WiFi**
+  - **ESP8266 built-in WiFi**.
+  - **ESP32 built-in WiFi**.
   - **WiFiNINA using WiFiNINA or WiFiNINA_Generic library**.
   - **ESP8266-AT, ESP32-AT WiFi shields using WiFiEspAT or [ESP8266_AT_WebServer](https://github.com/khoih-prog/ESP8266_AT_WebServer) library**.
+  - **RTL8720DN, RTL8722DM, RTL8722CSM**
+  - **Built-in WiFi of Portenta_H7**
   
-#### Currently Supported Ethernet Modules and Shields
+### Currently Supported Ethernet Modules and Shields
 
-  - **W5x00's using Ethernet, EthernetLarge, Ethernet2 or Ethernet3 Library.**
+  - **W5x00's using Ethernet_Generic Library.**
   - **ENC28J60 using EthernetENC or UIPEthernet library.**
   - **LAN8742A using STM32Ethernet / STM32 LwIP libraries.**
+  - **LAN8720A in WT32-ETH01** using [`WebServer_WT32_ETH01`](https://github.com/khoih-prog/WebServer_WT32_ETH01).
+  - **Portenta_H7 Ethernet** using [`Portenta_Ethernet`](https://github.com/arduino/ArduinoCore-mbed/tree/master/libraries/Ethernet) library
+  
+### Currently Supported Storage
+
+  - **ESP8266 LittleFS, SPIFFS**.
+  - **ESP32, ESP32-S2 SPIFFS and LittleFS. ESP32-C3 SPIFFS**.
+  - **SAM DUE DueFlashStorage**.
+  - **SAMD FlashStorage_SAMD**.
+  - **nRF52/RP2040 LittleFS**.
+  - **STM32, Teensy and AVR, MegaAVR EEPROM**.
+  - **RTL8720 FlashStorage_RTL8720**.
+  - **Portenta_H7 LittleFS**.
   
 ---
 ---
@@ -148,30 +180,39 @@ This [**DS323x_Generic library**](https://github.com/khoih-prog/DS323x_Generic) 
  5. [`ESP8266 Core 3.0.2+`](https://github.com/esp8266/Arduino) for ESP8266-based boards. [![Latest release](https://img.shields.io/github/release/esp8266/Arduino.svg)](https://github.com/esp8266/Arduino/releases/latest/). To use ESP8266 core 2.7.1+ for LittleFS.
  6. [`Teensy core v1.56+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0) boards. **Not ready in v1.0.0.**
  7. [`Arduino SAM DUE core v1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards.
- 8. [`Arduino SAMD core 1.8.12+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
- 9. [`Adafruit SAMD core 1.7.9+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
+ 8. [`Arduino SAMD core 1.8.13+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
+ 9. [`Adafruit SAMD core 1.7.10+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
 10. [`Seeeduino SAMD core 1.8.2+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
-
 11. [`Adafruit nRF52 v1.3.0`](https://github.com/adafruit/Adafruit_nRF52_Arduino) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
- 
 12. [`Arduino Core for STM32 v2.2.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards. [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
+13. [`Arduino mbed_rp2040 core 3.0.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+14. [`Earle Philhower's arduino-pico core v1.13.1+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
 
-13. [`Arduino mbed_rp2040 core 2.7.2+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
-14. [`Earle Philhower's arduino-pico core v1.12.0+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
-
+---
 
 15. [`Time v1.6.1+`](https://github.com/PaulStoffregen/Time). [![GitHub release](https://img.shields.io/github/release/PaulStoffregen/Time.svg)](https://github.com/PaulStoffregen/Time/releases/latest)
 16. Depending on which Ethernet card you're using:
-   - [`Ethernet library v2.0.0+`](https://github.com/arduino-libraries/Ethernet) for W5100, W5200 and W5500.  [![GitHub release](https://img.shields.io/github/release/arduino-libraries/Ethernet.svg)](https://github.com/arduino-libraries/Ethernet/releases/latest)
-   - [`EthernetLarge library v2.0.0+`](https://github.com/OPEnSLab-OSU/EthernetLarge) for W5100, W5200 and W5500.
-   - [`Ethernet2 library v1.0.4+`](https://github.com/khoih-prog/Ethernet2) for W5500. [![GitHub release](https://img.shields.io/github/release/adafruit/Ethernet2.svg)](https://github.com/adafruit/Ethernet2/releases/latest)
-   - [`Ethernet3 library v1.5.5+`](https://github.com/sstaub/Ethernet3) for W5500/WIZ550io/WIZ850io/USR-ES1 with Wiznet W5500 chip. [![GitHub release](https://img.shields.io/github/release/sstaub/Ethernet3.svg)](https://github.com/sstaub/Ethernet3/releases/latest)
+   - [`Ethernet_Generic library v2.0.0+`](https://github.com/khoih-prog/Ethernet_Generic) for W5100, W5200 and W5500/WIZ550io/WIZ850io/USR-ES1 with Wiznet W5500 chip.  [![GitHub release](https://img.shields.io/github/release/khoih-prog/Ethernet_Generic.svg)](https://github.com/khoih-prog/Ethernet_Generic/releases/latest)
 17. [`WiFiNINA_Generic library v1.8.14-3+`](https://github.com/khoih-prog/WiFiNINA_Generic) to use WiFiNINA modules/shields. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic) if using WiFiNINA for boards such as Nano 33 IoT, nRF52, Teensy, etc.
-18. [`WiFiWebServer library v1.6.2+`](https://github.com/khoih-prog/WiFiWebServer) to use WiFi/WiFiNINA modules/shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
-19. [`EthernetWebServer library v2.0.0+`](https://github.com/khoih-prog/EthernetWebServer) to use Ethernet modules/shields on boards other than STM32F/L/H/G/WB/MP1. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/EthernetWebServer.svg?)](https://www.ardu-badge.com/EthernetWebServer).
-20. [`EthernetWebServer_STM32 library v1.3.3+`](https://github.com/khoih-prog/EthernetWebServer_STM32) to use Ethernet modules/shields on STM32F/L/H/G/WB/MP1 boards. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/EthernetWebServer_STM32.svg?)](https://www.ardu-badge.com/EthernetWebServer_STM32).
+18. [`WiFiWebServer library v1.7.0+`](https://github.com/khoih-prog/WiFiWebServer) to use WiFi/WiFiNINA modules/shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
+19. [`EthernetWebServer library v2.1.1+`](https://github.com/khoih-prog/EthernetWebServer) to use Ethernet modules/shields on boards other than STM32F/L/H/G/WB/MP1. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/EthernetWebServer.svg?)](https://www.ardu-badge.com/EthernetWebServer).
+20. [`EthernetWebServer_STM32 library v1.4.0+`](https://github.com/khoih-prog/EthernetWebServer_STM32) to use Ethernet modules/shields on STM32F/L/H/G/WB/MP1 boards. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/EthernetWebServer_STM32.svg?)](https://www.ardu-badge.com/EthernetWebServer_STM32).
 21. [`ESP8266_AT_WebServer library v1.5.3+`](https://github.com/khoih-prog/ESP8266_AT_WebServer) to use ESP8266-AT/ESP32-AT WiFi modules/shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP8266_AT_WebServer.svg?)](https://www.ardu-badge.com/ESP8266_AT_WebServer)
-22. [`Timezone_Generic library v1.9.1+`](https://github.com/khoih-prog/Timezone_Generic) to use examples. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/Timezone_Generic.svg?)](https://www.ardu-badge.com/Timezone_Generic).
+22. [`Timezone_Generic library v1.10.0+`](https://github.com/khoih-prog/Timezone_Generic) to use examples. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/Timezone_Generic.svg?)](https://www.ardu-badge.com/Timezone_Generic).
+23. [`STM32RTC library v1.2.0+`](https://github.com/stm32duino/STM32RTC) to use STM32 examples using built-in STM32 RTC. [![GitHub release](https://img.shields.io/github/release/stm32duino/STM32RTC.svg)](https://github.com/stm32duino/STM32RTC/releases/latest).
+24. [`WebServer_WT32_ETH01 library v1.4.1+`](https://github.com/khoih-prog/WebServer_WT32_ETH01) to use WT32_ETH01 (ESP32 + LAN8720). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WebServer_WT32_ETH01.svg?)](https://www.ardu-badge.com/WebServer_WT32_ETH01).
+25. [`WiFiWebServer_RTL8720 library v1.1.1+`](https://github.com/khoih-prog/WiFiWebServer_RTL8720) to use Realtek RTL8720DN, etc. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer_RTL8720.svg?)](https://www.ardu-badge.com/WiFiWebServer_RTL8720).
+
+---
+
+26. Depending on which board you're using:
+   - [`DueFlashStorage library v1.0.0+`](https://github.com/sebnil/DueFlashStorage) for SAM DUE. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DueFlashStorage.svg?)](https://www.ardu-badge.com/DueFlashStorage)
+   - [`FlashStorage_SAMD library v1.3.2+`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/FlashStorage_SAMD.svg?)](https://www.ardu-badge.com/FlashStorage_SAMD)
+   - [`FlashStorage_STM32F1 library v1.1.0+`](https://github.com/khoih-prog/FlashStorage_STM32F1) for STM32F1/F3 boards. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/FlashStorage_STM32F1.svg?)](https://www.ardu-badge.com/FlashStorage_STM32F1)
+   - [`FlashStorage_STM32 library v1.2.0+`](https://github.com/khoih-prog/FlashStorage_STM32) for STM32F/L/H/G/WB/MP1 boards. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/FlashStorage_STM32.svg?)](https://www.ardu-badge.com/FlashStorage_STM32)
+   - [`FlashStorage_RTL8720 library v1.1.0+`](https://github.com/khoih-prog/FlashStorage_RTL8720) for RTL8720DN. etc. boards. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/FlashStorage_RTL8720.svg?)](https://www.ardu-badge.com/FlashStorage_RTL8720)
+   - [`LittleFS_esp32 v1.0.6+`](https://github.com/lorol/LITTLEFS) for ESP32-based boards using LittleFS. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/LittleFS_esp32.svg?)](https://www.ardu-badge.com/LittleFS_esp32). **Notice**: This [`LittleFS_esp32 library`](https://github.com/lorol/LITTLEFS) has been integrated to Arduino [esp32 core v1.0.6](https://github.com/espressif/arduino-esp32/tree/master/libraries/LITTLEFS).
+
 
 ---
 
@@ -268,13 +309,13 @@ This file must be copied into the directory:
 
 #### 4. For Arduino SAMD boards
  
- ***To be able to compile, run and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD Packages_Patches](Packages_Patches/arduino/hardware/samd/1.8.12) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.12).
+ ***To be able to compile, run and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD Packages_Patches](Packages_Patches/arduino/hardware/samd/1.8.13) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.13).
  
 #### For core version v1.8.10+
 
-Supposing the Arduino SAMD version is 1.8.12. Now only one file must be copied into the directory:
+Supposing the Arduino SAMD version is 1.8.13. Now only one file must be copied into the directory:
 
-- `~/.arduino15/packages/arduino/hardware/samd/1.8.12/platform.txt`
+- `~/.arduino15/packages/arduino/hardware/samd/1.8.13/platform.txt`
 
 Whenever a new version is installed, remember to copy this files into the new version directory. For example, new version is x.yy.zz
 
@@ -415,12 +456,12 @@ With core after v1.5.0, this step is not necessary anymore thanks to the PR [Add
 
 #### 9. For Portenta_H7 boards using Arduino IDE in Linux
 
-  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/2.7.2/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/2.7.2/portenta_post_install.sh). 
+  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/3.0.0/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/3.0.0/portenta_post_install.sh). 
   
   Then run the following command using `sudo`
   
 ```
-$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/2.7.2
+$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/3.0.0
 $ chmod 755 portenta_post_install.sh
 $ sudo ./portenta_post_install.sh
 ```
@@ -433,15 +474,59 @@ This will create the file `/etc/udev/rules.d/49-portenta_h7.rules` as follows:
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="035b", GROUP="plugdev", MODE="0666"
 ```
 
-Supposing the ArduinoCore-mbed core version is 2.7.2. Now only one file must be copied into the directory:
+Supposing the ArduinoCore-mbed core version is 3.0.0. Now only one file must be copied into the directory:
 
-- `~/.arduino15/packages/arduino/hardware/mbed_portenta/2.7.2/portenta_post_install.sh`
+- `~/.arduino15/packages/arduino/hardware/mbed_portenta/3.0.0/portenta_post_install.sh`
 
 Whenever a new version is installed, remember to copy this files into the new version directory. For example, new version is x.yy.zz
 
 This file must be copied into the directory:
 
 - `~/.arduino15/packages/arduino/hardware/mbed_portenta/x.yy.zz/portenta_post_install.sh`
+
+
+#### 10. For RTL8720DN boards using AmebaD core
+ 
+ To avoid compile error relating to PROGMEM, you have to copy the file [Realtek AmebaD core pgmspace.h](Packages_Patches/realtek/hardware/AmebaD/3.1.2/cores/arduino/avr/pgmspace.h) into Realtek AmebaD directory (~/.arduino15/packages/realtek/hardware/AmebaD/3.1.2/cores/arduino/avr/pgmspace.h). 
+
+Supposing the Realtek AmebaD core version is 3.1.2. This file must be copied into the directory:
+
+- `~/.arduino15/packages/realtek/hardware/AmebaD/3.1.2/cores/arduino/avr/pgmspace.h`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/realtek/hardware/AmebaD/x.yy.zz/cores/arduino/avr/pgmspace.h`
+
+
+#### 11. For SAMD21 and SAMD51 boards using ArduinoCore-fab-sam core
+ 
+ To avoid compile error relating to SAMD21/SAMD51, you have to copy the file [ArduinoCore-fab-sam core pgmspace.h](Packages_Patches/Fab_SAM_Arduino/hardware/samd/1.6.18-alpha2/boards.txt) into `ArduinoCore-fab-sam` samd directory (~/.arduino15/packages/Fab_SAM_Arduino/hardware/samd/1.6.18-alpha2/boards.txt). 
+
+Supposing the `ArduinoCore-fab-sam` samd core version is 1.6.18-alpha2. This file must be copied into the directory:
+
+- `~/.arduino15/packages/Fab_SAM_Arduino/hardware/samd/1.6.18-alpha2/boards.txt`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/Fab_SAM_Arduino/hardware/samd/x.yy.zz/boards.txt`
+
+
+#### 12. For Seeeduino RP2040 boards
+ 
+ ***To be able to compile, run and automatically detect and display BOARD_NAME on Seeeduino RP2040 (XIAO RP2040, Wio RP2040 Mini) boards***, you have to copy the whole [Seeeduino RP2040 Packages_Patches](Packages_Patches/Seeeduino/hardware/rp2040/2.7.2) directory into Seeeduino samd directory (~/.arduino15/packages/Seeeduino/hardware/rp2040/2.7.2). 
+
+Supposing the Seeeduino SAMD core version is 2.7.2. This file must be copied into the directory:
+
+- `~/.arduino15/packages/Seeeduino/hardware/rp2040/2.7.2/boards.txt`
+- `~/.arduino15/packages/Seeeduino/hardware/rp2040/2.7.2/variants/Seeed_XIAO_RP2040/pins_arduino.h`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/Seeeduino/hardware/samd/x.yy.zz/boards.txt`
+- `~/.arduino15/packages/Seeeduino/hardware/samd/x.yy.zz/variants/Seeed_XIAO_RP2040/pins_arduino.h`
 
 
 
@@ -792,6 +877,7 @@ bool clearAlarm(const AlarmSel a);
  3. [**Alarm_WiFiNINA**](examples/Alarm/WiFiNINA/Alarm_WiFiNINA)
  4. [**Alarm_ESP**](examples/Alarm/ESP/Alarm_ESP)
  5. [**Alarm_ESP_Complex**](examples/Alarm/ESP/Alarm_ESP_Complex)
+ 6. [**Alarm_WiFi**](examples/Alarm/Portenta_H7_WiFi/Alarm_WiFi) **New**
  
 ### 2. Time
 
@@ -800,7 +886,14 @@ bool clearAlarm(const AlarmSel a);
  3. [**RTC_WiFiNINA**](examples/Time/WiFiNINA/RTC_WiFiNINA)
  4. [**RTC_ESP**](examples/Time/ESP/RTC_ESP)
  5. [**RTC_ESP_Complex**](examples/Time/ESP/RTC_ESP_Complex)
+ 6. [**RTC_WiFi**](examples/Time/Portenta_H7_WiFi/RTC_WiFi) **New**
 
+### 3. General use
+
+ 1. [**tzTest**](examples/tzTest) **New**
+ 2. [**WriteRules**](examples/WriteRules) **New**
+ 
+ 
 ---
 ---
 
@@ -830,16 +923,16 @@ The following is debug terminal output when running example [**Alarm_Ethernet**]
 
 ```
 Start Alarm_Ethernet on NRF52840_FEATHER with ENC28J60 using EthernetENC Library
-Timezone_Generic v1.9.1
-DS323x_Generic v1.2.3
-[ETHERNET_WEBSERVER] =========================
-[ETHERNET_WEBSERVER] Default SPI pinout:
-[ETHERNET_WEBSERVER] MOSI: 25
-[ETHERNET_WEBSERVER] MISO: 24
-[ETHERNET_WEBSERVER] SCK: 26
-[ETHERNET_WEBSERVER] SS: 5
-[ETHERNET_WEBSERVER] =========================
-[ETHERNET_WEBSERVER] Board : NRF52840_FEATHER , setCsPin: 10
+Timezone_Generic v1.10.0
+DS323x_Generic v1.3.0
+[TZ] =========================
+[TZ] Default SPI pinout:
+[TZ] MOSI: 25
+[TZ] MISO: 24
+[TZ] SCK: 26
+[TZ] SS: 5
+[TZ] =========================
+[TZ] Board : NRF52840_FEATHER , setCsPin: 10
 =========================
 Currently Used SPI pinout:
 MOSI:25
@@ -848,56 +941,40 @@ SCK:26
 SS:5
 =========================
 Using mac index = 6
-You're connected to the network, IP = 192.168.2.97
+You're connected to the network, IP = 192.168.2.107
 Packet received
-Seconds since Jan 1 1900 = 3812072094
-Unix time = 1603083294
-The UTC time is 4:54:54
-Alarm 1 is set to  : 04:55:24
+Seconds since Jan 1 1900 = 3858361124
+Unix time = 1649372324
+The UTC time is 22:58:44
+Alarm 1 is set to  : 02:59:14
 Alarm 1 alarm rate : 1
-Alarm 2 is set to  : 04:55:00
+Alarm 2 is set to  : 22:59:00
 Alarm 2 alarm rate : 2
 ============================
-04:54:55 Mon 19 Oct 2020 UTC
-00:54:55 Mon 19 Oct 2020 EDT
-============================
-04:54:56 Mon 19 Oct 2020 UTC
-00:54:56 Mon 19 Oct 2020 EDT
-============================
-04:54:57 Mon 19 Oct 2020 UTC
-00:54:57 Mon 19 Oct 2020 EDT
-============================
-04:54:58 Mon 19 Oct 2020 UTC
-00:54:58 Mon 19 Oct 2020 EDT
-============================
-04:54:59 Mon 19 Oct 2020 UTC
-00:54:59 Mon 19 Oct 2020 EDT
-============================
-04:55:00 Mon 19 Oct 2020 UTC
-00:55:00 Mon 19 Oct 2020 EDT
-Alarm 2 activated
-============================
-04:55:01 Mon 19 Oct 2020 UTC
-00:55:01 Mon 19 Oct 2020 EDT
-============================
-04:55:02 Mon 19 Oct 2020 UTC
-00:55:02 Mon 19 Oct 2020 EDT
-============================
-04:55:03 Mon 19 Oct 2020 UTC
-00:55:03 Mon 19 Oct 2020 EDT
+22:58:45 Thu 07 Apr 2022 UTC
+18:58:45 Thu 07 Apr 2022 EDT
 ============================
 ...
 ============================
-04:55:23 Mon 19 Oct 2020 UTC
-00:55:23 Mon 19 Oct 2020 EDT
+22:58:59 Thu 07 Apr 2022 UTC
+18:58:59 Thu 07 Apr 2022 EDT
 ============================
-04:55:24 Mon 19 Oct 2020 UTC
-00:55:24 Mon 19 Oct 2020 EDT
+22:59:00 Thu 07 Apr 2022 UTC
+18:59:00 Thu 07 Apr 2022 EDT
+Alarm 2 activated
+============================
+22:59:01 Thu 07 Apr 2022 UTC
+18:59:01 Thu 07 Apr 2022 EDT
+============================
+...
+============================
+22:59:14 Thu 07 Apr 2022 UTC
+18:59:14 Thu 07 Apr 2022 EDT
 Alarm 1 activated
 ============================
-04:55:25 Mon 19 Oct 2020 UTC
-00:55:25 Mon 19 Oct 2020 EDT
-============================
+22:59:15 Thu 07 Apr 2022 UTC
+18:59:15 Thu 07 Apr 2022 EDT
+
 ```
 
 ---
@@ -908,52 +985,46 @@ The following is debug terminal output when running example [**Alarm_STM32_Ether
 
 ```
 Start Alarm_STM32_Ethernet on NUCLEO_F767ZI, using LAN8742A Ethernet & STM32Ethernet Library
-Timezone_Generic v1.9.1
-DS323x_Generic v1.2.3
-[ETHERNET_WEBSERVER] Board : NUCLEO_F767ZI , setCsPin: 10
-[ETHERNET_WEBSERVER] Default SPI pinout:
-[ETHERNET_WEBSERVER] MOSI: 11
-[ETHERNET_WEBSERVER] MISO: 12
-[ETHERNET_WEBSERVER] SCK: 13
-[ETHERNET_WEBSERVER] SS: 10
-[ETHERNET_WEBSERVER] =========================
+Timezone_Generic v1.10.0
+DS323x_Generic v1.3.0
+[TZ] Board : NUCLEO_F767ZI , setCsPin: 10
+[TZ] Default SPI pinout:
+[TZ] MOSI: 11
+[TZ] MISO: 12
+[TZ] SCK: 13
+[TZ] SS: 10
+[TZ] =========================
 You're connected to the network, IP = 192.168.2.159
 Packet received
-Seconds since Jan 1 1900 = 3812072751
-Unix time = 1603083951
-The UTC time is 5:05:51
-Alarm 1 is set to  : 05:06:21
+Seconds since Jan 1 1900 = 3858361211
+Unix time = 1649372411
+The UTC time is 23:00:11
+Alarm 1 is set to  : 23:00:41
 Alarm 1 alarm rate : 1
-Alarm 2 is set to  : 05:06:00
+Alarm 2 is set to  : 23:01:00
 Alarm 2 alarm rate : 2
 ============================
-05:05:52 Mon 19 Oct 2020 UTC
-01:05:52 Mon 19 Oct 2020 EDT
-============================
-05:05:52 Mon 19 Oct 2020 UTC
-01:05:52 Mon 19 Oct 2020 EDT
+23:00:12 Thu 07 Apr 2022 UTC
+19:00:12 Thu 07 Apr 2022 EDT
 ============================
 ...
 ============================
-05:06:00 Mon 19 Oct 2020 UTC
-01:06:00 Mon 19 Oct 2020 EDT
-Alarm 2 activated
-============================
-05:06:01 Mon 19 Oct 2020 UTC
-01:06:01 Mon 19 Oct 2020 EDT
-============================
-...
-============================
-05:06:20 Mon 19 Oct 2020 UTC
-01:06:20 Mon 19 Oct 2020 EDT
-============================
-05:06:21 Mon 19 Oct 2020 UTC
-01:06:21 Mon 19 Oct 2020 EDT
+23:00:41 Thu 07 Apr 2022 UTC
+19:00:41 Thu 07 Apr 2022 EDT
 Alarm 1 activated
 ============================
-05:06:22 Mon 19 Oct 2020 UTC
-01:06:22 Mon 19 Oct 2020 EDT
+23:00:42 Thu 07 Apr 2022 UTC
+19:00:42 Thu 07 Apr 2022 EDT
 ============================
+...
+============================
+23:01:00 Thu 07 Apr 2022 UTC
+19:01:00 Thu 07 Apr 2022 EDT
+Alarm 2 activated
+============================
+23:01:01 Thu 07 Apr 2022 UTC
+19:01:01 Thu 07 Apr 2022 EDT
+
 ```
 
 ---
@@ -964,43 +1035,41 @@ The following is debug terminal output when running example [**RTC_WiFiNINA**](e
 
 ```
 Start RTC_WiFiNINA on SAMD_NANO_33_IOT with WiFiNINA using WiFiNINA_Generic Library
-Timezone_Generic v1.9.1
-DS323x_Generic v1.2.3
+Timezone_Generic v1.10.0
+DS323x_Generic v1.3.0
 Connecting to WPA SSID: HueNet1
 You're connected to the network, IP = 192.168.2.128
+WriteRules done
 Packet received
-Seconds since Jan 1 1900 = 3812054945
-Unix time = 1603066145
-The UTC time is 0:09:05
+Seconds since Jan 1 1900 = 3858361434
+Unix time = 1649372634
+The UTC time is 23:03:54
 ============================
-00:09:05 Mon 19 Oct 2020 UTC
-20:09:05 Sun 18 Oct 2020 EDT
+23:03:54 Thu 07 Apr 2022 UTC
+19:03:54 Thu 07 Apr 2022 EDT
 ============================
-00:09:14 Mon 19 Oct 2020 UTC
-20:09:14 Sun 18 Oct 2020 EDT
+23:04:03 Thu 07 Apr 2022 UTC
+19:04:03 Thu 07 Apr 2022 EDT
 ```
 
 ---
 
 ### 4. RTC_Ethernet on NRF52840_FEATHER with W5500 
 
-The following is debug terminal output when running example [**RTC_Ethernet**](examples/Time/Ethernet/RTC_Ethernet) on Adafruit NRF52840_FEATHER with W5500 using EthernetLarge Library
+The following is debug terminal output when running example [**RTC_Ethernet**](examples/Time/Ethernet/RTC_Ethernet) on Adafruit NRF52840_FEATHER with W5500 using Ethernet_Generic Library
 
 ```
-Start RTC_Ethernet on NRF52840_FEATHER with W5x00 using EthernetLarge Library
-Timezone_Generic v1.9.1
-DS323x_Generic v1.2.3
-[ETHERNET_WEBSERVER] =========== USE_ETHERNET_LARGE ===========
-[ETHERNET_WEBSERVER] Default SPI pinout:
-[ETHERNET_WEBSERVER] MOSI: 25
-[ETHERNET_WEBSERVER] MISO: 24
-[ETHERNET_WEBSERVER] SCK: 26
-[ETHERNET_WEBSERVER] SS: 5
-[ETHERNET_WEBSERVER] =========================
-[ETHERNET_WEBSERVER] Board : NRF52840_FEATHER , setCsPin: 10
-_pinCS = 0
-W5100 init, using SS_PIN_DEFAULT = 10, new ss_pin = 10, W5100Class::ss_pin = 10
-W5100::init: W5500, SSIZE =8192
+Start RTC_Ethernet on NRF52840_FEATHER with W5x00 using Ethernet_Generic Library
+Timezone_Generic v1.10.0
+DS323x_Generic v1.3.0
+[TZ] =========== USE_ETHERNET_GENERIC ===========
+[TZ] Default SPI pinout:
+[TZ] MOSI: 25
+[TZ] MISO: 24
+[TZ] SCK: 26
+[TZ] SS: 5
+[TZ] =========================
+[TZ] Board : NRF52840_FEATHER , setCsPin: 10
 =========================
 Currently Used SPI pinout:
 MOSI:25
@@ -1010,16 +1079,18 @@ SS:5
 =========================
 Using mac index = 3
 You're connected to the network, IP = 192.168.2.99
+You're connected to the network, IP = 192.168.2.107
+WriteRules done
 Packet received
-Seconds since Jan 1 1900 = 3812052464
-Unix time = 1603063664
-The UTC time is 23:27:44
+Seconds since Jan 1 1900 = 3858361477
+Unix time = 1649372677
+The UTC time is 23:04:37
 ============================
-23:27:44 Sun 18 Oct 2020 UTC
-19:27:44 Sun 18 Oct 2020 EDT
+23:04:37 Thu 07 Apr 2022 UTC
+19:04:37 Thu 07 Apr 2022 EDT
 ============================
-23:27:53 Sun 18 Oct 2020 UTC
-19:27:53 Sun 18 Oct 2020 EDT
+23:04:46 Thu 07 Apr 2022 UTC
+19:04:46 Thu 07 Apr 2022 EDT
 ```
 
 ---
@@ -1030,26 +1101,26 @@ The following is debug terminal output when running example [**RTC_STM32_Etherne
 
 ```
 Start RTC_STM32_Ethernet on NUCLEO_F767ZI, using LAN8742A Ethernet & STM32Ethernet Library
-Timezone_Generic v1.9.1
-DS323x_Generic v1.2.3
-[ETHERNET_WEBSERVER] Board : NUCLEO_F767ZI , setCsPin: 10
-[ETHERNET_WEBSERVER] Default SPI pinout:
-[ETHERNET_WEBSERVER] MOSI: 11
-[ETHERNET_WEBSERVER] MISO: 12
-[ETHERNET_WEBSERVER] SCK: 13
-[ETHERNET_WEBSERVER] SS: 10
-[ETHERNET_WEBSERVER] =========================
+Timezone_Generic v1.10.0
+DS323x_Generic v1.3.0
+[TZ] Board : NUCLEO_F767ZI , setCsPin: 10
+[TZ] Default SPI pinout:
+[TZ] MOSI: 11
+[TZ] MISO: 12
+[TZ] SCK: 13
+[TZ] SS: 10
+[TZ] =========================
 You're connected to the network, IP = 192.168.2.159
 Packet received
-Seconds since Jan 1 1900 = 3812054019
-Unix time = 1603065219
-The UTC time is 23:53:39
+Seconds since Jan 1 1900 = 3858354656
+Unix time = 1649365856
+The UTC time is 21:10:56
 ============================
-23:53:39 Sun 18 Oct 2020 UTC
-19:53:39 Sun 18 Oct 2020 EDT
+21:10:56 Thu 07 Apr 2022 UTC
+17:10:56 Thu 07 Apr 2022 EDT
 ============================
-23:53:48 Sun 18 Oct 2020 UTC
-19:53:48 Sun 18 Oct 2020 EDT
+21:11:05 Thu 07 Apr 2022 UTC
+17:11:05 Thu 07 Apr 2022 EDT
 ```
 
 ---
@@ -1061,50 +1132,47 @@ The following is debug terminal output when running example [**RTC_STM32_Etherne
 
 ```
 Start RTC_STM32_Ethernet on NUCLEO_F767ZI, using W5x00 & Ethernet2 Library
-Timezone_Generic v1.9.1
-DS323x_Generic v1.2.3
-[ETHERNET_WEBSERVER] Board : NUCLEO_F767ZI , setCsPin: 10
-[ETHERNET_WEBSERVER] Default SPI pinout:
-[ETHERNET_WEBSERVER] MOSI: 11
-[ETHERNET_WEBSERVER] MISO: 12
-[ETHERNET_WEBSERVER] SCK: 13
-[ETHERNET_WEBSERVER] SS: 10
-[ETHERNET_WEBSERVER] =========================
+Timezone_Generic v1.10.0
+DS323x_Generic v1.3.0
+[TZ] Board : NUCLEO_F767ZI , setCsPin: 10
+[TZ] Default SPI pinout:
+[TZ] MOSI: 11
+[TZ] MISO: 12
+[TZ] SCK: 13
+[TZ] SS: 10
+[TZ] =========================
 You're connected to the network, IP = 192.168.2.117
+WriteRules done
 Packet received
-Seconds since Jan 1 1900 = 3812054437
-Unix time = 1603065637
-The UTC time is 0:00:37
+Seconds since Jan 1 1900 = 3858361530
+Unix time = 1649372730
+The UTC time is 23:05:30
 ============================
-00:00:37 Mon 19 Oct 2020 UTC
-20:00:37 Sun 18 Oct 2020 EDT
+23:05:30 Thu 07 Apr 2022 UTC
+19:05:30 Thu 07 Apr 2022 EDT
 ============================
-00:00:46 Mon 19 Oct 2020 UTC
-20:00:46 Sun 18 Oct 2020 EDT
-
+23:05:39 Thu 07 Apr 2022 UTC
+19:05:39 Thu 07 Apr 2022 EDT
 ```
 
 ---
 
 ### 7. RTC_Ethernet on SAM-DUE with W5500 
 
-The following is debug terminal output when running example [**RTC_Ethernet**](examples/Time/Ethernet/RTC_Ethernet) on Arduino SAM DUE with W5500 using EthernetLarge Library
+The following is debug terminal output when running example [**RTC_Ethernet**](examples/Time/Ethernet/RTC_Ethernet) on Arduino SAM DUE with W5500 using Ethernet_Generic Library
 
 ```
-Start RTC_Ethernet on SAM DUE with W5x00 using EthernetLarge Library
-Timezone_Generic v1.9.1
-DS323x_Generic v1.2.3
-[ETHERNET_WEBSERVER] =========== USE_ETHERNET_LARGE ===========
-[ETHERNET_WEBSERVER] Default SPI pinout:
-[ETHERNET_WEBSERVER] MOSI: 75
-[ETHERNET_WEBSERVER] MISO: 74
-[ETHERNET_WEBSERVER] SCK: 76
-[ETHERNET_WEBSERVER] SS: 10
-[ETHERNET_WEBSERVER] =========================
-[ETHERNET_WEBSERVER] Board : SAM DUE , setCsPin: 10
-_pinCS = 0
-W5100 init, using SS_PIN_DEFAULT = 10, new ss_pin = 10, W5100Class::ss_pin = 10
-W5100::init: W5100, SSIZE =4096
+Start RTC_Ethernet on SAM DUE with W5x00 using Ethernet_Generic Library
+Timezone_Generic v1.10.0
+DS323x_Generic v1.3.0
+[TZ] =========== USE_ETHERNET_GENERIC ===========
+[TZ] Default SPI pinout:
+[TZ] MOSI: 75
+[TZ] MISO: 74
+[TZ] SCK: 76
+[TZ] SS: 10
+[TZ] =========================
+[TZ] Board : SAM DUE , setCsPin: 10
 =========================
 Currently Used SPI pinout:
 MOSI:75
@@ -1114,9 +1182,17 @@ SS:10
 =========================
 Using mac index = 5
 You're connected to the network, IP = 192.168.2.108
+WriteRules done
+Packet received
+Seconds since Jan 1 1900 = 3858361572
+Unix time = 1649372772
+The UTC time is 23:06:12
 ============================
-18:30:45 Sun 18 Oct 2020 UTC
-14:30:45 Sun 18 Oct 2020 EDT
+23:06:12 Thu 07 Apr 2022 UTC
+19:06:12 Thu 07 Apr 2022 EDT
+============================
+23:06:21 Thu 07 Apr 2022 UTC
+19:06:21 Thu 07 Apr 2022 EDT
 ```
 
 ---
@@ -1127,142 +1203,67 @@ The following is debug terminal output when running example [**Alarm_WiFiNINA**]
 
 ```
 Start Alarm_WiFiNINA on MBED NANO_RP2040_CONNECT with WiFiNINA using WiFiNINA_Generic Library
-Timezone_Generic v1.9.1
-DS323x_Generic v1.2.3
+Timezone_Generic v1.10.0
+DS323x_Generic v1.3.0
 Connecting to WPA SSID: HueNet1
 You're connected to the network, IP = 192.168.2.153
 Packet received
-Seconds since Jan 1 1900 = 3832547372
-Unix time = 1623558572
-The UTC time is 4:29:32
-Alarm 1 is set to  : 04:30:02
+Seconds since Jan 1 1900 = 3858360812
+Unix time = 1649372012
+The UTC time is 22:53:32
+Alarm 1 is set to  : 02:54:02
 Alarm 1 alarm rate : 1
-Alarm 2 is set to  : 04:30:00
+Alarm 2 is set to  : 22:54:00
 Alarm 2 alarm rate : 2
 ============================
-04:29:33 Sun 13 Jun 2021 UTC
-00:29:33 Sun 13 Jun 2021 EDT
+22:53:33 Thu 07 Apr 2022 UTC
+18:53:33 Thu 07 Apr 2022 EDT
 ============================
-04:29:34 Sun 13 Jun 2021 UTC
-00:29:34 Sun 13 Jun 2021 EDT
+22:53:34 Thu 07 Apr 2022 UTC
+18:53:34 Thu 07 Apr 2022 EDT
+============================
 ...
 ============================
-04:29:58 Sun 13 Jun 2021 UTC
-00:29:58 Sun 13 Jun 2021 EDT
+22:53:59 Thu 07 Apr 2022 UTC
+18:53:59 Thu 07 Apr 2022 EDT
 ============================
-04:29:59 Sun 13 Jun 2021 UTC
-00:29:59 Sun 13 Jun 2021 EDT
-============================
-04:30:00 Sun 13 Jun 2021 UTC
-00:30:00 Sun 13 Jun 2021 EDT
+22:54:00 Thu 07 Apr 2022 UTC
+18:54:00 Thu 07 Apr 2022 EDT
 Alarm 2 activated
 ============================
-04:30:01 Sun 13 Jun 2021 UTC
-00:30:01 Sun 13 Jun 2021 EDT
+22:54:01 Thu 07 Apr 2022 UTC
+18:54:01 Thu 07 Apr 2022 EDT
 ============================
-04:30:02 Sun 13 Jun 2021 UTC
-00:30:02 Sun 13 Jun 2021 EDT
+22:54:02 Thu 07 Apr 2022 UTC
+18:54:02 Thu 07 Apr 2022 EDT
 Alarm 1 activated
+============================
+22:54:03 Thu 07 Apr 2022 UTC
+18:54:03 Thu 07 Apr 2022 EDT
+============================
 ```
 
 ---
 
 ### 9. Alarm_Ethernet on MBED RASPBERRY_PI_PICO with W5500
 
-The following is debug terminal output when running example [**Alarm_Ethernet**](examples/Alarm/Ethernet/Alarm_Ethernet) on MBED RASPBERRY_PI_PICO with W5x00 using EthernetLarge Library
+The following is debug terminal output when running example [**Alarm_Ethernet**](examples/Alarm/Ethernet/Alarm_Ethernet) on MBED RASPBERRY_PI_PICO with W5x00 using Ethernet_Generic Library
 
 ```
-Start Alarm_Ethernet on MBED RASPBERRY_PI_PICO with W5x00 using EthernetLarge Library
-Timezone_Generic v1.9.1
-DS323x_Generic v1.2.3
-[EWS] =========== USE_ETHERNET_LARGE ===========
-[EWS] Default SPI pinout:
-[EWS] MOSI: 3
-[EWS] MISO: 4
-[EWS] SCK: 2
-[EWS] SS: 5
-[EWS] =========================
-[EWS] Board : MBED RASPBERRY_PI_PICO , setCsPin: 5
-_pinCS = 0
-W5100 init, using SS_PIN_DEFAULT = 5, new ss_pin = 10, W5100Class::ss_pin = 5
-W5100::init: W5500, SSIZE =8192
-=========================
-Currently Used SPI pinout:
-MOSI:3
-MISO:4
-SCK:2
-SS:5
-=========================
-Using mac index = 0
-You're connected to the network, IP = 192.168.2.118
-Packet received
-Seconds since Jan 1 1900 = 3832545254
-Unix time = 1623556454
-The UTC time is 3:54:14
-Alarm 1 is set to  : 03:54:44
-Alarm 1 alarm rate : 1
-Alarm 2 is set to  : 03:55:00
-Alarm 2 alarm rate : 2
-============================
-03:54:15 Sun 13 Jun 2021 UTC
-23:54:15 Sat 12 Jun 2021 EDT
-============================
-03:54:16 Sun 13 Jun 2021 UTC
-23:54:16 Sat 12 Jun 2021 EDT
-============================
-03:54:17 Sun 13 Jun 2021 UTC
-23:54:17 Sat 12 Jun 2021 EDT
-...
-============================
-03:54:43 Sun 13 Jun 2021 UTC
-23:54:43 Sat 12 Jun 2021 EDT
-============================
-03:54:44 Sun 13 Jun 2021 UTC
-23:54:44 Sat 12 Jun 2021 EDT
-Alarm 1 activated
-============================
-03:54:45 Sun 13 Jun 2021 UTC
-23:54:45 Sat 12 Jun 2021 EDT
-============================
-03:54:46 Sun 13 Jun 2021 UTC
-23:54:46 Sat 12 Jun 2021 EDT
-...
-============================
-03:54:59 Sun 13 Jun 2021 UTC
-23:54:59 Sat 12 Jun 2021 EDT
-============================
-03:55:00 Sun 13 Jun 2021 UTC
-23:55:00 Sat 12 Jun 2021 EDT
-Alarm 2 activated
-============================
-03:55:01 Sun 13 Jun 2021 UTC
-23:55:01 Sat 12 Jun 2021 EDT
-
-```
-
-
----
-
-### 10. Alarm_Ethernet on RASPBERRY_PI_PICO with W5500
-
-The following is debug terminal output when running example [**Alarm_Ethernet**](examples/Alarm/Ethernet/Alarm_Ethernet) on RASPBERRY_PI_PICO with W5x00 using EthernetLarge Library
-
-
-```
-Start Alarm_Ethernet on RASPBERRY_PI_PICO with W5x00 using EthernetLarge Library
-Timezone_Generic v1.9.1
-DS323x_Generic v1.2.3
-[EWS] =========== USE_ETHERNET_LARGE ===========
-[EWS] Default SPI pinout:
-[EWS] MOSI: 19
-[EWS] MISO: 16
-[EWS] SCK: 18
-[EWS] SS: 17
-[EWS] =========================
-[EWS] Board : RASPBERRY_PI_PICO , setCsPin: 17
-_pinCS = 0
-W5100 init, using SS_PIN_DEFAULT = 10, new ss_pin = 10, W5100Class::ss_pin = 17
-W5100::init: W5500, SSIZE =8192
+Start Alarm_Ethernet on MBED RASPBERRY_PI_PICO with W5x00 using Ethernet_Generic Library
+Timezone_Generic v1.10.0
+DS323x_Generic v1.3.0
+[TZ] Default DS323X pinout:
+[TZ] SDA: 4
+[TZ] SCL: 5
+[TZ] =========== USE_ETHERNET_GENERIC ===========
+[TZ] Default SPI pinout:
+[TZ] MOSI: 19
+[TZ] MISO: 16
+[TZ] SCK: 18
+[TZ] SS: 17
+[TZ] =========================
+[TZ] RPIPICO setCsPin: 17
 =========================
 Currently Used SPI pinout:
 MOSI:19
@@ -1270,44 +1271,108 @@ MISO:16
 SCK:18
 SS:17
 =========================
-Using mac index = 17
-You're connected to the network, IP = 192.168.2.101
+Using mac index = 12
+You're connected to the network, IP = 192.168.2.128
 Packet received
-Seconds since Jan 1 1900 = 3832544284
-Unix time = 1623555484
-The UTC time is 3:38:04
-Alarm 1 is set to  : 03:38:34
+Seconds since Jan 1 1900 = 3858360812
+Unix time = 1649372012
+The UTC time is 22:53:32
+Alarm 1 is set to  : 02:54:02
 Alarm 1 alarm rate : 1
-Alarm 2 is set to  : 03:39:00
+Alarm 2 is set to  : 22:54:00
 Alarm 2 alarm rate : 2
 ============================
-03:38:05 Sun 13 Jun 2021 UTC
-23:38:05 Sat 12 Jun 2021 EDT
+22:53:33 Thu 07 Apr 2022 UTC
+18:53:33 Thu 07 Apr 2022 EDT
 ============================
-03:38:06 Sun 13 Jun 2021 UTC
-23:38:06 Sat 12 Jun 2021 EDT
+22:53:34 Thu 07 Apr 2022 UTC
+18:53:34 Thu 07 Apr 2022 EDT
+============================
 ...
 ============================
-03:38:33 Sun 13 Jun 2021 UTC
-23:38:33 Sat 12 Jun 2021 EDT
+22:53:59 Thu 07 Apr 2022 UTC
+18:53:59 Thu 07 Apr 2022 EDT
 ============================
-03:38:34 Sun 13 Jun 2021 UTC
-23:38:34 Sat 12 Jun 2021 EDT
+22:54:00 Thu 07 Apr 2022 UTC
+18:54:00 Thu 07 Apr 2022 EDT
+Alarm 2 activated
+============================
+22:54:01 Thu 07 Apr 2022 UTC
+18:54:01 Thu 07 Apr 2022 EDT
+============================
+22:54:02 Thu 07 Apr 2022 UTC
+18:54:02 Thu 07 Apr 2022 EDT
 Alarm 1 activated
 ============================
-03:38:35 Sun 13 Jun 2021 UTC
-23:38:35 Sat 12 Jun 2021 EDT
+22:54:03 Thu 07 Apr 2022 UTC
+18:54:03 Thu 07 Apr 2022 EDT
 ============================
-03:38:36 Sun 13 Jun 2021 UTC
-23:38:36 Sat 12 Jun 2021 EDT
+```
+
+---
+
+### 10. Alarm_Ethernet on RASPBERRY_PI_PICO with W5500
+
+The following is debug terminal output when running example [**Alarm_Ethernet**](examples/Alarm/Ethernet/Alarm_Ethernet) on RASPBERRY_PI_PICO with W5x00 using Ethernet_Generic Library
+
+
+```
+Start Alarm_Ethernet on RASPBERRY_PI_PICO with W5x00 using Ethernet_Generic Library
+Timezone_Generic v1.10.0
+DS323x_Generic v1.3.0
+[TZ] Default DS323X pinout:
+[TZ] SDA: 4
+[TZ] SCL: 5
+[TZ] =========== USE_ETHERNET_GENERIC ===========
+[TZ] Default SPI pinout:
+[TZ] MOSI: 19
+[TZ] MISO: 16
+[TZ] SCK: 18
+[TZ] SS: 17
+[TZ] =========================
+[TZ] RPIPICO setCsPin: 17
+=========================
+Currently Used SPI pinout:
+MOSI:19
+MISO:16
+SCK:18
+SS:17
+=========================
+Using mac index = 10
+You're connected to the network, IP = 192.168.2.126
+Packet received
+Seconds since Jan 1 1900 = 3858360946
+Unix time = 1649372146
+The UTC time is 22:55:46
+Alarm 1 is set to  : 02:56:16
+Alarm 1 alarm rate : 1
+Alarm 2 is set to  : 22:56:00
+Alarm 2 alarm rate : 2
+============================
+22:55:47 Thu 07 Apr 2022 UTC
+18:55:47 Thu 07 Apr 2022 EDT
+============================
+22:55:48 Thu 07 Apr 2022 UTC
+18:55:48 Thu 07 Apr 2022 EDT
+============================
 ...
 ============================
-03:38:59 Sun 13 Jun 2021 UTC
-23:38:59 Sat 12 Jun 2021 EDT
-============================
-03:39:00 Sun 13 Jun 2021 UTC
-23:39:00 Sat 12 Jun 2021 EDT
+22:56:00 Thu 07 Apr 2022 UTC
+18:56:00 Thu 07 Apr 2022 EDT
 Alarm 2 activated
+============================
+22:56:01 Thu 07 Apr 2022 UTC
+18:56:01 Thu 07 Apr 2022 EDT
+============================
+...
+============================
+22:56:16 Thu 07 Apr 2022 UTC
+18:56:16 Thu 07 Apr 2022 EDT
+Alarm 1 activated
+============================
+22:56:17 Thu 07 Apr 2022 UTC
+18:56:17 Thu 07 Apr 2022 EDT
+
 ```
 
 ---
@@ -1319,34 +1384,27 @@ The following is debug terminal output when running example [**RTC_ESP_Complex**
 
 ```
 Start RTC_ESP_Complex on ESP32_DEV
-Timezone_Generic v1.9.1
-DS323x_Generic v1.2.3
+Timezone_Generic v1.10.0
+DS323x_Generic v1.3.0
+[TZ] Default DS323X pinout:
+[TZ] SDA: 21
+[TZ] SCL: 22
 Connecting to HueNet1
 ..............
-You're connected to the network, IP = 192.168.2.93
+You're connected to the network, IP = 192.168.2.107
 Packet received
-Seconds since Jan 1 1900 = 3854584816
-Unix time = 1645596016
-The UTC time is 6:00:16
+Seconds since Jan 1 1900 = 3858360348
+Unix time = 1649371548
+The UTC time is 22:45:48
 ============================
-06:00:16 Wed 23 Feb 2022 UTC
-01:00:16 Wed 23 Feb 2022 EST
-System Time UTC: Wed Feb 23 06:00:16 2022
+22:45:48 Thu 07 Apr 2022 UTC
+18:45:48 Thu 07 Apr 2022 EDT
+System Time UTC: Thu Apr  7 22:45:48 2022
 
 ============================
-06:00:25 Wed 23 Feb 2022 UTC
-01:00:25 Wed 23 Feb 2022 EST
-System Time UTC: Wed Feb 23 06:00:26 2022
-
-============================
-06:00:35 Wed 23 Feb 2022 UTC
-01:00:35 Wed 23 Feb 2022 EST
-System Time UTC: Wed Feb 23 06:00:36 2022
-
-============================
-06:00:45 Wed 23 Feb 2022 UTC
-01:00:45 Wed 23 Feb 2022 EST
-System Time UTC: Wed Feb 23 06:00:46 2022
+22:45:57 Thu 07 Apr 2022 UTC
+18:45:57 Thu 07 Apr 2022 EDT
+System Time UTC: Thu Apr  7 22:45:58 2022
 ```
 
 ---
@@ -1358,39 +1416,27 @@ The following is debug terminal output when running example [**RTC_ESP_Complex**
 
 ```
 Start RTC_ESP_Complex on ESP8266_NODEMCU_ESP12E
-Timezone_Generic v1.9.1
-DS323x_Generic v1.2.3
+Timezone_Generic v1.10.0
+DS323x_Generic v1.3.0
+[TZ] Default DS323X pinout:
+[TZ] SDA: 4
+[TZ] SCL: 5
 Connecting to HueNet1
-...................
-You're connected to the network, IP = 192.168.2.94
+............................
+You're connected to the network, IP = 192.168.2.127
 Packet received
-Seconds since Jan 1 1900 = 3854581698
-Unix time = 1645592898
-The UTC time is 5:08:18
+Seconds since Jan 1 1900 = 3858360490
+Unix time = 1649371690
+The UTC time is 22:48:10
 ============================
-05:08:18 Wed 23 Feb 2022 UTC
-00:08:18 Wed 23 Feb 2022 EST
-System Time UTC: Wed Feb 23 05:08:18 2022
+10:00:00 Fri 17 Jan 2031 UTC
+05:00:00 Fri 17 Jan 2031 EST
+System Time UTC: Thu Apr  7 22:48:10 2022
 
 ============================
-05:08:27 Wed 23 Feb 2022 UTC
-00:08:27 Wed 23 Feb 2022 EST
-System Time UTC: Wed Feb 23 05:08:28 2022
-
-============================
-05:08:37 Wed 23 Feb 2022 UTC
-00:08:37 Wed 23 Feb 2022 EST
-System Time UTC: Wed Feb 23 05:08:38 2022
-
-============================
-05:08:47 Wed 23 Feb 2022 UTC
-00:08:47 Wed 23 Feb 2022 EST
-System Time UTC: Wed Feb 23 05:08:48 2022
-
-============================
-05:08:57 Wed 23 Feb 2022 UTC
-00:08:57 Wed 23 Feb 2022 EST
-System Time UTC: Wed Feb 23 05:08:58 2022
+10:24:24 Wed 10 Feb 2055 UTC
+05:24:24 Wed 10 Feb 2055 EST
+System Time UTC: Thu Apr  7 22:48:20 2022
 ```
 
 ---
@@ -1426,10 +1472,11 @@ Submit issues to: [DS323x_Generic issues](https://github.com/khoih-prog/DS323x_G
 12. Add support to Arduino MegaAVR boards (UNO WiFi Rev 2, Nano Every, etc.)
 13. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Earle Philhower's arduino-pico core**](https://github.com/earlephilhower/arduino-pico).
 14. Add support to RP2040-based boards, such as **NANO_RP2040_CONNECT, RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed).
-15. Add support to ESP32-S2/ESP32-C3
+15. Add support to `ESP32-S2/ESP32-C3`
 16. Optimize code by using passing by `reference` instead of by `value`
 17. Add `ESP_Complex` examples to demonstrate how to update `system time` from `RTC` time. 
-
+18. Add support to `Portenta_H7 Ethernet and WiFi`
+19. Use [Ethernet_Generic](https://github.com/khoih-prog/Ethernet_Generic) library as default for W5x00 Ethernet.
 
 ---
 ---

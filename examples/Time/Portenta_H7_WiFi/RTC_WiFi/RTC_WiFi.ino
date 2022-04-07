@@ -1,5 +1,5 @@
 /****************************************************************************************************************************
-  RTC_WiFiNINA.ino
+  RTC_WiFi.ino
 
   For all Generic boards such as ESP8266, ESP32, SAMD21/SAMD51, nRF52, STM32F/L/H/G/WB/MP1
   with WiFiNINA, ESP8266/ESP32 WiFi, ESP8266-AT, W5x00, ENC28J60, LAN8742A Ethernet modules/shields
@@ -183,8 +183,7 @@ void setup()
 
   delay(200);
 
-  Serial.print(F("\nStart RTC_WiFiNINA on ")); Serial.print(BOARD_NAME);
-  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE);
+  Serial.print(F("\nStart RTC_WiFi on ")); Serial.println(BOARD_NAME);
   Serial.println(TIMEZONE_GENERIC_VERSION);
   Serial.println(DS323X_GENERIC_VERSION);
   
@@ -208,24 +207,12 @@ void setup()
   Wire.begin();
 
   // check for the presence of the shield
-#if USE_WIFI_NINA
-  if (WiFi.status() == WL_NO_MODULE)
-#else
   if (WiFi.status() == WL_NO_SHIELD)
-#endif
   {
     Serial.println(F("WiFi shield not present"));
     // don't continue
     while (true);
   }
-
-#if USE_WIFI_NINA
-  String fv = WiFi.firmwareVersion();
-  if (fv < WIFI_FIRMWARE_LATEST_VERSION)
-  {
-    Serial.println(F("Please upgrade the firmware"));
-  }
-#endif
 
   // attempt to connect to WiFi network
   while ( status != WL_CONNECTED)
