@@ -902,14 +902,14 @@ bool clearAlarm(const AlarmSel a);
 
 #### 1. File [RTC_Ethernet.ino](examples/Time/Ethernet/RTC_Ethernet/RTC_Ethernet.ino)
 
-https://github.com/khoih-prog/DS323x_Generic/blob/d9b6694e828fe33df1dfd31a9db494b83c4b091a/examples/Time/Ethernet/RTC_Ethernet/RTC_Ethernet.ino#L14-L385
+https://github.com/khoih-prog/DS323x_Generic/blob/22667fadf2cffa91addba1488d9a3505bc40bb0d/examples/Time/Ethernet/RTC_Ethernet/RTC_Ethernet.ino#L16-L466
 
 
 ---
 
 #### 2. File [defines.h](examples/Time/Ethernet/RTC_Ethernet/defines.h)
 
-https://github.com/khoih-prog/DS323x_Generic/blob/d9b6694e828fe33df1dfd31a9db494b83c4b091a/examples/Time/Ethernet/RTC_Ethernet/defines.h#L14-L418
+https://github.com/khoih-prog/DS323x_Generic/blob/22667fadf2cffa91addba1488d9a3505bc40bb0d/examples/Time/Ethernet/RTC_Ethernet/defines.h#L10-L475
 
 
 ---

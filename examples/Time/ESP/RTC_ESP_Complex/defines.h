@@ -47,8 +47,6 @@
   #define BOARD_NAME    ARDUINO_BOARD
 #endif
 
-char ssid[] = "HueNet1";        // your network SSID (name)
-char pass[] = "jenniqqs";        // your network password
-//char ssid[] = "YOUR_SSID";        // your network SSID (name)
-//char pass[] = "12345678";        // your network password
+char ssid[] = "YOUR_SSID";        // your network SSID (name)
+char pass[] = "12345678";        // your network password
 #endif    //defines_h
