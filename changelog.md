@@ -33,7 +33,6 @@
 4. Add examples `tzTest` and `WriteRules` and examples for `Portenta_H7 Ethernet and WiFi`
 5. Update `Packages_Patches`
 
-
 ### Releases v1.2.3
 
 1. Optimize code by using passing by `reference` instead of by `value`
