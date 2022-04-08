@@ -85,16 +85,19 @@ void sendNTPpacket(char *ntpSrv)
   Udp.endPacket();
 }
 
-void getNTPTime(void)
+void getNTPTime()
 {
   static bool gotCurrentTime = false;
 
-  // Just get the correct ime once
+  // Just get the correct time once
   if (!gotCurrentTime)
   {
     sendNTPpacket(timeServer); // send an NTP packet to a time server
-    // wait to see if a reply is available
-    delay(1000);
+    
+    // wait for a reply for UDP_TIMEOUT miliseconds
+    static unsigned long startMs = millis();
+    
+    while (!Udp.available() && (millis() - startMs) < UDP_TIMEOUT) {}
 
     if (Udp.parsePacket())
     {
@@ -173,7 +176,7 @@ void getNTPTime(void)
     else
     {
       // wait ten seconds before asking for the time again
-      delay(10000);
+      //delay(10000);
     }
   }
 }
@@ -212,7 +215,7 @@ void setup()
 #endif
   
 #if defined(PIN_WIRE_SDA)
-  // Arduino core, ESP8266, Adafruit
+  // Arduino core, ESP8266, Adafruit, Teensy
   TZ_LOGWARN(F("Default DS323X pinout:"));
   TZ_LOGWARN1(F("SDA:"), PIN_WIRE_SDA);
   TZ_LOGWARN1(F("SCL:"), PIN_WIRE_SCL);
@@ -234,6 +237,8 @@ void setup()
   TZ_LOGWARN(F("======== USE_PORTENTA_H7_ETHERNET ========"));
 #elif USE_NATIVE_ETHERNET
   TZ_LOGWARN(F("======== USE_NATIVE_ETHERNET ========"));
+#elif USE_QN_ETHERNET
+  TZ_LOGWARN(F("======== USE_QN_ETHERNET ========"));
 #elif USE_ETHERNET_GENERIC
   TZ_LOGWARN(F("=========== USE_ETHERNET_GENERIC ==========="));  
 #elif USE_ETHERNET_ESP8266
@@ -244,7 +249,7 @@ void setup()
   TZ_LOGWARN(F("========================="));
 #endif
 
-#if !(USE_NATIVE_ETHERNET || USE_ETHERNET_PORTENTA_H7)
+#if !(USE_NATIVE_ETHERNET || USE_QN_ETHERNET || USE_ETHERNET_PORTENTA_H7)
   TZ_LOGWARN(F("Default SPI pinout:"));
   TZ_LOGWARN1(F("MOSI:"), MOSI);
   TZ_LOGWARN1(F("MISO:"), MISO);
@@ -353,7 +358,7 @@ void setup()
   #endif
 
   // For other boards, to change if necessary
-  #if ( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC || USE_NATIVE_ETHERNET )
+  #if ( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
     // Must use library patch for Ethernet, Ethernet2, EthernetLarge libraries
   
     Ethernet.init (USE_THIS_SS_PIN);
@@ -368,16 +373,9 @@ void setup()
 
 #endif    // defined(ESP8266)
 
-#endif    // #if !(USE_NATIVE_ETHERNET)
+#endif    // #if !(USE_NATIVE_ETHERNET || USE_QN_ETHERNET || USE_ETHERNET_PORTENTA_H7)
 
-
-  // start the ethernet connection and the server:
-  // Use DHCP dynamic IP and random mac
-  uint16_t index = millis() % NUMBER_OF_MAC;
-  // Use Static IP
-  //Ethernet.begin(mac[index], ip);
-  Ethernet.begin(mac[index]);
-
+#if !(USE_NATIVE_ETHERNET || USE_QN_ETHERNET || USE_ETHERNET_PORTENTA_H7)
   // Just info to know how to connect correctly
   Serial.println(F("========================="));
   Serial.println(F("Currently Used SPI pinout:"));
@@ -390,9 +388,56 @@ void setup()
   Serial.print(F("SS:"));
   Serial.println(SS);
   Serial.println(F("========================="));
+#endif
+
+#if (USE_QN_ETHERNET)
+  #define USING_DHCP    false   //true
+  
+  #if USING_DHCP
+    // Start the Ethernet connection, using DHCP
+    Serial.print("Initialize QNEthernet using DHCP => ");
+    Ethernet.begin();
+  #else   
+    // Start the Ethernet connection, using static IP
+    Serial.print("Initialize QNEthernet using static IP => ");
+    Ethernet.begin(myIP, myNetmask, myGW);
+    Ethernet.setDNSServerIP(mydnsServer);
+  #endif
+
+  if (!Ethernet.waitForLocalIP(5000))
+  {
+    Serial.println(F("Failed to configure Ethernet"));
+
+    if (!Ethernet.linkStatus())
+    {
+      Serial.println(F("Ethernet cable is not connected."));
+    }
+
+    // Stay here forever
+    while (true)
+    {
+      delay(1);
+    }
+  }
+
+  if (!Ethernet.waitForLink(5000))
+  {
+    Serial.println(F("Failed to wait for Link"));
+  }
+  
+#else
+
+  // start the ethernet connection and the server:
+  // Use DHCP dynamic IP and random mac
+  uint16_t index = millis() % NUMBER_OF_MAC;
+  // Use Static IP
+  //Ethernet.begin(mac[index], myIP);
+  Ethernet.begin(mac[index]);
 
   Serial.print(F("Using mac index = "));
   Serial.println(index);
+  
+#endif
 
   // you're connected now, so print out the data
   Serial.print(F("You're connected to the network, IP = "));

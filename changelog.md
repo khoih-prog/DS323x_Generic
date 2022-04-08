@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Releases v1.3.1](#releases-v131)
   * [Releases v1.3.0](#releases-v130)
   * [Releases v1.2.3](#releases-v123)
   * [Releases v1.2.2](#releases-v122)
@@ -24,6 +25,10 @@
 ---
 
 ## Changelog
+
+### Releases v1.3.1
+
+1. Add support to Teensy 4.1 QNEthernet and NativeEthernet
 
 ### Releases v1.3.0
 

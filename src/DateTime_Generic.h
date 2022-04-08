@@ -10,7 +10,7 @@
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
   
-  Version: 1.3.0
+  Version: 1.3.1
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -22,6 +22,7 @@
   1.2.2  K Hoang      10/10/2021 Update `platform.ini` and `library.json`
   1.2.3  K Hoang      23/02/2022 Add ESP_Complex examples to update system time from RTC time. Optimize library.
   1.3.0  K Hoang      07/04/2022 Use Ethernet_Generic library as default. Add support to Portenta_H7 Ethernet and WiFi
+  1.3.1  K Hoang      07/04/2022 Add support to Teensy 4.1 QNEthernet and NativeEthernet
  *****************************************************************************************************************************/
  
 #pragma once
