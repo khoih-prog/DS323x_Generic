@@ -1451,7 +1451,7 @@ System Time UTC: Thu Apr  7 22:48:20 2022
 
 ### 13. RTC_Ethernet on TEENSY 4.1 using QNEthernet
 
-The following is debug terminal output when running example [**RTC_Ethernet**](examples/Time/RTC_Ethernet) on `Teensy 4.1` using built-in Ethernet and `QNEthernet` Library
+The following is debug terminal output when running example [**RTC_Ethernet**](examples/Time/Ethernet/RTC_Ethernet) on `Teensy 4.1` using built-in Ethernet and `QNEthernet` Library
 
 
 ```
@@ -1488,7 +1488,7 @@ The UTC time is 1:38:12
 
 ### 14. RTC_Ethernet on TEENSY 4.1 using NativeEthernet
 
-The following is debug terminal output when running example [**RTC_Ethernet**](examples/Time/RTC_Ethernet) on `Teensy 4.1` using built-in Ethernet and `NativeEthernet` Library
+The following is debug terminal output when running example [**RTC_Ethernet**](examples/Time/Ethernet/RTC_Ethernet) on `Teensy 4.1` using built-in Ethernet and `NativeEthernet` Library
 
 
 ```
