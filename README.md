@@ -97,6 +97,8 @@
   * [10. Alarm_Ethernet on RASPBERRY_PI_PICO with W5500](#10-alarm_ethernet-on-raspberry_pi_pico-with-w5500)
   * [11. RTC_ESP_Complex on ESP32_DEV](#11-RTC_ESP_Complex-on-ESP32_DEV)
   * [12. RTC_ESP_Complex on ESP8266_NODEMCU_ESP12E](#12-RTC_ESP_Complex-on-ESP8266_NODEMCU_ESP12E)
+  * [13. RTC_Ethernet on TEENSY 4.1 using QNEthernet](#13-RTC_Ethernet-on-TEENSY-41-using-QNEthernet)
+  * [14. RTC_Ethernet on TEENSY 4.1 using NativeEthernet](#14-RTC_Ethernet-on-TEENSY-41-using-NativeEthernet)
 * [Issues](#issues)
 * [TO DO](#to-do)
 * [DONE](#done)
@@ -138,6 +140,7 @@ This [**DS323x_Generic library**](https://github.com/khoih-prog/DS323x_Generic) 
   - **WT32_ETH01 boards** using ESP32-based boards and LAN8720 Ethernet
   - **RTL8720DN, RTL8722DM, RTL8722CSM, etc. boards**
   - **Portenta_H7**
+  - **Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0)**
   
 ### Currently Supported WiFi Modules and Shields
 
@@ -154,7 +157,9 @@ This [**DS323x_Generic library**](https://github.com/khoih-prog/DS323x_Generic) 
   - **ENC28J60 using EthernetENC or UIPEthernet library.**
   - **LAN8742A using STM32Ethernet / STM32 LwIP libraries.**
   - **LAN8720A in WT32-ETH01** using [`WebServer_WT32_ETH01`](https://github.com/khoih-prog/WebServer_WT32_ETH01).
-  - **Portenta_H7 Ethernet** using [`Portenta_Ethernet`](https://github.com/arduino/ArduinoCore-mbed/tree/master/libraries/Ethernet) library
+  - **Portenta_H7 Ethernet** using [`Portenta_Ethernet`](https://github.com/arduino/ArduinoCore-mbed/tree/master/libraries/Ethernet) library  
+  - **Teensy 4.1 built-in Ethernet** using [`QNEthernet`](https://github.com/ssilverman/QNEthernet) library
+  - **Teensy 4.1 built-in Ethernet** using [`NativeEthernet`](https://github.com/vjmuzik/NativeEthernet) library
   
 ### Currently Supported Storage
 
@@ -162,6 +167,7 @@ This [**DS323x_Generic library**](https://github.com/khoih-prog/DS323x_Generic) 
   - **ESP32, ESP32-S2 SPIFFS and LittleFS. ESP32-C3 SPIFFS**.
   - **SAM DUE DueFlashStorage**.
   - **SAMD FlashStorage_SAMD**.
+  - **STM32 FlashStorage_STM32, FlashStorage_STM32F1**.
   - **nRF52/RP2040 LittleFS**.
   - **STM32, Teensy and AVR, MegaAVR EEPROM**.
   - **RTL8720 FlashStorage_RTL8720**.
@@ -178,7 +184,7 @@ This [**DS323x_Generic library**](https://github.com/khoih-prog/DS323x_Generic) 
  3. [`Arduino MegaAVR core v1.8.3+`](https://github.com/arduino/ArduinoCore-megaavr) for Arduino MegaAVR boards such as Arduino Uno WiFi Rev2. Use Arduino Board Manager to install. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-megaavr.svg)](https://github.com/arduino/ArduinoCore-megaavr/releases/latest)
  4. [`ESP32 Core 2.0.2+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/)
  5. [`ESP8266 Core 3.0.2+`](https://github.com/esp8266/Arduino) for ESP8266-based boards. [![Latest release](https://img.shields.io/github/release/esp8266/Arduino.svg)](https://github.com/esp8266/Arduino/releases/latest/). To use ESP8266 core 2.7.1+ for LittleFS.
- 6. [`Teensy core v1.56+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0) boards. **Not ready in v1.0.0.**
+ 6. [`Teensy core v1.56+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0) boards.
  7. [`Arduino SAM DUE core v1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards.
  8. [`Arduino SAMD core 1.8.13+`](https://github.com/arduino/ArduinoCore-samd) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
  9. [`Adafruit SAMD core 1.7.10+`](https://github.com/adafruit/ArduinoCore-samd) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
@@ -193,6 +199,8 @@ This [**DS323x_Generic library**](https://github.com/khoih-prog/DS323x_Generic) 
 15. [`Time v1.6.1+`](https://github.com/PaulStoffregen/Time). [![GitHub release](https://img.shields.io/github/release/PaulStoffregen/Time.svg)](https://github.com/PaulStoffregen/Time/releases/latest)
 16. Depending on which Ethernet card you're using:
    - [`Ethernet_Generic library v2.0.0+`](https://github.com/khoih-prog/Ethernet_Generic) for W5100, W5200 and W5500/WIZ550io/WIZ850io/USR-ES1 with Wiznet W5500 chip.  [![GitHub release](https://img.shields.io/github/release/khoih-prog/Ethernet_Generic.svg)](https://github.com/khoih-prog/Ethernet_Generic/releases/latest)
+   - [`NativeEthernet Library version stable111+`](https://github.com/vjmuzik/NativeEthernet) for Teensy 4.1 built-in Ethernet. **New**
+   - [`QNEthernet Library version v0.14.0+`](https://github.com/ssilverman/QNEthernet) Teensy 4.1 built-in Ethernet. **New**
 17. [`WiFiNINA_Generic library v1.8.14-3+`](https://github.com/khoih-prog/WiFiNINA_Generic) to use WiFiNINA modules/shields. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic) if using WiFiNINA for boards such as Nano 33 IoT, nRF52, Teensy, etc.
 18. [`WiFiWebServer library v1.7.0+`](https://github.com/khoih-prog/WiFiWebServer) to use WiFi/WiFiNINA modules/shields. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
 19. [`EthernetWebServer library v2.1.1+`](https://github.com/khoih-prog/EthernetWebServer) to use Ethernet modules/shields on boards other than STM32F/L/H/G/WB/MP1. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/EthernetWebServer.svg?)](https://www.ardu-badge.com/EthernetWebServer).
@@ -902,14 +910,14 @@ bool clearAlarm(const AlarmSel a);
 
 #### 1. File [RTC_Ethernet.ino](examples/Time/Ethernet/RTC_Ethernet/RTC_Ethernet.ino)
 
-https://github.com/khoih-prog/DS323x_Generic/blob/22667fadf2cffa91addba1488d9a3505bc40bb0d/examples/Time/Ethernet/RTC_Ethernet/RTC_Ethernet.ino#L16-L466
+https://github.com/khoih-prog/DS323x_Generic/blob/0e5f1fa68f657e6ec89c48a5884e1f55ed176764/examples/Time/Ethernet/RTC_Ethernet/RTC_Ethernet.ino#L16-L511
 
 
 ---
 
 #### 2. File [defines.h](examples/Time/Ethernet/RTC_Ethernet/defines.h)
 
-https://github.com/khoih-prog/DS323x_Generic/blob/22667fadf2cffa91addba1488d9a3505bc40bb0d/examples/Time/Ethernet/RTC_Ethernet/defines.h#L10-L475
+https://github.com/khoih-prog/DS323x_Generic/blob/0e5f1fa68f657e6ec89c48a5884e1f55ed176764/examples/Time/Ethernet/RTC_Ethernet/defines.h#L10-L477
 
 
 ---
@@ -1440,6 +1448,85 @@ System Time UTC: Thu Apr  7 22:48:20 2022
 ```
 
 ---
+
+### 13. RTC_Ethernet on TEENSY 4.1 using QNEthernet
+
+The following is debug terminal output when running example [**RTC_Ethernet**](examples/Time/RTC_Ethernet) on `Teensy 4.1` using built-in Ethernet and `QNEthernet` Library
+
+
+```
+Start RTC_Ethernet on TEENSY 4.1 with QNEthernet
+Timezone_Generic v1.10.0
+DS323x_Generic v1.3.1
+[TZ] Default DS323X pinout:
+[TZ] SDA: 18
+[TZ] SCL: 19
+[TZ] ======== USE_QN_ETHERNET ========
+Initialize QNEthernet using static IP => You're connected to the network, IP = 192.168.2.222
+[TZ] Read from EEPROM, size =  4284 , offset =  0
+[TZ] Write to EEPROM, size =  4284 , offset =  0
+WriteRules done
+Packet received
+Seconds since Jan 1 1900 = 3858370692
+Unix time = 1649381892
+The UTC time is 1:38:12
+============================
+01:38:12 Fri 08 Apr 2022 UTC
+21:38:12 Thu 07 Apr 2022 EDT
+============================
+01:38:21 Fri 08 Apr 2022 UTC
+21:38:21 Thu 07 Apr 2022 EDT
+============================
+01:38:31 Fri 08 Apr 2022 UTC
+21:38:31 Thu 07 Apr 2022 EDT
+============================
+01:38:41 Fri 08 Apr 2022 UTC
+21:38:41 Thu 07 Apr 2022 EDT
+```
+
+---
+
+### 14. RTC_Ethernet on TEENSY 4.1 using NativeEthernet
+
+The following is debug terminal output when running example [**RTC_Ethernet**](examples/Time/RTC_Ethernet) on `Teensy 4.1` using built-in Ethernet and `NativeEthernet` Library
+
+
+```
+Start RTC_Ethernet on TEENSY 4.1 with NativeEthernet
+Timezone_Generic v1.10.0
+DS323x_Generic v1.3.1
+[TZ] Default DS323X pinout:
+[TZ] SDA: 18
+[TZ] SCL: 19
+[TZ] ======== USE_NATIVE_ETHERNET ========
+Using mac index = 17
+You're connected to the network, IP = 192.168.2.116
+[TZ] Read from EEPROM, size =  4284 , offset =  0
+[TZ] Write to EEPROM, size =  4284 , offset =  0
+WriteRules done
+Packet received
+Seconds since Jan 1 1900 = 3858372181
+Unix time = 1649383381
+The UTC time is 2:03:01
+============================
+02:03:01 Fri 08 Apr 2022 UTC
+22:03:01 Thu 07 Apr 2022 EDT
+============================
+02:03:10 Fri 08 Apr 2022 UTC
+22:03:10 Thu 07 Apr 2022 EDT
+============================
+02:03:20 Fri 08 Apr 2022 UTC
+22:03:20 Thu 07 Apr 2022 EDT
+============================
+02:03:30 Fri 08 Apr 2022 UTC
+22:03:30 Thu 07 Apr 2022 EDT
+============================
+02:03:40 Fri 08 Apr 2022 UTC
+22:03:40 Thu 07 Apr 2022 EDT
+```
+
+
+---
 ---
 
 ### Issues
@@ -1476,7 +1563,8 @@ Submit issues to: [DS323x_Generic issues](https://github.com/khoih-prog/DS323x_G
 16. Optimize code by using passing by `reference` instead of by `value`
 17. Add `ESP_Complex` examples to demonstrate how to update `system time` from `RTC` time. 
 18. Add support to `Portenta_H7 Ethernet and WiFi`
-19. Use [Ethernet_Generic](https://github.com/khoih-prog/Ethernet_Generic) library as default for W5x00 Ethernet.
+19. Use [Ethernet_Generic](https://github.com/khoih-prog/Ethernet_Generic) library as default for W5x00 Ethernet
+20. Add support to Teensy 4.1 `QNEthernet` or `NativeEthernet`
 
 ---
 ---
