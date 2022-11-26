@@ -3,9 +3,9 @@
 
   For all Generic boards such as ESP8266, ESP32, SAMD21/SAMD51, nRF52, STM32F/L/H/G/WB/MP1
   with WiFiNINA, ESP8266/ESP32 WiFi, ESP8266-AT, W5x00, ENC28J60, LAN8742A Ethernet modules/shields
-  
+
   DS323x_Generic Arduino library for DS3231/DS3232 Extremely Accurate I2C-Integrated RTC/TCXO/Crystal.
-  
+
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
@@ -73,15 +73,15 @@ void sendNTPpacket(char *ntpSrv)
 bool gotCurrentTime = false;
 
 void getNTPTime(void)
-{  
+{
   // Just get the correct ime once
   if (!gotCurrentTime)
   {
     sendNTPpacket(timeServer); // send an NTP packet to a time server
-    
+
     // wait for a reply for UDP_TIMEOUT miliseconds
     static unsigned long startMs = millis();
-    
+
     while (!Udp.available() && (millis() - startMs) < UDP_TIMEOUT) {}
 
     if (Udp.parsePacket())
@@ -121,12 +121,12 @@ void getNTPTime(void)
 
       // Update RTC
       // Can use either one of these functions
-      
+
       // 1) DateTime(tmElements_t). Must create tmElements_t if not present
       //tmElements_t tm;
       //breakTime(epoch_t, tm);
       //rtc.now( DateTime(tm) );
-      
+
       // 2) DateTime(year, month, day, hour, min, sec)
       //rtc.now( DateTime(year(epoch_t), month(epoch_t), day(epoch_t), hour(epoch_t), minute(epoch_t), second(epoch_t) ) );
 
@@ -146,6 +146,7 @@ void getNTPTime(void)
         // In the first 10 minutes of each hour, we'll want a leading '0'
         Serial.print('0');
       }
+
       Serial.print((epoch  % 3600) / 60); // print the minute (3600 equals secs per minute)
       Serial.print(':');
 
@@ -154,6 +155,7 @@ void getNTPTime(void)
         // In the first 10 seconds of each minute, we'll want a leading '0'
         Serial.print('0');
       }
+
       Serial.println(epoch % 60); // print the second
 
       gotCurrentTime = true;
@@ -224,7 +226,7 @@ void set_RTC_Alarm2(DateTime& alarmTime)
   rtc.minute(DS323x::AlarmSel::A2, alarmTime.minute());
   //rtc.rate(DS323x::A2Rate::MATCH_MINUTE);
   rtc.rate(DS323x::A2Rate::MATCH_MINUTE_HOUR);
-  
+
   Serial.print(F("Alarm 2 is set to  : "));
   Serial.println(rtc.alarm(DS323x::AlarmSel::A2).timestamp(DateTime::TIMESTAMP_TIME));
   Serial.print(F("Alarm 2 alarm rate : "));
@@ -241,12 +243,15 @@ void set_RTC_Alarm2(DateTime& alarmTime)
 void setup()
 {
   Serial.begin(115200);
+
   while (!Serial);
 
   delay(200);
 
-  Serial.print(F("\nStart Alarm_Ethernet on ")); Serial.print(BOARD_NAME);
-  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE);
+  Serial.print(F("\nStart Alarm_Ethernet on "));
+  Serial.print(BOARD_NAME);
+  Serial.print(F(" with "));
+  Serial.println(SHIELD_TYPE);
   Serial.println(TIMEZONE_GENERIC_VERSION);
   Serial.println(DS323X_GENERIC_VERSION);
 
@@ -276,11 +281,11 @@ void setup()
 #elif USE_QN_ETHERNET
   TZ_LOGWARN(F("======== USE_QN_ETHERNET ========"));
 #elif USE_ETHERNET_GENERIC
-  TZ_LOGWARN(F("=========== USE_ETHERNET_GENERIC ==========="));  
+  TZ_LOGWARN(F("=========== USE_ETHERNET_GENERIC ==========="));
 #elif USE_ETHERNET_ESP8266
   TZ_LOGWARN(F("=========== USE_ETHERNET_ESP8266 ==========="));
 #elif USE_ETHERNET_ENC
-  TZ_LOGWARN(F("=========== USE_ETHERNET_ENC ==========="));  
+  TZ_LOGWARN(F("=========== USE_ETHERNET_ENC ==========="));
 #else
   TZ_LOGWARN(F("========================="));
 #endif
@@ -295,28 +300,28 @@ void setup()
 
 #if defined(ESP8266)
   // For ESP8266, change for other boards if necessary
-  #ifndef USE_THIS_SS_PIN
-    #define USE_THIS_SS_PIN   D2    // For ESP8266
-  #endif
+#ifndef USE_THIS_SS_PIN
+#define USE_THIS_SS_PIN   D2    // For ESP8266
+#endif
 
   TZ_LOGWARN1(F("ESP8266 setCsPin:"), USE_THIS_SS_PIN);
 
-  #if ( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
-    // For ESP8266
-    // Pin                D0(GPIO16)    D1(GPIO5)    D2(GPIO4)    D3(GPIO0)    D4(GPIO2)    D8
-    // EthernetGeneric    X                 X            X            X            X        0
-    // Ethernet_ESP8266   0                 0            0            0            0        0
-    // D2 is safe to used for Ethernet, Ethernet2, Ethernet3, EthernetLarge libs
-    // Must use library patch for Ethernet, EthernetLarge libraries
-    Ethernet.init (USE_THIS_SS_PIN);
+#if ( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
+  // For ESP8266
+  // Pin                D0(GPIO16)    D1(GPIO5)    D2(GPIO4)    D3(GPIO0)    D4(GPIO2)    D8
+  // EthernetGeneric    X                 X            X            X            X        0
+  // Ethernet_ESP8266   0                 0            0            0            0        0
+  // D2 is safe to used for Ethernet, Ethernet2, Ethernet3, EthernetLarge libs
+  // Must use library patch for Ethernet, EthernetLarge libraries
+  Ethernet.init (USE_THIS_SS_PIN);
 
-  #elif USE_CUSTOM_ETHERNET
-  
-    // You have to add initialization for your Custom Ethernet here
-    // This is just an example to setCSPin to USE_THIS_SS_PIN, and can be not correct and enough
-    Ethernet.init(USE_THIS_SS_PIN);
-  
-  #endif  //( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
+#elif USE_CUSTOM_ETHERNET
+
+  // You have to add initialization for your Custom Ethernet here
+  // This is just an example to setCSPin to USE_THIS_SS_PIN, and can be not correct and enough
+  Ethernet.init(USE_THIS_SS_PIN);
+
+#endif  //( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
 
 #elif defined(ESP32)
 
@@ -328,84 +333,84 @@ void setup()
   //Ethernet.init(15);  // ESP8266 with Adafruit Featherwing Ethernet
   //Ethernet.init(33);  // ESP32 with Adafruit Featherwing Ethernet
 
-  #ifndef USE_THIS_SS_PIN
-    #define USE_THIS_SS_PIN   5   //22    // For ESP32
-  #endif
+#ifndef USE_THIS_SS_PIN
+#define USE_THIS_SS_PIN   5   //22    // For ESP32
+#endif
 
   TZ_LOGWARN1(F("ESP32 setCsPin:"), USE_THIS_SS_PIN);
 
   // For other boards, to change if necessary
-  #if ( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
-    // Must use library patch for Ethernet, EthernetLarge libraries
-    // ESP32 => GPIO2,4,5,13,15,21,22 OK with Ethernet, Ethernet2, EthernetLarge
-    // ESP32 => GPIO2,4,5,15,21,22 OK with Ethernet3
-  
-    //Ethernet.setCsPin (USE_THIS_SS_PIN);
-    Ethernet.init (USE_THIS_SS_PIN);
-  
-  #elif USE_CUSTOM_ETHERNET
-  
-    // You have to add initialization for your Custom Ethernet here
-    // This is just an example to setCSPin to USE_THIS_SS_PIN, and can be not correct and enough
-    Ethernet.init(USE_THIS_SS_PIN); 
-  
-  #endif  //( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
+#if ( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
+  // Must use library patch for Ethernet, EthernetLarge libraries
+  // ESP32 => GPIO2,4,5,13,15,21,22 OK with Ethernet, Ethernet2, EthernetLarge
+  // ESP32 => GPIO2,4,5,15,21,22 OK with Ethernet3
+
+  //Ethernet.setCsPin (USE_THIS_SS_PIN);
+  Ethernet.init (USE_THIS_SS_PIN);
+
+#elif USE_CUSTOM_ETHERNET
+
+  // You have to add initialization for your Custom Ethernet here
+  // This is just an example to setCSPin to USE_THIS_SS_PIN, and can be not correct and enough
+  Ethernet.init(USE_THIS_SS_PIN);
+
+#endif  //( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
 
 #elif ETHERNET_USE_RPIPICO
 
   pinMode(USE_THIS_SS_PIN, OUTPUT);
   digitalWrite(USE_THIS_SS_PIN, HIGH);
-  
+
   // ETHERNET_USE_RPIPICO, use default SS = 5 or 17
-  #ifndef USE_THIS_SS_PIN
-    #if defined(ARDUINO_ARCH_MBED)
-      #define USE_THIS_SS_PIN   17     // For Arduino Mbed core
-    #else  
-      #define USE_THIS_SS_PIN   17    // For E.Philhower core
-    #endif
-  #endif
+#ifndef USE_THIS_SS_PIN
+#if defined(ARDUINO_ARCH_MBED)
+#define USE_THIS_SS_PIN   17     // For Arduino Mbed core
+#else
+#define USE_THIS_SS_PIN   17    // For E.Philhower core
+#endif
+#endif
 
   TZ_LOGWARN1(F("RPIPICO setCsPin:"), USE_THIS_SS_PIN);
 
   // For other boards, to change if necessary
-  #if ( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
-    // Must use library patch for Ethernet, EthernetLarge libraries
-    // For RPI Pico using Arduino Mbed RP2040 core
-    // SCK: GPIO2,  MOSI: GPIO3, MISO: GPIO4, SS/CS: GPIO5
-    // For RPI Pico using E. Philhower RP2040 core
-    // SCK: GPIO18,  MOSI: GPIO19, MISO: GPIO16, SS/CS: GPIO17
-    // Default pin 5/17 to SS/CS
-  
-    //Ethernet.setCsPin (USE_THIS_SS_PIN);
-    Ethernet.init (USE_THIS_SS_PIN);
-     
-  #endif    //( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
+#if ( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
+  // Must use library patch for Ethernet, EthernetLarge libraries
+  // For RPI Pico using Arduino Mbed RP2040 core
+  // SCK: GPIO2,  MOSI: GPIO3, MISO: GPIO4, SS/CS: GPIO5
+  // For RPI Pico using E. Philhower RP2040 core
+  // SCK: GPIO18,  MOSI: GPIO19, MISO: GPIO16, SS/CS: GPIO17
+  // Default pin 5/17 to SS/CS
+
+  //Ethernet.setCsPin (USE_THIS_SS_PIN);
+  Ethernet.init (USE_THIS_SS_PIN);
+
+#endif    //( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
 
 #else   //defined(ESP8266)
   // unknown board, do nothing, use default SS = 10
-  #ifndef USE_THIS_SS_PIN
-    #define USE_THIS_SS_PIN   10    // For other boards
-  #endif
+#ifndef USE_THIS_SS_PIN
+#define USE_THIS_SS_PIN   10    // For other boards
+#endif
 
-  #if defined(BOARD_NAME)
-    TZ_LOGWARN3(F("Board :"), BOARD_NAME, F(", setCsPin:"), USE_THIS_SS_PIN);
-  #else
-    TZ_LOGWARN1(F("Unknown board setCsPin:"), USE_THIS_SS_PIN);
-  #endif
+#if defined(BOARD_NAME)
+  TZ_LOGWARN3(F("Board :"), BOARD_NAME, F(", setCsPin:"), USE_THIS_SS_PIN);
+#else
+  TZ_LOGWARN1(F("Unknown board setCsPin:"), USE_THIS_SS_PIN);
+#endif
 
   // For other boards, to change if necessary
-  #if ( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
-    // Must use library patch for Ethernet, Ethernet2, EthernetLarge libraries
-  
-    Ethernet.init (USE_THIS_SS_PIN);
-  
-  #elif USE_CUSTOM_ETHERNET
-  
-    // You have to add initialization for your Custom Ethernet here
-    // This is just an example to setCSPin to USE_THIS_SS_PIN, and can be not correct and enough
-    Ethernet.init(USE_THIS_SS_PIN);
-    
-  #endif  //( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
+#if ( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
+  // Must use library patch for Ethernet, Ethernet2, EthernetLarge libraries
+
+  Ethernet.init (USE_THIS_SS_PIN);
+
+#elif USE_CUSTOM_ETHERNET
+
+  // You have to add initialization for your Custom Ethernet here
+  // This is just an example to setCSPin to USE_THIS_SS_PIN, and can be not correct and enough
+  Ethernet.init(USE_THIS_SS_PIN);
+
+#endif  //( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
 
 #endif    // defined(ESP8266)
 
@@ -427,18 +432,18 @@ void setup()
 #endif
 
 #if (USE_QN_ETHERNET)
-  #define USING_DHCP    true
-  
-  #if USING_DHCP
-    // Start the Ethernet connection, using DHCP
-    Serial.print("Initialize QNEthernet using DHCP => ");
-    Ethernet.begin();
-  #else   
-    // Start the Ethernet connection, using static IP
-    Serial.print("Initialize QNEthernet using static IP => ");
-    Ethernet.begin(myIP, myNetmask, myGW);
-    Ethernet.setDNSServerIP(mydnsServer);
-  #endif
+#define USING_DHCP    true
+
+#if USING_DHCP
+  // Start the Ethernet connection, using DHCP
+  Serial.print("Initialize QNEthernet using DHCP => ");
+  Ethernet.begin();
+#else
+  // Start the Ethernet connection, using static IP
+  Serial.print("Initialize QNEthernet using static IP => ");
+  Ethernet.begin(myIP, myNetmask, myGW);
+  Ethernet.setDNSServerIP(mydnsServer);
+#endif
 
   if (!Ethernet.waitForLocalIP(5000))
   {
@@ -460,7 +465,7 @@ void setup()
   {
     Serial.println(F("Failed to wait for Link"));
   }
-  
+
 #else
 
   // start the ethernet connection and the server:
@@ -472,7 +477,7 @@ void setup()
 
   Serial.print(F("Using mac index = "));
   Serial.println(index);
-  
+
 #endif
 
   // you're connected now, so print out the data
@@ -494,7 +499,7 @@ bool setAlarmDone = false;
 void setAlarm(void)
 {
   // RTC is using UTC, so everything must use UTC, not local time
-  
+
   // Valid when RTC is already correct
   DateTime currentTime = rtc.now();
 
@@ -528,7 +533,7 @@ void loop()
   if (millis() > prev_ms + 1000)
   {
     prev_ms = millis();
-    
+
     DateTime now = rtc.now();
     Serial.println(F("============================"));
 
@@ -537,7 +542,7 @@ void loop()
 
     printDateTime(utc, "UTC");
     printDateTime(local, tcr -> abbrev);
-   
+
     // alarm flags must be cleard to get next alarm
     if (rtc.hasAlarmed(DS323x::AlarmSel::A1))
     {

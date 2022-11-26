@@ -3,9 +3,9 @@
 
   For all Generic boards such as ESP8266, ESP32, SAMD21/SAMD51, nRF52, STM32F/L/H/G/WB/MP1
   with WiFiNINA, ESP8266/ESP32 WiFi, ESP8266-AT, W5x00, ENC28J60, LAN8742A Ethernet modules/shields
-  
+
   DS323x_Generic Arduino library for DS3231/DS3232 Extremely Accurate I2C-Integrated RTC/TCXO/Crystal.
-  
+
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
@@ -107,7 +107,7 @@ void getNTPTime(void)
 
       // print Unix time:
       Serial.println(epoch);
-      
+
       // Get the time_t from epoch
       time_t epoch_t = epoch;
 
@@ -118,12 +118,12 @@ void getNTPTime(void)
 
       // Update RTC
       // Can use either one of these functions
-      
+
       // 1) DateTime(tmElements_t). Must create tmElements_t if not present
       //tmElements_t tm;
       //breakTime(epoch_t, tm);
       //rtc.now( DateTime(tm) );
-      
+
       // 2) DateTime(year, month, day, hour, min, sec)
       //rtc.now( DateTime(year(epoch_t), month(epoch_t), day(epoch_t), hour(epoch_t), minute(epoch_t), second(epoch_t) ) );
 
@@ -132,7 +132,7 @@ void getNTPTime(void)
 
       // 4) DateTime(unsigned long epoch). The best and easiest way
       rtc.now( DateTime((uint32_t) epoch) );
-       
+
       // print the hour, minute and second:
       Serial.print(F("The UTC time is "));       // UTC is the time at Greenwich Meridian (GMT)
       Serial.print((epoch  % 86400L) / 3600); // print the hour (86400 equals secs per day)
@@ -143,6 +143,7 @@ void getNTPTime(void)
         // In the first 10 minutes of each hour, we'll want a leading '0'
         Serial.print('0');
       }
+
       Serial.print((epoch  % 3600) / 60); // print the minute (3600 equals secs per minute)
       Serial.print(':');
 
@@ -151,6 +152,7 @@ void getNTPTime(void)
         // In the first 10 seconds of each minute, we'll want a leading '0'
         Serial.print('0');
       }
+
       Serial.println(epoch % 60); // print the second
 
       gotCurrentTime = true;
@@ -179,14 +181,16 @@ void printDateTime(time_t t, const char *tz)
 void setup()
 {
   Serial.begin(115200);
+
   while (!Serial);
 
   delay(200);
 
-  Serial.print(F("\nStart RTC_WiFi on ")); Serial.println(BOARD_NAME);
+  Serial.print(F("\nStart RTC_WiFi on "));
+  Serial.println(BOARD_NAME);
   Serial.println(TIMEZONE_GENERIC_VERSION);
   Serial.println(DS323X_GENERIC_VERSION);
-  
+
 #if defined(PIN_WIRE_SDA)
   // Arduino core, ESP8266, Adafruit
   TZ_LOGWARN(F("Default DS323X pinout:"));
@@ -210,6 +214,7 @@ void setup()
   if (WiFi.status() == WL_NO_SHIELD)
   {
     Serial.println(F("WiFi shield not present"));
+
     // don't continue
     while (true);
   }
@@ -250,9 +255,9 @@ void loop()
 
   time_t utc = now.get_time_t();
   time_t local = myTZ->toLocal(utc, &tcr);
-  
+
   printDateTime(utc, "UTC");
   printDateTime(local, tcr -> abbrev);
-  
+
   delay(10000);
 }

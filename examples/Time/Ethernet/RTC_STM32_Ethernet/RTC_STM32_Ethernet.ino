@@ -2,9 +2,9 @@
   RTC_STM32_Ethernet.ino
 
   For STM32 with built-in Ethernet (Nucleo-144, DISCOVERY, etc) or W5x00/ENC28J60 Ethernet
-  
+
   DS323x_Generic Arduino library for DS3231/DS3232 Extremely Accurate I2C-Integrated RTC/TCXO/Crystal.
-  
+
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
@@ -122,12 +122,12 @@ void getNTPTime(void)
 
       // Update RTC
       // Can use either one of these functions
-      
+
       // 1) DateTime(tmElements_t). Must create tmElements_t if not present
       //tmElements_t tm;
       //breakTime(epoch_t, tm);
       //rtc.now( DateTime(tm) );
-      
+
       // 2) DateTime(year, month, day, hour, min, sec)
       //rtc.now( DateTime(year(epoch_t), month(epoch_t), day(epoch_t), hour(epoch_t), minute(epoch_t), second(epoch_t) ) );
 
@@ -136,7 +136,7 @@ void getNTPTime(void)
 
       // 4) DateTime(unsigned long epoch). The best and easiest way
       rtc.now( DateTime((uint32_t) epoch) );
-      
+
       // print the hour, minute and second:
       Serial.print(F("The UTC time is "));       // UTC is the time at Greenwich Meridian (GMT)
       Serial.print((epoch  % 86400L) / 3600); // print the hour (86400 equals secs per day)
@@ -147,6 +147,7 @@ void getNTPTime(void)
         // In the first 10 minutes of each hour, we'll want a leading '0'
         Serial.print('0');
       }
+
       Serial.print((epoch  % 3600) / 60); // print the minute (3600 equals secs per minute)
       Serial.print(':');
 
@@ -155,6 +156,7 @@ void getNTPTime(void)
         // In the first 10 seconds of each minute, we'll want a leading '0'
         Serial.print('0');
       }
+
       Serial.println(epoch % 60); // print the second
 
       gotCurrentTime = true;
@@ -183,21 +185,26 @@ void printDateTime(time_t t, const char *tz)
 void setup()
 {
   Serial.begin(115200);
+
   while (!Serial);
 
   delay(200);
 
-  Serial.print(F("\nStart RTC_STM32_Ethernet on ")); Serial.print(BOARD_NAME);
-  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE);
+  Serial.print(F("\nStart RTC_STM32_Ethernet on "));
+  Serial.print(BOARD_NAME);
+  Serial.print(F(" with "));
+  Serial.println(SHIELD_TYPE);
   Serial.println(TIMEZONE_GENERIC_VERSION);
-  Serial.println(DS323X_GENERIC_VERSION); 
-  
+  Serial.println(DS323X_GENERIC_VERSION);
+
 #if defined(TIMEZONE_GENERIC_VERSION_MIN)
+
   if (TIMEZONE_GENERIC_VERSION_INT < TIMEZONE_GENERIC_VERSION_MIN)
   {
     Serial.print("Warning. Must use this example on Version equal or later than : ");
     Serial.println(TIMEZONE_GENERIC_VERSION_MIN_TARGET);
   }
+
 #endif
 
 #if defined(PIN_WIRE_SDA)
@@ -231,16 +238,16 @@ void setup()
   TZ_LOGWARN(F("========================="));
 
   // For other boards, to change if necessary
-  #if ( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
-    // Must use library patch for Ethernet, Ethernet2, EthernetLarge libraries
-    Ethernet.init (USE_THIS_SS_PIN);
-   
-  #elif USE_CUSTOM_ETHERNET
-    // You have to add initialization for your Custom Ethernet here
-    // This is just an example to setCSPin to USE_THIS_SS_PIN, and can be not correct and enough
-    //Ethernet.init(USE_THIS_SS_PIN);
-  
-  #endif  //( ( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
+#if ( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
+  // Must use library patch for Ethernet, Ethernet2, EthernetLarge libraries
+  Ethernet.init (USE_THIS_SS_PIN);
+
+#elif USE_CUSTOM_ETHERNET
+  // You have to add initialization for your Custom Ethernet here
+  // This is just an example to setCSPin to USE_THIS_SS_PIN, and can be not correct and enough
+  //Ethernet.init(USE_THIS_SS_PIN);
+
+#endif  //( ( USE_ETHERNET_GENERIC || USE_ETHERNET_ENC )
 #endif
 
   // start the ethernet connection and the server:
@@ -272,9 +279,9 @@ void loop()
 
   time_t utc = now.get_time_t();
   time_t local = myTZ.toLocal(utc, &tcr);
-  
+
   printDateTime(utc, "UTC");
   printDateTime(local, tcr -> abbrev);
-  
+
   delay(10000);
 }

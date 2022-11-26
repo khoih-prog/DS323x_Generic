@@ -5,9 +5,9 @@
 
   For all Generic boards such as ESP8266, ESP32, SAMD21/SAMD51, nRF52, STM32F/L/H/G/WB/MP1
   with WiFiNINA, ESP8266/ESP32 WiFi, ESP8266-AT, W5x00, ENC28J60, LAN8742A Ethernet modules/shields
-  
+
   DS323x_Generic Arduino library for DS3231/DS3232 Extremely Accurate I2C-Integrated RTC/TCXO/Crystal.
-  
+
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
  *****************************************************************************************************************************/
@@ -96,6 +96,7 @@ void setup()
   pinMode(LED_BUILTIN, OUTPUT);
 
   Serial.begin(115200);
+
   while (!Serial);
 
   delay(200);
@@ -113,11 +114,13 @@ void setup()
   Serial.println(TIMEZONE_GENERIC_VERSION);
 
 #if defined(TIMEZONE_GENERIC_VERSION_MIN)
+
   if (TIMEZONE_GENERIC_VERSION_INT < TIMEZONE_GENERIC_VERSION_MIN)
   {
     Serial.print("Warning. Must use this example on Version equal or later than : ");
     Serial.println(TIMEZONE_GENERIC_VERSION_MIN_TARGET);
   }
+
 #endif
 
   nz = new Timezone(nzDST, nzSTD);

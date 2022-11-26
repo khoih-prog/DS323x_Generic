@@ -2,9 +2,9 @@
   Alarm_STM32_Ethernet.ino
 
   For STM32 with built-in Ethernet (Nucleo-144, DISCOVERY, etc) or W5x00/ENC28J60 Ethernet
-  
+
   DS323x_Generic Arduino library for DS3231/DS3232 Extremely Accurate I2C-Integrated RTC/TCXO/Crystal.
-  
+
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
@@ -70,7 +70,7 @@ void sendNTPpacket(char *ntpSrv)
 bool gotCurrentTime = false;
 
 void getNTPTime(void)
-{  
+{
   // Just get the correct ime once
   if (!gotCurrentTime)
   {
@@ -115,12 +115,12 @@ void getNTPTime(void)
 
       // Update RTC
       // Can use either one of these functions
-      
+
       // 1) DateTime(tmElements_t). Must create tmElements_t if not present
       //tmElements_t tm;
       //breakTime(epoch_t, tm);
       //rtc.now( DateTime(tm) );
-      
+
       // 2) DateTime(year, month, day, hour, min, sec)
       //rtc.now( DateTime(year(epoch_t), month(epoch_t), day(epoch_t), hour(epoch_t), minute(epoch_t), second(epoch_t) ) );
 
@@ -140,6 +140,7 @@ void getNTPTime(void)
         // In the first 10 minutes of each hour, we'll want a leading '0'
         Serial.print('0');
       }
+
       Serial.print((epoch  % 3600) / 60); // print the minute (3600 equals secs per minute)
       Serial.print(':');
 
@@ -148,6 +149,7 @@ void getNTPTime(void)
         // In the first 10 seconds of each minute, we'll want a leading '0'
         Serial.print('0');
       }
+
       Serial.println(epoch % 60); // print the second
 
       gotCurrentTime = true;
@@ -218,7 +220,7 @@ void set_RTC_Alarm2(DateTime& alarmTime)
   rtc.minute(DS323x::AlarmSel::A2, alarmTime.minute());
   //rtc.rate(DS323x::A2Rate::MATCH_MINUTE);
   rtc.rate(DS323x::A2Rate::MATCH_MINUTE_HOUR);
-  
+
   Serial.print(F("Alarm 2 is set to  : "));
   Serial.println(rtc.alarm(DS323x::AlarmSel::A2).timestamp(DateTime::TIMESTAMP_TIME));
   Serial.print(F("Alarm 2 alarm rate : "));
@@ -235,14 +237,17 @@ void set_RTC_Alarm2(DateTime& alarmTime)
 void setup()
 {
   Serial.begin(115200);
+
   while (!Serial);
 
   delay(200);
 
-  Serial.print(F("\nStart Alarm_STM32_Ethernet on ")); Serial.print(BOARD_NAME);
-  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE);
+  Serial.print(F("\nStart Alarm_STM32_Ethernet on "));
+  Serial.print(BOARD_NAME);
+  Serial.print(F(" with "));
+  Serial.println(SHIELD_TYPE);
   Serial.println(TIMEZONE_GENERIC_VERSION);
-  Serial.println(DS323X_GENERIC_VERSION);  
+  Serial.println(DS323X_GENERIC_VERSION);
 
 #if defined(PIN_WIRE_SDA)
   // Arduino core, ESP8266, Adafruit
@@ -260,7 +265,7 @@ void setup()
   TZ_LOGWARN1(F("SDA:"), SDA);
   TZ_LOGWARN1(F("SCL:"), SCL);
 #endif
-  
+
   Wire.begin();
 
   TZ_LOGWARN3(F("Board :"), BOARD_NAME, F(", setCsPin:"), USE_THIS_SS_PIN);
@@ -274,25 +279,25 @@ void setup()
 
 #if !(USE_BUILTIN_ETHERNET || USE_UIP_ETHERNET)
   // For other boards, to change if necessary
-  #if ( USE_ETHERNET || USE_ETHERNET_LARGE || USE_ETHERNET2  || USE_ETHERNET_ENC )
-    // Must use library patch for Ethernet, Ethernet2, EthernetLarge libraries
-    Ethernet.init (USE_THIS_SS_PIN);
-  
-  #elif USE_ETHERNET3
-    // Use  MAX_SOCK_NUM = 4 for 4K, 2 for 8K, 1 for 16K RX/TX buffer
-    #ifndef ETHERNET3_MAX_SOCK_NUM
-      #define ETHERNET3_MAX_SOCK_NUM      4
-    #endif
-  
-    Ethernet.setCsPin (USE_THIS_SS_PIN);
-    Ethernet.init (ETHERNET3_MAX_SOCK_NUM);
-  
-  #elif USE_CUSTOM_ETHERNET
-    // You have to add initialization for your Custom Ethernet here
-    // This is just an example to setCSPin to USE_THIS_SS_PIN, and can be not correct and enough
-    //Ethernet.init(USE_THIS_SS_PIN);
-  
-  #endif  //( ( USE_ETHERNET || USE_ETHERNET_LARGE || USE_ETHERNET2  || USE_ETHERNET_ENC )
+#if ( USE_ETHERNET || USE_ETHERNET_LARGE || USE_ETHERNET2  || USE_ETHERNET_ENC )
+  // Must use library patch for Ethernet, Ethernet2, EthernetLarge libraries
+  Ethernet.init (USE_THIS_SS_PIN);
+
+#elif USE_ETHERNET3
+  // Use  MAX_SOCK_NUM = 4 for 4K, 2 for 8K, 1 for 16K RX/TX buffer
+#ifndef ETHERNET3_MAX_SOCK_NUM
+#define ETHERNET3_MAX_SOCK_NUM      4
+#endif
+
+  Ethernet.setCsPin (USE_THIS_SS_PIN);
+  Ethernet.init (ETHERNET3_MAX_SOCK_NUM);
+
+#elif USE_CUSTOM_ETHERNET
+  // You have to add initialization for your Custom Ethernet here
+  // This is just an example to setCSPin to USE_THIS_SS_PIN, and can be not correct and enough
+  //Ethernet.init(USE_THIS_SS_PIN);
+
+#endif  //( ( USE_ETHERNET || USE_ETHERNET_LARGE || USE_ETHERNET2  || USE_ETHERNET_ENC )
 #endif
 
   // start the ethernet connection and the server:
@@ -318,7 +323,7 @@ bool setAlarmDone = false;
 void setAlarm(void)
 {
   // RTC is using UTC, so everything must use UTC, not local time
-  
+
   // Valid when RTC is already correct
   DateTime currentTime = rtc.now();
 
@@ -352,7 +357,7 @@ void loop()
   if (millis() > prev_ms + 1000)
   {
     prev_ms = millis();
-    
+
     DateTime now = rtc.now();
     Serial.println(F("============================"));
 
@@ -361,7 +366,7 @@ void loop()
 
     printDateTime(utc, "UTC");
     printDateTime(local, tcr -> abbrev);
-   
+
     // alarm flags must be cleard to get next alarm
     if (rtc.hasAlarmed(DS323x::AlarmSel::A1))
     {

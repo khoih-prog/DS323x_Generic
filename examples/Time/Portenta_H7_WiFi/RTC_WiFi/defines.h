@@ -1,6 +1,6 @@
 /****************************************************************************************************************************
   defines.h
-  
+
   For AVR, ESP8266/ESP32, SAMD21/SAMD51, nRF52, STM32, WT32_ETH01 boards
 
   Based on and modified from Arduino Timezone Library (https://github.com/JChristensen/Timezone)
@@ -39,7 +39,7 @@
     #warning Using Portenta H7 M4 core
     #define BOARD_NAME              "PORTENTA_H7_M4"
   #endif
- 
+
 #else
   #error For Portenta_H7 only
 #endif

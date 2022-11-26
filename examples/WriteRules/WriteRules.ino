@@ -5,9 +5,9 @@
 
   For all Generic boards such as ESP8266, ESP32, SAMD21/SAMD51, nRF52, STM32F/L/H/G/WB/MP1
   with WiFiNINA, ESP8266/ESP32 WiFi, ESP8266-AT, W5x00, ENC28J60, LAN8742A Ethernet modules/shields
-  
+
   DS323x_Generic Arduino library for DS3231/DS3232 Extremely Accurate I2C-Integrated RTC/TCXO/Crystal.
-  
+
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
  *****************************************************************************************************************************/
@@ -31,16 +31,16 @@
 #define USING_INITIALIZED_TZ      false   //true
 
 #if USING_INITIALIZED_TZ
-  // US Eastern Time Zone (New York, Detroit,Toronto)
-  TimeChangeRule myDST = {"EDT", Second, Sun, Mar, 2, -240};    // Daylight time = UTC - 4 hours
-  TimeChangeRule mySTD = {"EST", First,  Sun, Nov, 2, -300};    // Standard time = UTC - 5 hours
-  Timezone *myTZ;
+// US Eastern Time Zone (New York, Detroit,Toronto)
+TimeChangeRule myDST = {"EDT", Second, Sun, Mar, 2, -240};    // Daylight time = UTC - 4 hours
+TimeChangeRule mySTD = {"EST", First,  Sun, Nov, 2, -300};    // Standard time = UTC - 5 hours
+Timezone *myTZ;
 #else
-  // Allow a "blank" TZ object then use begin() method to set the actual TZ.
-  // Feature added by 6v6gt (https://forum.arduino.cc/index.php?topic=711259)
-  Timezone *myTZ;
-  TimeChangeRule myDST;
-  TimeChangeRule mySTD;
+// Allow a "blank" TZ object then use begin() method to set the actual TZ.
+// Feature added by 6v6gt (https://forum.arduino.cc/index.php?topic=711259)
+Timezone *myTZ;
+TimeChangeRule myDST;
+TimeChangeRule mySTD;
 #endif
 
 #ifndef LED_BUILTIN
@@ -52,6 +52,7 @@ void setup()
   pinMode(LED_BUILTIN, OUTPUT);
 
   Serial.begin(115200);
+
   while (!Serial);
 
   delay(200);
@@ -67,13 +68,15 @@ void setup()
 #endif
 
   Serial.println(TIMEZONE_GENERIC_VERSION);
-  
+
 #if defined(TIMEZONE_GENERIC_VERSION_MIN)
+
   if (TIMEZONE_GENERIC_VERSION_INT < TIMEZONE_GENERIC_VERSION_MIN)
   {
     Serial.print("Warning. Must use this example on Version equal or later than : ");
     Serial.println(TIMEZONE_GENERIC_VERSION_MIN_TARGET);
   }
+
 #endif
 
 #if (USING_INITIALIZED_TZ)
@@ -91,12 +94,12 @@ void setup()
   if ( tzName == "EDT/EST" )
   {
     // America Eastern Time
-    myDST = (TimeChangeRule) 
+    myDST = (TimeChangeRule)
     {
       "EDT",  Second, Sun, Mar, 2, -240
     };     // Daylight time = UTC - 4 hours
-    
-    mySTD = (TimeChangeRule) 
+
+    mySTD = (TimeChangeRule)
     {
       "EST",  First,  Sun, Nov, 2, -300
     };     // Standard time = UTC - 5 hours
@@ -104,12 +107,12 @@ void setup()
   else if ( tzName == "CET/CEST" )
   {
     // central Europe
-    myDST = (TimeChangeRule) 
+    myDST = (TimeChangeRule)
     {
       "CEST", Last, Sun, Mar, 2, 120
     };
-    
-    mySTD = (TimeChangeRule) 
+
+    mySTD = (TimeChangeRule)
     {
       "CET",  Last, Sun, Oct, 3, 60
     };
@@ -118,12 +121,12 @@ void setup()
   else if ( tzName == "GMT/BST" )
   {
     // UK
-    myDST = (TimeChangeRule) 
+    myDST = (TimeChangeRule)
     {
       "BST",  Last, Sun, Mar, 1, 60
     };
-    
-    mySTD = (TimeChangeRule) 
+
+    mySTD = (TimeChangeRule)
     {
       "GMT",  Last, Sun, Oct, 2, 0
     };

@@ -2,9 +2,9 @@
   Alarm_ESP_Complex.ino
 
   For ESP8266, ESP32
-  
+
   DS323x_Generic Arduino library for DS3231/DS3232 Extremely Accurate I2C-Integrated RTC/TCXO/Crystal.
-  
+
   Based on and modified from Hideaki Tai's DS323x Library (https://github.com/hideakitai/DS323x)
   Built by Khoi Hoang https://github.com/khoih-prog/DS323x_Generic
   Licensed under MIT license
@@ -70,7 +70,7 @@ void sendNTPpacket(char *ntpSrv)
 bool gotCurrentTime = false;
 
 void getNTPTime(void)
-{  
+{
   // Just get the correct time once
   if (!gotCurrentTime)
   {
@@ -118,12 +118,12 @@ void getNTPTime(void)
 
       // Update RTC
       // Can use either one of these functions
-      
+
       // 1) DateTime(tmElements_t). Must create tmElements_t if not present
       //tmElements_t tm;
       //breakTime(epoch_t, tm);
       //rtc.now( DateTime(tm) );
-      
+
       // 2) DateTime(year, month, day, hour, min, sec)
       //rtc.now( DateTime(year(epoch_t), month(epoch_t), day(epoch_t), hour(epoch_t), minute(epoch_t), second(epoch_t) ) );
 
@@ -143,6 +143,7 @@ void getNTPTime(void)
         // In the first 10 minutes of each hour, we'll want a leading '0'
         Serial.print('0');
       }
+
       Serial.print((epoch  % 3600) / 60); // print the minute (3600 equals secs per minute)
       Serial.print(':');
 
@@ -151,6 +152,7 @@ void getNTPTime(void)
         // In the first 10 seconds of each minute, we'll want a leading '0'
         Serial.print('0');
       }
+
       Serial.println(epoch % 60); // print the second
 
       gotCurrentTime = true;
@@ -221,7 +223,7 @@ void set_RTC_Alarm2(DateTime& alarmTime)
   rtc.minute(DS323x::AlarmSel::A2, alarmTime.minute());
   //rtc.rate(DS323x::A2Rate::MATCH_MINUTE);
   rtc.rate(DS323x::A2Rate::MATCH_MINUTE_HOUR);
-  
+
   Serial.print(F("Alarm 2 is set to  : "));
   Serial.println(rtc.alarm(DS323x::AlarmSel::A2).timestamp(DateTime::TIMESTAMP_TIME));
   Serial.print(F("Alarm 2 alarm rate : "));
@@ -238,11 +240,13 @@ void set_RTC_Alarm2(DateTime& alarmTime)
 void setup()
 {
   Serial.begin(115200);
+
   while (!Serial);
 
   delay(200);
 
-  Serial.print(F("\nStart Alarm_ESP_Complex on ")); Serial.println(ARDUINO_BOARD);
+  Serial.print(F("\nStart Alarm_ESP_Complex on "));
+  Serial.println(ARDUINO_BOARD);
   Serial.println(TIMEZONE_GENERIC_VERSION);
   Serial.println(DS323X_GENERIC_VERSION);
 
@@ -265,11 +269,12 @@ void setup()
 
   Wire.begin();
 
-  Serial.print(F("Connecting to ")); Serial.println(ssid);
-  
+  Serial.print(F("Connecting to "));
+  Serial.println(ssid);
+
   WiFi.begin(ssid, pass);
 
-  while (WiFi.status() != WL_CONNECTED) 
+  while (WiFi.status() != WL_CONNECTED)
   {
     Serial.print(".");
     delay(250);
@@ -294,7 +299,7 @@ bool setAlarmDone = false;
 void setAlarm(void)
 {
   // RTC is using UTC, so everything must use UTC, not local time
-  
+
   // Valid when RTC is already correct
   DateTime currentTime = rtc.now();
 
@@ -331,7 +336,7 @@ void loop()
   if (millis() > prev_ms + 1000)
   {
     prev_ms = millis();
-    
+
     DateTime now = rtc.now();
     Serial.println("============================");
 
@@ -345,7 +350,7 @@ void loop()
     timeInfo = localtime(&timeNowUTC);
     Serial.print("System Time UTC: ");
     Serial.println(asctime(timeInfo));
-   
+
     // alarm flags must be cleard to get next alarm
     if (rtc.hasAlarmed(DS323x::AlarmSel::A1))
     {
